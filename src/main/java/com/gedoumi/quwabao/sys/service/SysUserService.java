@@ -5,7 +5,6 @@ import com.gedoumi.quwabao.sys.dao.SysUserDao;
 import com.gedoumi.quwabao.sys.dao.SysUserRoleDao;
 import com.gedoumi.quwabao.sys.entity.SysUser;
 import com.gedoumi.quwabao.sys.entity.SysUserRole;
-import com.gedoumi.quwabao.user.dataobj.entity.User;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.stereotype.Service;

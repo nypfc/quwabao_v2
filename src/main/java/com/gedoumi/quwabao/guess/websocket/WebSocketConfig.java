@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.guess.websocket;
 
-import com.gedoumi.quwabao.common.security.ApiInterceptor;
+import com.gedoumi.quwabao.component.ApiInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;

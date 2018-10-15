@@ -1,6 +1,5 @@
 package com.gedoumi.quwabao.guess.websocket;
 
-import com.gedoumi.quwabao.user.dataobj.entity.User;
 import com.gedoumi.quwabao.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

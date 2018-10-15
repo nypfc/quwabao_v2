@@ -9,7 +9,7 @@ import com.gedoumi.quwabao.common.base.DataGrid;
 import com.gedoumi.quwabao.common.base.PageParam;
 import com.gedoumi.quwabao.common.base.ResponseObject;
 import com.gedoumi.quwabao.common.exception.BusinessException;
-import com.gedoumi.quwabao.util.JsonUtil;
+import com.gedoumi.quwabao.common.utils.JsonUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

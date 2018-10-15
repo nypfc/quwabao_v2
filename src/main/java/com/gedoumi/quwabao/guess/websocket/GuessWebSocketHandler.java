@@ -2,7 +2,7 @@ package com.gedoumi.quwabao.guess.websocket;
 
 import com.gedoumi.quwabao.common.enums.GuessNotityTypeEnum;
 import com.gedoumi.quwabao.guess.vo.GuessNotityVO;
-import com.gedoumi.quwabao.util.JsonUtil;
+import com.gedoumi.quwabao.common.utils.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;

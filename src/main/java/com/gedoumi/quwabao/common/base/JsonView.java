@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.common.base;
 
-import com.gedoumi.quwabao.util.JsonUtil;
+import com.gedoumi.quwabao.common.utils.JsonUtil;
 import org.springframework.web.servlet.view.AbstractView;
 
 import javax.servlet.http.HttpServletRequest;

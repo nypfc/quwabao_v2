@@ -1,7 +1,5 @@
 package com.gedoumi.quwabao.asset.entity;
 
-import com.gedoumi.quwabao.user.dataobj.entity.User;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -13,7 +11,7 @@ import java.util.Date;
  * @See UnFrozenType
  */
 @Entity
-@Table(name = "user_team")
+@Table(name = "team")
 public class UserTeam implements Serializable {
 
 

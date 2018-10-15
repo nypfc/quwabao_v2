@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.api.gateway;
 
-import com.gedoumi.quwabao.common.Constants;
+import com.gedoumi.quwabao.common.constants.Constants;
 
 public class ApiResponse {
 

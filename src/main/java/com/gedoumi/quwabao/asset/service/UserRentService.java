@@ -3,7 +3,6 @@ package com.gedoumi.quwabao.asset.service;
 import com.gedoumi.quwabao.asset.dao.UserRentDao;
 import com.gedoumi.quwabao.asset.entity.UserRent;
 import com.gedoumi.quwabao.common.enums.RentStatus;
-import com.gedoumi.quwabao.user.dataobj.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

@@ -1,14 +1,12 @@
 package com.gedoumi.quwabao.user.service;
 
-import com.gedoumi.quwabao.user.dao.UserTreeDao;
-import com.gedoumi.quwabao.user.dataobj.entity.User;
-import com.gedoumi.quwabao.user.dataobj.entity.UserTree;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gedoumi.quwabao.team.dataobj.model.UserTree;
+import com.gedoumi.quwabao.user.mapper.UserTreeDao;
+import com.gedoumi.quwabao.user.dataobj.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.annotation.Resource;
 import java.util.List;
 
 
@@ -21,11 +19,8 @@ import java.util.List;
 @Service
 public class UserTreeService {
 	
-	@Autowired
+	@Resource
 	private UserTreeDao userTreeDao;
-	
-	@PersistenceContext
-    private EntityManager entityManager;
 	
 	public List<UserTree> getAll(){
 		return userTreeDao.findAll();

@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.sys.service;
 
-import com.gedoumi.quwabao.common.Constants;
+import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.utils.PfcDateUtils;
 import com.gedoumi.quwabao.sys.dao.SysSmsDao;
 import com.gedoumi.quwabao.sys.entity.SysSms;
@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
 
@@ -28,9 +26,6 @@ public class SysSmsService {
 	
 	@Autowired
 	private SysSmsDao smsDao;
-	
-	@PersistenceContext
-    private EntityManager entityManager;
 
 	@Transactional
 	public void add(SysSms sms){

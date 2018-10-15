@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao;
 
-import com.gedoumi.quwabao.util.MD5EncryptUtil;
+import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
 import org.junit.Test;
 
 public class QuwabaoTest {

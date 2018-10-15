@@ -1,7 +1,6 @@
 package com.gedoumi.quwabao.api.face.vo;
 
-import com.gedoumi.quwabao.util.MD5EncryptUtil;
-import org.apache.commons.codec.digest.DigestUtils;
+import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
 
 import java.io.Serializable;
 

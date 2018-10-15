@@ -10,33 +10,30 @@ import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.UserStatus;
 import com.gedoumi.quwabao.common.enums.UserValidateStatus;
 import com.gedoumi.quwabao.common.exception.BusinessException;
+import com.gedoumi.quwabao.common.utils.CipherUtils;
+import com.gedoumi.quwabao.common.utils.JsonUtil;
+import com.gedoumi.quwabao.common.utils.NumberUtil;
 import com.gedoumi.quwabao.sys.dao.SysSmsDao;
-import com.gedoumi.quwabao.user.dao.UserDao;
-import com.gedoumi.quwabao.user.dao.UserImageDao;
-import com.gedoumi.quwabao.user.dao.UserTreeDao;
-import com.gedoumi.quwabao.user.dataobj.entity.User;
-import com.gedoumi.quwabao.user.dataobj.entity.UserImage;
-import com.gedoumi.quwabao.user.dataobj.entity.UserTree;
+import com.gedoumi.quwabao.team.dataobj.model.UserTree;
+import com.gedoumi.quwabao.user.mapper.UserImageDao;
+import com.gedoumi.quwabao.user.mapper.UserMapper;
+import com.gedoumi.quwabao.user.mapper.UserTreeDao;
+import com.gedoumi.quwabao.user.dataobj.model.User;
+import com.gedoumi.quwabao.user.dataobj.model.UserImage;
 import com.gedoumi.quwabao.user.dataobj.vo.ValidateUserVO;
-import com.gedoumi.quwabao.util.CipherUtils;
-import com.gedoumi.quwabao.util.JsonUtil;
-import com.gedoumi.quwabao.util.NumberUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.Md5Hash;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -44,13 +41,12 @@ import java.util.UUID;
  * 类名：SysUserService
  * 功能：用户管理 业务层
  */
+@Slf4j
 @Service
 public class UserService {
 
-    Logger logger = LoggerFactory.getLogger(UserService.class);
-
     @Resource
-    private UserDao userDao;
+    private UserMapper userMapper;
 
     @Resource
     private SysSmsDao smsDao;
@@ -64,27 +60,36 @@ public class UserService {
     @Resource
     private UserAssetDao assetDao;
 
-
-    @PersistenceContext
-    private EntityManager entityManager;
+    /**
+     * 根据令牌获取用户
+     *
+     * @param token 令牌
+     * @return 用户对象
+     */
+    public User getByToken(String token) {
+        return Optional.ofNullable(userMapper.queryByToken(token)).orElseThrow(() -> {
+            log.error("token:{}未查询到用户", token);
+            return new BusinessException(CodeEnum.UnLogin);
+        });
+    }
 
     @Transactional
     public void addUser(User user) throws BusinessException {
         user.setInviteCode(CipherUtils.generateCode());
         while (true) {
-            User orgUser = userDao.findByInviteCode(user.getInviteCode());
+            User orgUser = userMapper.findByInviteCode(user.getInviteCode());
             if (orgUser == null) {
                 break;
             }
             user.setInviteCode(CipherUtils.generateCode());
         }
-        userDao.save(user);
+        userMapper.save(user);
         if (StringUtils.isEmpty(user.getUsername())) {
             int length = String.valueOf(user.getId()).length();
             length = length > 4 ? length : 4;
             String format = "%0" + length + "d";
             user.setUsername(User.PREFIX + NumberUtil.randomInt(0, 999) + String.format(format, user.getId()));
-            userDao.save(user);
+            userMapper.save(user);
         }
 
 
@@ -108,7 +113,7 @@ public class UserService {
     }
 
     public List<User> getAll() {
-        return userDao.findAll();
+        return userMapper.findAll();
     }
 
     /**
@@ -128,17 +133,17 @@ public class UserService {
         StringBuffer sqlData = new StringBuffer("select t.child ").append(prefSql);
 
 
-        Query queryCount = entityManager.createQuery(sqlCount.toString());
-        queryCount.setParameter(1, user.getId());
-        queryCount.setParameter(2, user.getId());
-        Long count = Long.parseLong(queryCount.getResultList().get(0).toString());
-        Query queryData = entityManager.createQuery(sqlData.toString());
-        queryData.setParameter(1, user.getId());
-        queryData.setParameter(2, user.getId());
-        List<User> list = (List<User>) queryData.setFirstResult((param.getPage() - 1) * param.getRows()).setMaxResults(param.getRows()).getResultList();
+//        Query queryCount = entityManager.createQuery(sqlCount.toString());
+//        queryCount.setParameter(1, user.getId());
+//        queryCount.setParameter(2, user.getId());
+//        Long count = Long.parseLong(queryCount.getResultList().get(0).toString());
+//        Query queryData = entityManager.createQuery(sqlData.toString());
+//        queryData.setParameter(1, user.getId());
+//        queryData.setParameter(2, user.getId());
+//        List<User> list = (List<User>) queryData.setFirstResult((param.getPage() - 1) * param.getRows()).setMaxResults(param.getRows()).getResultList();
 
-        data.setTotal(count);
-        data.setRows(list);
+//        data.setTotal(count);
+//        data.setRows(list);
         return data;
     }
 
@@ -161,88 +166,66 @@ public class UserService {
             sqlCount.append("and t.mobilePhone like :phone ");
             sqlData.append("and t.mobilePhone like :phone ");
         }
-
-        Query queryCount = entityManager.createQuery(sqlCount.toString());
-        Query queryData = entityManager.createQuery(sqlData.toString());
-        if (StringUtils.isNotEmpty(user.getMobilePhone())) {
-            queryCount.setParameter("phone", "%" + user.getMobilePhone() + "%");
-            queryData.setParameter("phone", "%" + user.getMobilePhone() + "%");
-        }
-
-        Long count = Long.parseLong(queryCount.getResultList().get(0).toString());
-
-
-        List<User> list = (List<User>) queryData.setFirstResult((param.getPage() - 1) * param.getRows()).setMaxResults(param.getRows()).getResultList();
-
-        data.setTotal(count);
-        data.setRows(list);
+//
+//        Query queryCount = entityManager.createQuery(sqlCount.toString());
+//        Query queryData = entityManager.createQuery(sqlData.toString());
+//        if (StringUtils.isNotEmpty(user.getMobilePhone())) {
+//            queryCount.setParameter("phone", "%" + user.getMobilePhone() + "%");
+//            queryData.setParameter("phone", "%" + user.getMobilePhone() + "%");
+//        }
+//
+//        Long count = Long.parseLong(queryCount.getResultList().get(0).toString());
+//
+//
+//        List<User> list = (List<User>) queryData.setFirstResult((param.getPage() - 1) * param.getRows()).setMaxResults(param.getRows()).getResultList();
+//
+//        data.setTotal(count);
+//        data.setRows(list);
         return data;
     }
 
     public User getById(Long id) {
-        return userDao.findById(id).get();
+        return userMapper.findById(id).get();
     }
 
     public User create(User user) {
         if (StringUtils.isEmpty(user.getPassword()))
             user.setPassword(new Md5Hash(User.PWD_INIT, user.getMobilePhone()).toString());
         User loginUser = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
-        return userDao.save(user);
+        return userMapper.save(user);
     }
 
     public User update(Long id, User user) {
-        User oldUser = userDao.findById(id).get();
+        User oldUser = userMapper.findById(id).get();
         oldUser.setRealName(user.getRealName());
         oldUser.setMobilePhone(user.getMobilePhone());
         oldUser.setUserStatus(user.getUserStatus());
         User loginUser = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
         oldUser.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        return userDao.save(oldUser);
+        return userMapper.save(oldUser);
     }
 
     public User update(User user) {
-        return userDao.save(user);
-    }
-
-    public Boolean delete(String[] ids) {
-
-        return true;
+        return userMapper.save(user);
     }
 
     public Boolean delete(Long id) {
-        userDao.deleteById(id);
+        userMapper.deleteById(id);
         return true;
     }
 
-
-    public User getByUsername(String username) {
-        User user = userDao.findByUsername(username);
-        return user;
-    }
-
     public User getByIdCard(String idCard) {
-        User user = userDao.findByIdCard(idCard);
-        return user;
-    }
-
-
-    public User getByMobilePhone(String mobile) {
-        User user = userDao.findByMobilePhone(mobile);
-        return user;
-    }
-
-    public User getByToken(String token) {
-        User user = userDao.findByToken(token);
+        User user = userMapper.findByIdCard(idCard);
         return user;
     }
 
     public User getByInviteCode(String inviteCode) {
-        User user = userDao.findByInviteCode(inviteCode);
+        User user = userMapper.findByInviteCode(inviteCode);
         return user;
     }
 
     public User checkLoginUser(String username, UserStatus userStatus) {
-        User user = userDao.findByMobilePhoneAndUserStatus(username, userStatus.getValue());
+        User user = userMapper.findByMobilePhoneAndUserStatus(username, userStatus.getValue());
         return user;
     }
 
@@ -250,14 +233,14 @@ public class UserService {
     public void updateLoginInfo(User user) {
         user.setErrorCount(Short.valueOf("0"));
         user.setUpdateTime(new Date());
-        userDao.save(user);
+        userMapper.save(user);
     }
 
     @Transactional
     public void updateLogout(User user) {
         user.setUpdateTime(new Date());
         user.setToken(UUID.randomUUID().toString());
-        userDao.save(user);
+        userMapper.save(user);
     }
 
     @Transactional
@@ -266,7 +249,7 @@ public class UserService {
         errorCount++;
         user.setErrorCount(errorCount);
         user.setErrorTime(new Date());
-        userDao.save(user);
+        userMapper.save(user);
     }
 
     public void checkRegInviteCode(User user, Long checkUserid) throws BusinessException {
@@ -283,13 +266,13 @@ public class UserService {
     @Transactional
     public void bindRegInviteCode(User user) throws BusinessException {
 
-        User parentUser = userDao.findByInviteCode(user.getRegInviteCode());
+        User parentUser = userMapper.findByInviteCode(user.getRegInviteCode());
         if (parentUser != null) {
             checkRegInviteCode(user, parentUser.getId());
         }
 
 
-        userDao.save(user);
+        userMapper.save(user);
 
         if (parentUser != null) {
             UserTree userTree = new UserTree();
@@ -304,7 +287,7 @@ public class UserService {
     @Transactional
     public void validateUser(ValidateUserVO validateUserVO, IDApiResponse faceApiResponse) {
         if (faceApiResponse != null)
-            logger.info("validateUser faceApiResponse = {}", JsonUtil.objectToJson(faceApiResponse));
+            log.info("validateUser faceApiResponse = {}", JsonUtil.objectToJson(faceApiResponse));
         Date now = new Date();
         Long userId = validateUserVO.getUserId();
         UserImage orgUserImage = userImageDao.findByUserId(userId);
@@ -329,7 +312,7 @@ public class UserService {
         }
 
         if (faceApiResponse != null) {
-            User user = userDao.findById(userId).get();
+            User user = userMapper.findById(userId).get();
             user.setUpdateTime(now);
             user.setRealName(validateUserVO.getRealName());
             user.setIdCard(validateUserVO.getIdCard());
@@ -339,7 +322,7 @@ public class UserService {
                 user.setValidateStatus(UserValidateStatus.UnPass.getValue());
             }
 
-            userDao.save(user);
+            userMapper.save(user);
         }
 
     }

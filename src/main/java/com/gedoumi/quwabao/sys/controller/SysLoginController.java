@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.sys.controller;
 
-import com.gedoumi.quwabao.common.Constants;
+import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.annotation.PfcLogAspect;
 import com.gedoumi.quwabao.common.base.LoginToken;
 import com.gedoumi.quwabao.common.base.ResponseObject;
@@ -8,7 +8,7 @@ import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.sys.entity.SysUser;
 import com.gedoumi.quwabao.sys.service.SysUserService;
 import com.gedoumi.quwabao.user.dataobj.vo.LoginVO;
-import com.gedoumi.quwabao.util.SessionUtil;
+import com.gedoumi.quwabao.common.utils.SessionUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;

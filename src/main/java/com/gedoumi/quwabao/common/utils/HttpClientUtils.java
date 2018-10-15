@@ -1,5 +1,6 @@
 package com.gedoumi.quwabao.common.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -20,8 +21,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContexts;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -34,9 +33,8 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
+@Slf4j
 public class HttpClientUtils {
-
-    static Logger logger = LoggerFactory.getLogger(HttpClientUtils.class);
 
     final static int MAX_TOTAL = 200;
     final static int MAX_PERROUTE = 20;
@@ -64,15 +62,7 @@ public class HttpClientUtils {
             cm.setMaxTotal(MAX_TOTAL);
             // Increase default max connection per route to 20
             cm.setDefaultMaxPerRoute(MAX_PERROUTE);
-
-
-
-
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
+        } catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
             e.printStackTrace();
         }
     }
@@ -95,7 +85,7 @@ public class HttpClientUtils {
                     return false;
                 }
                 if (executionCount <= RETRY_TIMES){
-                    logger.info("{} resp status = {}, try times = {}",context.getAttribute("http.request"), response.getStatusLine(),executionCount);
+                    log.info("{} resp status = {}, try times = {}",context.getAttribute("http.request"), response.getStatusLine(),executionCount);
                     return true;
                 } else{
                     return false;
@@ -125,12 +115,12 @@ public class HttpClientUtils {
                     }
                     if (exception instanceof ConnectTimeoutException) {
                         // Timeout
-                        logger.info("connect timeout , try times = {}", executionCount);
+                        log.info("connect timeout , try times = {}", executionCount);
                         return true;
                     }
                     if (exception instanceof SocketTimeoutException) {
                         // Timeout
-                        logger.info("socket timeout , try times = {}", executionCount);
+                        log.info("socket timeout , try times = {}", executionCount);
                         return true;
                     }
                     if (exception instanceof InterruptedIOException) {
@@ -170,8 +160,8 @@ public class HttpClientUtils {
                 .setConnectionManager(cm).setDefaultRequestConfig(requestConfig).build();
 
 
-        logger.info("httpClient {}",httpClient);
-        logger.info("PoolingHttpClientConnectionManager {}", cm);
+        log.info("httpClient {}",httpClient);
+        log.info("PoolingHttpClientConnectionManager {}", cm);
         return httpClient;
     }
 

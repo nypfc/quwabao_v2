@@ -2,7 +2,7 @@ package com.gedoumi.quwabao.sys.service;
 
 import com.gedoumi.quwabao.asset.entity.UserTeam;
 import com.gedoumi.quwabao.asset.vo.SysRentVO;
-import com.gedoumi.quwabao.common.Constants;
+import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.base.DataGrid;
 import com.gedoumi.quwabao.common.base.PageParam;
 import com.gedoumi.quwabao.common.enums.RentStatus;

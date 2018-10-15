@@ -1,7 +1,5 @@
 package com.gedoumi.quwabao.common.utils;
 
-import com.gedoumi.quwabao.util.JsonUtil;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;

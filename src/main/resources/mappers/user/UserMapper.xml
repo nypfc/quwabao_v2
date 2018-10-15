@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gedoumi.quwabao.user.mapper.UserMapper">
+
+    <sql id="user">
+        SELECT id,
+               error_count,
+               error_time,
+               last_login_ip,
+               last_login_time,
+               mobile_phone,
+               password,
+               real_name,
+               register_time,
+               update_time,
+               user_status,
+               username,
+               invite_code,
+               token,
+               deviceId,
+               reg_invite_code,
+               user_type,
+               sex,
+               eth_address,
+               validate_status,
+               id_card
+        FROM user
+    </sql>
+
+    <select id="queryByToken" resultType="User">
+        <include refid="user"/>
+        WHERE token = #{param1}
+    </select>
+
+    <select id="queryByMobilePhone" resultType="User">
+        <include refid="user"/>
+        WHERE mobile_phone = #{param1}
+    </select>
+
+</mapper>

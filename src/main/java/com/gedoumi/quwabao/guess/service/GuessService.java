@@ -7,7 +7,7 @@ import com.gedoumi.quwabao.guess.entity.Guess;
 import com.gedoumi.quwabao.guess.entity.GuessDetail;
 import com.gedoumi.quwabao.guess.vo.GuessNotityVO;
 import com.gedoumi.quwabao.guess.websocket.GuessWebSocketHandler;
-import com.gedoumi.quwabao.util.JsonUtil;
+import com.gedoumi.quwabao.common.utils.JsonUtil;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

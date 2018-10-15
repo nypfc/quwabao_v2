@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.guess.controller;
 
-import com.gedoumi.quwabao.common.Constants;
+import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.base.ResponseObject;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.GuessDetailStatusEnum;
@@ -16,8 +16,7 @@ import com.gedoumi.quwabao.guess.service.GuessBetService;
 import com.gedoumi.quwabao.guess.service.GuessDetailService;
 import com.gedoumi.quwabao.guess.service.GuessService;
 import com.gedoumi.quwabao.guess.vo.*;
-import com.gedoumi.quwabao.user.dataobj.entity.User;
-import com.gedoumi.quwabao.util.SessionUtil;
+import com.gedoumi.quwabao.common.utils.SessionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,7 +52,7 @@ public class GuessController {
 
     /**
      * 获取三总玩法的竞猜赔率
-     * @return ResponseObject
+     * @return ErrorResponseObject
      */
     @PostMapping("/odds")
     public ResponseObject odds() {
@@ -110,7 +109,7 @@ public class GuessController {
 
     /**
      * 用户下注列表
-     * @return ResponseObject
+     * @return ErrorResponseObject
      */
     @PostMapping("/mylist")
     public ResponseObject userBetList() {
@@ -142,7 +141,7 @@ public class GuessController {
 
     /**
      * 历史记录列表
-     * @return ResponseObject
+     * @return ErrorResponseObject
      */
     @PostMapping("/history")
     public ResponseObject guessHistory(@RequestBody HistoryForm historyForm) {
@@ -169,7 +168,7 @@ public class GuessController {
     /**
      * 用户下注
      * @param betForm 下注参数
-     * @return ResponseObject
+     * @return ErrorResponseObject
      */
     @Transactional
     @PostMapping("/bet")

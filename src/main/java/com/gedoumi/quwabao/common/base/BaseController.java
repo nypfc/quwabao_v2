@@ -1,7 +1,6 @@
 package com.gedoumi.quwabao.common.base;
 
-import com.gedoumi.quwabao.common.config.MsgConfig;
-import com.gedoumi.quwabao.util.JsonUtil;
+import com.gedoumi.quwabao.common.utils.JsonUtil;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;

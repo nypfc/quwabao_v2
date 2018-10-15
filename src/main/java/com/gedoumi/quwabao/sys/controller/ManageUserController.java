@@ -5,7 +5,6 @@ import com.gedoumi.quwabao.common.base.DataGrid;
 import com.gedoumi.quwabao.common.base.PageParam;
 import com.gedoumi.quwabao.common.base.ResponseObject;
 import com.gedoumi.quwabao.common.enums.UserValidateStatus;
-import com.gedoumi.quwabao.user.dataobj.entity.User;
 import com.gedoumi.quwabao.user.service.UserService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;

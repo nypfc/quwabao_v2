@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.sys.controller;
 
-import com.gedoumi.quwabao.common.Constants;
+import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.base.DataGrid;
 import com.gedoumi.quwabao.common.base.PageParam;
 import com.gedoumi.quwabao.common.base.TreeJson;

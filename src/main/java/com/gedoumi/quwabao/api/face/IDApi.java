@@ -2,8 +2,8 @@ package com.gedoumi.quwabao.api.face;
 
 import com.gedoumi.quwabao.api.face.vo.FaceVO;
 import com.gedoumi.quwabao.common.utils.HttpClientUtils;
-import com.gedoumi.quwabao.util.JsonUtil;
-import com.gedoumi.quwabao.util.PropertiesUtils;
+import com.gedoumi.quwabao.common.utils.JsonUtil;
+import com.gedoumi.quwabao.common.utils.PropertiesUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

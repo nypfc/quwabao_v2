@@ -1,7 +1,7 @@
 package com.gedoumi.quwabao.sys.entity;
 
 
-import com.gedoumi.quwabao.common.Constants;
+import com.gedoumi.quwabao.common.constants.Constants;
 
 import javax.persistence.*;
 import java.io.Serializable;

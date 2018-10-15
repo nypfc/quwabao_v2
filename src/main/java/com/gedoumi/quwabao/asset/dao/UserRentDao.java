@@ -1,7 +1,6 @@
 package com.gedoumi.quwabao.asset.dao;
 
 import com.gedoumi.quwabao.asset.entity.UserRent;
-import com.gedoumi.quwabao.user.dataobj.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

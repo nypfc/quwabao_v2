@@ -1,54 +1,40 @@
 package com.gedoumi.quwabao.common.base;
 
 import com.gedoumi.quwabao.common.enums.CodeEnum;
+import lombok.Data;
 
-import java.io.Serializable;
+@Data
+public class ResponseObject<T> {
 
-public class ResponseObject implements Serializable {
-
-
-    private static final long serialVersionUID = -3012757815222534900L;
-
-    private Object data;
-
+    /**
+     * 状态码
+     */
     private String code;
 
+    /**
+     * 信息
+     */
     private String message;
 
-    public Object getData() {
-        return data;
-    }
+    /**
+     * 返回数据
+     */
+    private T data;
 
-    public void setData(Object data) {
-        this.data = data;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public void setSuccess(){
+    public ResponseObject() {
         this.setCode(CodeEnum.Success.getCode());
         this.setMessage(CodeEnum.Success.getMessage());
     }
 
-    public void setInfo(CodeEnum codeEnum){
-        if(codeEnum != null){
-            this.setCode(codeEnum.getCode());
-            this.setMessage(codeEnum.getMessage());
-        }
-
+    public ResponseObject(T data) {
+        this.setCode(CodeEnum.Success.getCode());
+        this.setMessage(CodeEnum.Success.getMessage());
+        this.setData(data);
     }
+
+    public ResponseObject(CodeEnum codeEnum) {
+        this.setCode(codeEnum.getCode());
+        this.setMessage(codeEnum.getMessage());
+    }
+
 }

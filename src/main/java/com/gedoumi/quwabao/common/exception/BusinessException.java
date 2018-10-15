@@ -2,7 +2,7 @@ package com.gedoumi.quwabao.common.exception;
 
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 
-public class BusinessException extends Exception {
+public class BusinessException extends RuntimeException {
 
     private CodeEnum codeEnum;
 

@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.api.gateway.vo;
 
-import com.gedoumi.quwabao.util.AesCBC;
+import com.gedoumi.quwabao.common.utils.AesCBC;
 
 import java.io.Serializable;
 

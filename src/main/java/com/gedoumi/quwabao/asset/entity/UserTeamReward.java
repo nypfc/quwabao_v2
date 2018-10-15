@@ -1,7 +1,6 @@
 package com.gedoumi.quwabao.asset.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.gedoumi.quwabao.user.dataobj.entity.User;
 
 import javax.persistence.*;
 import java.io.Serializable;

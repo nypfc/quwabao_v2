@@ -2,7 +2,6 @@ package com.gedoumi.quwabao.asset.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gedoumi.quwabao.asset.entity.UserRent;
-import com.gedoumi.quwabao.user.dataobj.entity.User;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

@@ -6,8 +6,7 @@ import com.gedoumi.quwabao.asset.vo.UserTeamVO;
 import com.gedoumi.quwabao.common.base.DataGrid;
 import com.gedoumi.quwabao.common.base.PageParam;
 import com.gedoumi.quwabao.common.enums.TeamStatus;
-import com.gedoumi.quwabao.user.dao.UserDao;
-import com.gedoumi.quwabao.user.dataobj.entity.User;
+import com.gedoumi.quwabao.user.mapper.UserMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +38,7 @@ public class UserTeamService {
 	private UserTeamDao userTeamDao;
 
 	@Resource
-	private UserDao userDao;
+	private UserMapper userMapper;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -57,10 +56,10 @@ public class UserTeamService {
 	@Transactional
 	public void updateUserTeam(UserTeam userTeam, int userType){
 		userTeamDao.save(userTeam);
-		User orgUser = userDao.findById(userTeam.getUser().getId()).get();
+		User orgUser = userMapper.findById(userTeam.getUser().getId()).get();
 		orgUser.setUpdateTime(new Date());
 		orgUser.setUserType(userType);
-		userDao.save(orgUser);
+		userMapper.save(orgUser);
 	}
 
 

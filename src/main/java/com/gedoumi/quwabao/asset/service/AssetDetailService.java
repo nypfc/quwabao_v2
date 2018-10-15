@@ -9,8 +9,7 @@ import com.gedoumi.quwabao.common.base.PageParam;
 import com.gedoumi.quwabao.common.enums.DetailType;
 import com.gedoumi.quwabao.common.enums.TransType;
 import com.gedoumi.quwabao.common.enums.VersionType;
-import com.gedoumi.quwabao.user.dao.UserDao;
-import com.gedoumi.quwabao.user.dataobj.entity.User;
+import com.gedoumi.quwabao.user.mapper.UserMapper;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,7 @@ public class AssetDetailService {
 	Logger logger = LoggerFactory.getLogger(AssetDetailService.class);
 
 	@Resource
-	private UserDao userDao;
+	private UserMapper userMapper;
 
 	@Resource
 	private UserAssetDetailDao userAssetDetailDao;

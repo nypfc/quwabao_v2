@@ -6,21 +6,20 @@ import com.gedoumi.quwabao.asset.vo.InitBaseAssetVO;
 import com.gedoumi.quwabao.asset.vo.TeamRentVO;
 import com.gedoumi.quwabao.asset.vo.TransferVO;
 import com.gedoumi.quwabao.common.AppConfig;
-import com.gedoumi.quwabao.common.Constants;
+import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.enums.*;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.PfcDateUtils;
 import com.gedoumi.quwabao.sys.dao.SysRentDao;
 import com.gedoumi.quwabao.sys.entity.SysRent;
 import com.gedoumi.quwabao.sys.entity.SysUser;
-import com.gedoumi.quwabao.user.dao.UserDao;
-import com.gedoumi.quwabao.user.dao.UserTreeDao;
-import com.gedoumi.quwabao.user.dataobj.entity.User;
-import com.gedoumi.quwabao.user.dataobj.entity.UserTree;
-import com.gedoumi.quwabao.util.CipherUtils;
-import com.gedoumi.quwabao.util.MD5EncryptUtil;
-import com.gedoumi.quwabao.util.NumberUtil;
-import com.gedoumi.quwabao.util.SessionUtil;
+import com.gedoumi.quwabao.user.mapper.UserMapper;
+import com.gedoumi.quwabao.user.mapper.UserTreeDao;
+import com.gedoumi.quwabao.team.dataobj.model.UserTree;
+import com.gedoumi.quwabao.common.utils.CipherUtils;
+import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
+import com.gedoumi.quwabao.common.utils.NumberUtil;
+import com.gedoumi.quwabao.common.utils.SessionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -73,7 +72,7 @@ public class UserAssetService {
 	private UserTeamRewardDao userTeamRewardDao;
 
 	@Resource
-	private UserDao userDao;
+	private UserMapper userMapper;
 
 	@Resource
 	private SysRentDao sysRentDao;
@@ -502,7 +501,7 @@ public class UserAssetService {
 	public void addUserTeam(UserTeam userTeam) throws BusinessException {
 		User user = userTeam.getUser();
 		Date now = new Date();
-		User orgUser = userDao.findByMobilePhone(user.getMobilePhone());
+		User orgUser = userMapper.findByMobilePhone(user.getMobilePhone());
 		if(orgUser != null){
 			UserTeam orgUserTeam = userTeamDao.findByUser(orgUser);
 			if(orgUserTeam != null){
@@ -531,18 +530,18 @@ public class UserAssetService {
 			user.setInviteCode(CipherUtils.generateCode());
 //			user.setUserType(UserType.Level_Team.getValue());
 			while (true){
-				orgUser = userDao.findByInviteCode(user.getInviteCode());
+				orgUser = userMapper.findByInviteCode(user.getInviteCode());
 				if(orgUser == null){
 					break;
 				}
 				user.setInviteCode(CipherUtils.generateCode());
 			}
-			userDao.save(user);
+			userMapper.save(user);
 			int length = String.valueOf(user.getId()).length();
 			length = length > 4 ? length : 4;
 			String format = "%0" + length + "d";
 			user.setUsername(User.PREFIX+NumberUtil.randomInt(0,999)+String.format(format,user.getId()));
-			userDao.save(user);
+			userMapper.save(user);
 
 			//update asset detail
 			UserAssetDetail assetDetail = new UserAssetDetail();
@@ -855,8 +854,8 @@ public class UserAssetService {
 
 	@Transactional(rollbackFor = Exception.class)
 	public void transfer(TransferVO transferVO) throws BusinessException {
-		User from = userDao.findByMobilePhone(transferVO.getFromMobile());
-		User to = userDao.findByMobilePhone(transferVO.getToMobile());
+		User from = userMapper.findByMobilePhone(transferVO.getFromMobile());
+		User to = userMapper.findByMobilePhone(transferVO.getToMobile());
 
 		String salt = MD5EncryptUtil.md5Encrypy(transferVO.getFromMobile());
 		String pswd = MD5EncryptUtil.md5Encrypy(transferVO.getPassword(), salt);

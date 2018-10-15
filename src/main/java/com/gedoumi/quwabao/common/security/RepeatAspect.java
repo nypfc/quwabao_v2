@@ -1,11 +1,10 @@
 package com.gedoumi.quwabao.common.security;
 
 import com.gedoumi.quwabao.common.AppConfig;
-import com.gedoumi.quwabao.common.Constants;
+import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.base.ResponseObject;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
-import com.gedoumi.quwabao.user.dataobj.entity.User;
-import com.gedoumi.quwabao.util.SessionUtil;
+import com.gedoumi.quwabao.common.utils.SessionUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
