@@ -33,5 +33,6 @@ public interface Constants {
     int SMS_DAY_COUNT = 10;
     String DEVICE_ID = "deviceId";
     String AUTH_TOKEN = "auth-token";
+    String USER_PREFIX = "挖宝客";
 
 }

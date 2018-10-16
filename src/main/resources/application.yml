@@ -16,14 +16,15 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
   redis:  # Redis配置
-    database: 0
     host: 192.168.12.235
     port: 9999
     password: redis
     jedis:
       pool:
-        max-idle: 300
+        min-idle: 10
+        max-idle: 100
         max-wait: 1000
+        max-active: 20
 
 mybatis:  # MyBatis配置
   type-aliases-package: com.gedoumi.quwabao  # 别名包

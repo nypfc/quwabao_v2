@@ -11,23 +11,17 @@ public class MainPathController {
 
 	@RequestMapping("index")
 	public ResponseObject index(){
-		ResponseObject responseObject = new ResponseObject();
-		responseObject.setInfo(CodeEnum.UnLogin);
-		return responseObject;
+		return new ResponseObject(CodeEnum.UnLogin);
 	}
 
 	@RequestMapping("deviceError")
 	public ResponseObject deviceError(){
-		ResponseObject responseObject = new ResponseObject();
-		responseObject.setInfo(CodeEnum.DeviceError);
-		return responseObject;
+		return new ResponseObject(CodeEnum.DeviceError);
 	}
 
 	@RequestMapping("validateError")
 	public ResponseObject validateError(){
-		ResponseObject responseObject = new ResponseObject();
-		responseObject.setInfo(CodeEnum.ValidateError);
-		return responseObject;
+		return new ResponseObject(CodeEnum.ValidateError);
 	}
 
 	@RequestMapping("admin/main")

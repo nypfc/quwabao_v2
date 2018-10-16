@@ -23,6 +23,8 @@ import static com.gedoumi.quwabao.common.constants.Constants.*;
 public class ApiInterceptor implements HandlerInterceptor {
 
     @Resource
+    private RedisCache redisCache;
+    @Resource
     private UserService userService;
 
     @Override
@@ -35,13 +37,17 @@ public class ApiInterceptor implements HandlerInterceptor {
         log.debug("in preHandler authToken: {}", authToken);
         // 判断令牌有效性
         if (StringUtils.isEmpty(authToken)) throw new BusinessException(CodeEnum.FailedToGetToken);
-        User user = userService.getByToken(authToken);
+        User user = (User) redisCache.getKeyValueData(authToken);
+        // 如果未能从缓存中获取到用户，则从数据库中获取用户
+        if (user == null) user = userService.getByToken(authToken);
         // 判断重复登录
         if (!StringUtils.equals(deviceId, user.getDeviceId())) {
             log.error("{}用户已经在其他设备上登录", user.getMobilePhone());
             throw new BusinessException(CodeEnum.RepeatLogin);
         }
-        // 向Request作用域设置用户数据
+        // 存入Redis缓存
+        redisCache.setKeyValueData(authToken, user);
+        // 用户存入Request作用域
         request.setAttribute(API_USER_KEY, user);
         return true;
     }

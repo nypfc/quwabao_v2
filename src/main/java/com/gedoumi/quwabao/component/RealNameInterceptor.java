@@ -4,6 +4,7 @@ import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.UserValidateStatus;
 import com.gedoumi.quwabao.common.exception.BusinessException;
+import com.gedoumi.quwabao.user.dataobj.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
 

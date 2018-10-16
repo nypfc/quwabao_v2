@@ -88,7 +88,7 @@ public class User {
     private String deviceId;
 
     /**
-     *
+     * 邀请人的邀请码
      */
     private String regInviteCode;
 

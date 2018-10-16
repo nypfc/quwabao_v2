@@ -1,10 +1,6 @@
 package com.gedoumi.quwabao.user.dataobj.vo;
 
-import java.io.Serializable;
-
-public class ValidateUserVO implements Serializable {
-
-    private static final long serialVersionUID = 1532891081016449848L;
+public class ValidateUserVO {
 
     private String realName;
 

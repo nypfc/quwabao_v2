@@ -1,34 +1,32 @@
 package com.gedoumi.quwabao.sys.service;
 
-import com.gedoumi.quwabao.sys.dao.SysLogDao;
-import com.gedoumi.quwabao.sys.entity.SysLog;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.gedoumi.quwabao.sys.dataobj.model.SysLog;
+import com.gedoumi.quwabao.sys.mapper.SysLogMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+
 
 /**
- * 
- * 类名：
- * 功能：
+ * 网关日志Service
  *
+ * @author Minced
  */
 @Service
 public class SysLogService {
-	
-	@Autowired
-	private SysLogDao logDao;
 
-	@Transactional
-	public void add(SysLog sysLog){
-		logDao.save(sysLog);
-	}
+    @Resource
+    private SysLogMapper sysLogMapper;
 
-	@Transactional
-	public void update(SysLog sysLog){
-		logDao.save(sysLog);
-	}
-
-
+    /**
+     * 创建网关日志
+     *
+     * @param sysLog 日志对象
+     */
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
+    public void createSysLog(SysLog sysLog) {
+        sysLogMapper.createSysLog(sysLog);
+    }
 
 }

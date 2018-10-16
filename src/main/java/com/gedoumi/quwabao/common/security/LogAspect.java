@@ -4,25 +4,25 @@ import com.gedoumi.quwabao.api.gateway.ApiResponse;
 import com.gedoumi.quwabao.api.gateway.vo.RechargeVO;
 import com.gedoumi.quwabao.common.enums.LogType;
 import com.gedoumi.quwabao.common.enums.SysLogStatus;
-import com.gedoumi.quwabao.sys.entity.SysLog;
-import com.gedoumi.quwabao.sys.service.SysLogService;
 import com.gedoumi.quwabao.common.utils.JsonUtil;
-import com.gedoumi.quwabao.common.utils.SessionUtil;
+import com.gedoumi.quwabao.common.utils.ContextUtil;
+import com.gedoumi.quwabao.sys.dataobj.model.SysLog;
+import com.gedoumi.quwabao.sys.service.SysLogService;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Date;
 
+@Slf4j
 @Aspect
 @Component
 public class LogAspect {
-    static Logger logger = LoggerFactory.getLogger(LogAspect.class);
+
     @Resource
     private SysLogService logService;
 
@@ -34,15 +34,15 @@ public class LogAspect {
 
 //    @Before(value = "myPointcut()")
     public void before(JoinPoint joinPoint){
-        logger.info(" in before ");
+        log.info(" in before ");
         Object[] args = joinPoint.getArgs();
         SysLog sysLog = new SysLog();
         Date now = new Date();
-        sysLog.setClientIp(SessionUtil.getClientIp());
+        sysLog.setClientIp(ContextUtil.getClientIp());
         sysLog.setCreateTime(now);
         sysLog.setUpdateTime(now);
         sysLog.setLogType(LogType.Recharge.getValue());
-        sysLog.setRequestUrl(SessionUtil.getRequest().getRequestURI());
+        sysLog.setRequestUrl(ContextUtil.getRequest().getRequestURI());
         sysLog.setRequestBody(JsonUtil.objectToJson(args));
         if(args[0] instanceof RechargeVO){
             RechargeVO rechargeVO = (RechargeVO)args[0];
@@ -51,20 +51,20 @@ public class LogAspect {
         }
 
         sysLog.setLogStatus(SysLogStatus.Init.getValue());
-        logService.add(sysLog);
+        logService.createSysLog(sysLog);
     }
 
     @AfterReturning(value = "myPointcut()", returning = "apiResponse")
     public void afterRunning(JoinPoint joinPoint, ApiResponse apiResponse){
-        logger.info(" in afterRunning apiResponse = {}", JsonUtil.objectToJson(apiResponse));
+        log.info(" in afterRunning apiResponse = {}", JsonUtil.objectToJson(apiResponse));
         Object[] args = joinPoint.getArgs();
         SysLog sysLog = new SysLog();
         Date now = new Date();
-        sysLog.setClientIp(SessionUtil.getClientIp());
+        sysLog.setClientIp(ContextUtil.getClientIp());
         sysLog.setCreateTime(now);
         sysLog.setUpdateTime(now);
         sysLog.setLogType(LogType.Recharge.getValue());
-        sysLog.setRequestUrl(SessionUtil.getRequest().getRequestURI());
+        sysLog.setRequestUrl(ContextUtil.getRequest().getRequestURI());
         sysLog.setRequestBody(JsonUtil.objectToJson(args));
         if(args[0] instanceof RechargeVO){
             RechargeVO rechargeVO = (RechargeVO)args[0];
@@ -77,6 +77,6 @@ public class LogAspect {
             sysLog.setLogStatus(SysLogStatus.Fail.getValue());
         }
 
-        logService.add(sysLog);
+        logService.createSysLog(sysLog);
     }
 }
