@@ -8,9 +8,9 @@ import com.gedoumi.quwabao.common.base.LoginToken;
 import com.gedoumi.quwabao.common.base.ResponseObject;
 import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.enums.*;
+import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
-import com.gedoumi.quwabao.common.utils.SmsUtil;
 import com.gedoumi.quwabao.common.validate.MobilePhone;
 import com.gedoumi.quwabao.sys.dataobj.model.SysLog;
 import com.gedoumi.quwabao.sys.dataobj.model.SysSms;
@@ -27,6 +27,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.UUID;
@@ -48,66 +49,37 @@ public class UserController {
     @Resource
     private SysLogService logService;
 
+    /**
+     * 获取用户数据
+     *
+     * @param mobile 手机号
+     * @return ResponseObject
+     */
     @GetMapping("/getUser")
     public ResponseObject getUser(@NotBlank @MobilePhone String mobile) {
-        ResponseObject responseObject = new ResponseObject();
         User user = userService.getByMobilePhone(mobile);
-        if (user != null) {
-            responseObject.setData(user);
-        }
-        responseObject.setSuccess();
-        return responseObject;
+        // TODO 使用VO代替
+        return new ResponseObject<>(user);
     }
 
+    /**
+     * 获取重置密码用的短信验证码
+     *
+     * @param mobile 手机号
+     * @param vcode  验证码
+     * @return ResponseObject
+     */
     @GetMapping("/getRpSmsCode")
     public ResponseObject getRpSmsCode(@NotBlank @MobilePhone String mobile, @NotBlank String vcode) {
-        ResponseObject responseObject = new ResponseObject();
-
-        Object obj = ContextUtil.getSession().getAttribute(Constants.V_CODE_KEY);
-        if (obj == null) {
-            responseObject.setInfo(CodeEnum.ValidateCodeError);
-            return responseObject;
-        }
-        String validateCode = obj.toString();
-        if (!StringUtils.equals(validateCode, vcode)) {
-            responseObject.setInfo(CodeEnum.ValidateCodeError);
-            return responseObject;
-        }
-
-        User user = userService.getByMobilePhone(mobile);
-
-        if (user == null) {
-            responseObject.setInfo(CodeEnum.MobileError);
-            return responseObject;
-        }
-
-        int smsCount = smsService.getCurrentDayCount(mobile);
-        if (smsCount >= Constants.SMS_DAY_COUNT) {
-            responseObject.setInfo(CodeEnum.SmsCountError);
-            return responseObject;
-        }
-
-        String smsCode = SmsUtil.generateCode();
-        try {
-            SmsUtil.sendReg(mobile, smsCode);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            responseObject.setInfo(CodeEnum.SysError);
-            return responseObject;
-        }
-        SysSms sms = new SysSms();
-        sms.setCode(smsCode);
-        sms.setSmsStatus(SmsStatus.Enable.getValue());
-        sms.setSmsType(SmsType.ResetPswd.getValue());
-        sms.setMobilePhone(mobile);
-        Date now = new Date();
-        sms.setCreateTime(now);
-        sms.setUpdateTime(now);
-        smsService.add(sms);
-        responseObject.setSuccess();
-        return responseObject;
+        return new ResponseObject<>(userService.getRpSmsCode(mobile, vcode));
     }
 
+    /**
+     * 重置密码
+     *
+     * @param registerForm
+     * @return ResponseObject
+     */
     @PutMapping("/resetPswd")
     public ResponseObject resetPswd(@RequestBody RegisterForm registerForm) {
         ResponseObject responseObject = new ResponseObject();
@@ -139,8 +111,7 @@ public class UserController {
             return responseObject;
         }
 
-        String salt = MD5EncryptUtil.md5Encrypy(mobile);
-        user.setPassword(MD5EncryptUtil.md5Encrypy(registerForm.getPassword(), salt));
+        user.setPassword(MD5EncryptUtil.md5Encrypy(registerForm.getPassword(), MD5EncryptUtil.md5Encrypy(mobile)));
         Date now = new Date();
         user.setUpdateTime(now);
         user.setLastLoginTime(now);
@@ -157,7 +128,7 @@ public class UserController {
         return responseObject;
     }
 
-    @RequestMapping("/updatePswd")
+    @PutMapping("/updatePswd")
     public ResponseObject updatePswd(@RequestBody PswdVO pswdVO) {
 
         ResponseObject responseObject = new ResponseObject();
@@ -182,7 +153,7 @@ public class UserController {
         return responseObject;
     }
 
-    @RequestMapping("/updateUsername")
+    @PutMapping("/updateUsername")
     public ResponseObject updateUsername(@RequestBody BindRegVO bindRegVO) {
         ResponseObject responseObject = new ResponseObject();
         User user = (User) ContextUtil.getSession().getAttribute(Constants.API_USER_KEY);
@@ -207,28 +178,27 @@ public class UserController {
         return responseObject;
     }
 
-    @RequestMapping(value = "/valUser")
-    public ResponseObject validateUser(@RequestBody ValidateUserVO validateUserVO) {
+    /**
+     * 实名认证
+     *
+     * @param validateUserVO 实名认证表单
+     * @return ResponseObject
+     */
+    @PostMapping("/valUser")  // TODO 参数验证
+    public ResponseObject validateUser(@RequestBody @Valid ValidateUserVO validateUserVO) {
         log.info("in valUser ");
-        ResponseObject responseObject = new ResponseObject();
-        if (
-                StringUtils.isEmpty(validateUserVO.getIdCard()) ||
-                        StringUtils.isEmpty(validateUserVO.getRealName())) {
-            responseObject.setInfo(CodeEnum.ValidateIdParamError);
-            return responseObject;
-        }
 
         Date now = new Date();
-        User user = (User) ContextUtil.getSession().getAttribute(Constants.API_USER_KEY);
+        User user = ContextUtil.getUserFromRequest();
         if (user.getValidateStatus() != null && user.getValidateStatus() == UserValidateStatus.Pass.getValue()) {
-            responseObject.setInfo(CodeEnum.ValidateAlready);
-            return responseObject;
+            log.error("用户:{}已经经过实名认证", user.getMobilePhone());
+            throw new BusinessException(CodeEnum.ValidateAlready);
         }
 
         User orgUser = userService.getByIdCard(validateUserVO.getIdCard());
         if (orgUser != null && !orgUser.getId().equals(user.getId())) {
-            responseObject.setInfo(CodeEnum.ValidateIdCardAlready);
-            return responseObject;
+            log.error("身份证号:{}已被使用", validateUserVO.getIdCard());
+            throw new BusinessException(CodeEnum.ValidateIdCardAlready);
         }
 
         validateUserVO.setUserId(user.getId());
@@ -250,25 +220,26 @@ public class UserController {
         sysLog.setLogStatus(SysLogStatus.Fail.getValue());
         sysLog.setClientIp(ContextUtil.getClientIp());
         logService.add(sysLog);
+
+        boolean result;
         try {
             idApiResponse = IDApi.testID(faceVO);
         } catch (Exception e) {
             log.error("call face api error", e);
-            responseObject.setData(false);
+            result = false;
         }
         userService.validateUser(validateUserVO, idApiResponse);
         if (idApiResponse.isSucess()) {
             sysLog.setLogStatus(SysLogStatus.Success.getValue());
             logService.update(sysLog);
-            responseObject.setData(true);
+            result = true;
         } else {
-            responseObject.setData(false);
+            result = false;
         }
 
         User valUser = userService.getByMobilePhone(user.getMobilePhone());
         ContextUtil.getSession().setAttribute(Constants.API_USER_KEY, valUser);
-        responseObject.setSuccess();
-        return responseObject;
+        return new ResponseObject<>(result);
     }
 
 }

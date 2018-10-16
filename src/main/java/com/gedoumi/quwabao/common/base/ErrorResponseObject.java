@@ -1,5 +1,6 @@
 package com.gedoumi.quwabao.common.base;
 
+import com.gedoumi.quwabao.common.enums.CodeEnum;
 import lombok.Data;
 
 /**
@@ -20,17 +21,14 @@ public class ErrorResponseObject {
      */
     private String message;
 
-    /**
-     * 创建失败响应数据
-     *
-     * @param message 错误信息
-     * @return 响应数据对象
-     */
-    public static ErrorResponseObject setErrorResponse(String message) {
-        ErrorResponseObject responseObject = new ErrorResponseObject();
-        responseObject.setCode("0001");
-        responseObject.setMessage(message);
-        return responseObject;
+    public ErrorResponseObject(String message) {
+        this.code = "0001";
+        this.message = message;
+    }
+
+    public ErrorResponseObject(CodeEnum codeEnum) {
+        this.code = codeEnum.getCode();
+        this.message = codeEnum.getMessage();
     }
 
 }

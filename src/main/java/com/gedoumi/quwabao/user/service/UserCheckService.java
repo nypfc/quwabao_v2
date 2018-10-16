@@ -1,11 +1,12 @@
 package com.gedoumi.quwabao.user.service;
 
 import com.gedoumi.quwabao.common.utils.CipherUtils;
+import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.user.mapper.UserCheckMapper;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 用户验证Service
@@ -19,7 +20,7 @@ public class UserCheckService {
     private UserCheckMapper userCheckMapper;
 
     @Resource
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisCache redisCache;
 
     /**
      * 查询手机号是否被使用
@@ -59,7 +60,8 @@ public class UserCheckService {
      */
     public String generateValidateCode(String mobile) {
         String validateCode = CipherUtils.generateValidateCode();
-        redisTemplate.opsForValue().set("reg:" + mobile, validateCode);
+        // 设置2分钟失效的验证码
+        redisCache.setExpireKeyValueData("reg:" + mobile, validateCode, 2L, TimeUnit.MINUTES);
         return validateCode;
     }
 

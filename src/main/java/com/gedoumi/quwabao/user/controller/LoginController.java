@@ -3,7 +3,6 @@ package com.gedoumi.quwabao.user.controller;
 import com.gedoumi.quwabao.common.base.ResponseObject;
 import com.gedoumi.quwabao.user.dataobj.form.LoginForm;
 import com.gedoumi.quwabao.user.service.LoginService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +14,6 @@ import javax.validation.Valid;
  *
  * @author Minced
  */
-@Slf4j
 @Validated
 @RestController
 @RequestMapping("/v2/login")

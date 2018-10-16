@@ -1,12 +1,12 @@
 package com.gedoumi.quwabao.user.service;
 
 import com.gedoumi.quwabao.api.face.IDApiResponse;
-import com.gedoumi.quwabao.common.enums.CodeEnum;
-import com.gedoumi.quwabao.common.enums.UserStatus;
-import com.gedoumi.quwabao.common.enums.UserType;
-import com.gedoumi.quwabao.common.enums.UserValidateStatus;
+import com.gedoumi.quwabao.common.constants.Constants;
+import com.gedoumi.quwabao.common.enums.*;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.*;
+import com.gedoumi.quwabao.component.RedisCache;
+import com.gedoumi.quwabao.sys.service.SysSmsService;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import com.gedoumi.quwabao.user.dataobj.model.UserImage;
 import com.gedoumi.quwabao.user.dataobj.vo.ValidateUserVO;
@@ -41,6 +41,11 @@ public class UserService {
 
     @Resource
     private UserCheckService userCheckService;
+    @Resource
+    private SysSmsService sysSmsService;
+
+    @Resource
+    private RedisCache redisCache;
 
     /**
      * 根据令牌获取用户
@@ -147,6 +152,42 @@ public class UserService {
      */
     Long getParentUserId(String inviteCode) {
         return userMapper.queryUserIdByInviteCode(inviteCode);
+    }
+
+    /**
+     * 获取重置密码用的短信验证码
+     *
+     * @param mobile 手机号
+     * @param vCode  验证码
+     * @return 验证码
+     */
+    public String getRpSmsCode(String mobile, String vCode) {
+        // 手机号验证
+        if (!userCheckService.checkMobilePhone(mobile)) {
+            log.error("手机号:{}不存在", mobile);
+            throw new BusinessException(CodeEnum.MobileError);
+        }
+        // 验证码验证
+        String cacheValidateCode = (String) redisCache.getKeyValueData("vCode:" + mobile);
+        if (cacheValidateCode == null) {
+            log.error("未获取到缓存验证码，cacheValidateCode:null");
+            throw new BusinessException(CodeEnum.ValidateCodeExpire);
+        }
+        if (!StringUtils.equals(cacheValidateCode, vCode.toUpperCase())) {
+            log.error("缓存的验证码:{}与参数验证码:{}不匹配", cacheValidateCode, vCode);
+            throw new BusinessException(CodeEnum.ValidateCodeError);
+        }
+        // 当日短信上限验证
+        if (sysSmsService.smsCurrentDayCount(mobile) >= Constants.SMS_DAY_COUNT) {
+            log.error("手机号:{}当日验证码数量已达上限", mobile);
+            throw new BusinessException(CodeEnum.SmsCountError);
+        }
+        // 发送短信
+        String smsCode = SmsUtil.generateCode();
+        SmsUtil.sendReg(mobile, smsCode);
+        // 创建短信信息
+        sysSmsService.createSysSms(mobile, smsCode, SmsType.ResetPswd.getValue());
+        return smsCode;
     }
 
     /**

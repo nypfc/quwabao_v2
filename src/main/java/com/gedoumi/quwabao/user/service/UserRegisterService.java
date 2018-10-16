@@ -58,7 +58,7 @@ public class UserRegisterService {
             throw new BusinessException(CodeEnum.MobileExist);
         }
         // 验证码验证
-        String cacheValidateCode = (String) redisCache.getKeyValueData("reg:" + mobile);
+        String cacheValidateCode = (String) redisCache.getKeyValueData("vCode:" + mobile);
         if (cacheValidateCode == null) {
             log.error("未获取到缓存验证码，cacheValidateCode:null");
             throw new BusinessException(CodeEnum.ValidateCodeExpire);

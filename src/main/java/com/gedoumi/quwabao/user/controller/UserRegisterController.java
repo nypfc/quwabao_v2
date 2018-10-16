@@ -5,7 +5,6 @@ import com.gedoumi.quwabao.common.validate.MobilePhone;
 import com.gedoumi.quwabao.user.dataobj.form.RegisterForm;
 import com.gedoumi.quwabao.user.service.UserCheckService;
 import com.gedoumi.quwabao.user.service.UserRegisterService;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,6 @@ import javax.validation.constraints.NotBlank;
  *
  * @author Minced
  */
-@Slf4j
 @Validated
 @RequestMapping("/v2/login")
 @RestController
