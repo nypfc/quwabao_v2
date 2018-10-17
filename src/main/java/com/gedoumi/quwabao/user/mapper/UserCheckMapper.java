@@ -1,10 +1,13 @@
 package com.gedoumi.quwabao.user.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
+
 /**
  * 用户验证Mapper
  *
  * @author Minced
  */
+@Mapper
 public interface UserCheckMapper {
 
     /**
