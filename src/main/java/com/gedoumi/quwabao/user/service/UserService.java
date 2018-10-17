@@ -9,7 +9,6 @@ import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.sys.service.SysSmsService;
 import com.gedoumi.quwabao.user.dataobj.form.ResetPswdForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
-import com.gedoumi.quwabao.user.mapper.UserImageMapper;
 import com.gedoumi.quwabao.user.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -35,8 +34,6 @@ public class UserService {
 
     @Resource
     private UserMapper userMapper;
-    @Resource
-    private UserImageMapper userImageMapper;
 
     @Resource
     private UserCheckService userCheckService;
