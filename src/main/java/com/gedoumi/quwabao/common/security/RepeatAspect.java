@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.common.security;
 
-import com.gedoumi.quwabao.common.AppConfig;
+import com.gedoumi.quwabao.common.config.AppConfig;
 import com.gedoumi.quwabao.common.base.ResponseObject;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.utils.ContextUtil;

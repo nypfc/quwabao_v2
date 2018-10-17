@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.common;
+package com.gedoumi.quwabao.common.config;
 
 import com.gedoumi.quwabao.common.enums.VersionType;
 import org.apache.commons.lang3.StringUtils;
@@ -34,7 +34,6 @@ public class AppConfig {
     }
 
     public VersionType getVersion(){
-//        return VersionType.WithReharge;
         VersionType defaultType = VersionType.WithReharge;
         Object obj = getConfigContext().get("pfc_version");
         if(obj == null){
