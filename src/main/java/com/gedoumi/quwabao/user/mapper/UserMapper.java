@@ -71,6 +71,16 @@ public interface UserMapper {
     void updateLogoutInfo(Long userId, String token);
 
     /**
+     * 更新密码
+     *
+     * @param userId      用户ID
+     * @param password    密码
+     * @param token       令牌
+     * @param lastLoginIp 最后登录IP
+     */
+    void resetPassword(Long userId, String password, String token, String lastLoginIp);
+
+    /**
      * 根据身份证号查询
      *
      * @param idCard 身份证号

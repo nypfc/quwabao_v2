@@ -1,15 +1,14 @@
 package com.gedoumi.quwabao.user.service;
 
-import com.gedoumi.quwabao.api.face.IDApiResponse;
+import com.gedoumi.quwabao.common.base.LoginToken;
 import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.enums.*;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.*;
 import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.sys.service.SysSmsService;
+import com.gedoumi.quwabao.user.dataobj.form.ResetPswdForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
-import com.gedoumi.quwabao.user.dataobj.model.UserImage;
-import com.gedoumi.quwabao.user.dataobj.vo.ValidateUserVO;
 import com.gedoumi.quwabao.user.mapper.UserImageMapper;
 import com.gedoumi.quwabao.user.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -191,50 +190,51 @@ public class UserService {
     }
 
     /**
-     * 用户验证
+     * 重置密码
      *
-     * @param validateUserVO
-     * @param faceApiResponse
+     * @param resetPswdForm 重置密码表单
+     * @return 令牌对象
      */
-    @Transactional
-    public void validateUser(ValidateUserVO validateUserVO, IDApiResponse faceApiResponse) {
-        if (faceApiResponse != null)
-            log.info("validateUser faceApiResponse = {}", JsonUtil.objectToJson(faceApiResponse));
-        Date now = new Date();
-        Long userId = validateUserVO.getUserId();
-        UserImage orgUserImage = userImageMapper.findByUserId(userId);
-        if (orgUserImage != null) {
-            orgUserImage.setUserImage(StringUtils.EMPTY);
-            orgUserImage.setUpdateTime(now);
-            orgUserImage.setMessage(faceApiResponse.getData().getMessage());
-            orgUserImage.setValidateCode(faceApiResponse.getData().getCode());
-            userImageMapper.save(orgUserImage);
-        } else {
-            UserImage userImage = new UserImage();
-            userImage.setUserId(validateUserVO.getUserId());
-            userImage.setUserImage(StringUtils.EMPTY);
-            userImage.setCreateTime(now);
-            userImage.setUpdateTime(now);
-            userImage.setValidateCode(faceApiResponse.getData().getCode());
-            userImage.setScore(StringUtils.EMPTY);
-            userImage.setMessage(faceApiResponse.getData().getMessage());
-            userImageMapper.save(userImage);
+    public LoginToken resetPswd(ResetPswdForm resetPswdForm) {
+        // 获取参数
+        String mobile = resetPswdForm.getMobile();
+        String password = resetPswdForm.getPassword();
+        String validateCode = resetPswdForm.getValidateCode();
+        String smsCode = resetPswdForm.getSmsCode();
+        // 验证码验证
+        String cacheValidateCode = (String) redisCache.getKeyValueData("vCode:" + mobile);
+        if (cacheValidateCode == null) {
+            log.error("未获取到缓存验证码，cacheValidateCode:null");
+            throw new BusinessException(CodeEnum.ValidateCodeExpire);
         }
-
-        if (faceApiResponse != null) {
-            User user = userMapper.findById(userId).get();
-            user.setUpdateTime(now);
-            user.setRealName(validateUserVO.getRealName());
-            user.setIdCard(validateUserVO.getIdCard());
-            if (faceApiResponse.isSucess()) {
-                user.setValidateStatus(UserValidateStatus.Pass.getValue());
-            } else {
-                user.setValidateStatus(UserValidateStatus.UnPass.getValue());
-            }
-
-            userMapper.save(user);
+        if (!StringUtils.equals(cacheValidateCode, validateCode.toUpperCase())) {
+            log.error("缓存的验证码:{}与参数验证码:{}不匹配", cacheValidateCode, validateCode);
+            throw new BusinessException(CodeEnum.ValidateCodeError);
         }
-
+        // 短信验证
+        Date date = Optional.ofNullable(sysSmsService.getSms(mobile, smsCode, SmsType.ResetPswd.getValue())).orElseThrow(() -> new BusinessException(CodeEnum.ValidateCodeExpire));
+        long second = (new Date().getTime() - date.getTime()) / 1000;
+        if (second >= Constants.EXPIRE_TIMES) {
+            log.error("手机号:{}注册验证码:{}已过期", mobile, smsCode);
+            throw new BusinessException(CodeEnum.ValidateCodeExpire);
+        }
+        // 获取用户
+        User user = Optional.ofNullable(userMapper.queryByMobilePhone(mobile)).orElseThrow(() -> {
+            log.error("手机号:{}未能查询到用户", mobile);
+            return new BusinessException(CodeEnum.MobileError);
+        });
+        // 更新密码
+        String token = UUID.randomUUID().toString();
+        String encrypedPassword = MD5EncryptUtil.md5Encrypy(password, MD5EncryptUtil.md5Encrypy(mobile));  // 密码加密
+        userMapper.resetPassword(user.getId(), encrypedPassword, token, ContextUtil.getClientIp());
+        // 更新缓存
+        redisCache.setKeyValueData(token, user);
+        // 封装令牌对象
+        LoginToken loginToken = new LoginToken();
+        loginToken.setUserName(user.getUsername());
+        loginToken.setMobilePhone(user.getMobilePhone());
+        loginToken.setToken(token);
+        return loginToken;
     }
 
 }

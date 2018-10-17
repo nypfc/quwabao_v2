@@ -56,7 +56,26 @@
                           eth_address,
                           validate_status,
                           id_card)
-        VALUES ()
+        VALUES (#{errorCount},
+                #{errorTime},
+                #{lastLoginIp},
+                #{lastLoginTime},
+                #{mobilePhone},
+                #{password},
+                #{realName},
+                #{registerTime},
+                #{updateTime},
+                #{userStatus},
+                #{username},
+                #{inviteCode},
+                #{token},
+                #{deviceId},
+                #{regInviteCode},
+                #{userType},
+                #{sex},
+                #{ethAddress},
+                #{validateStatus},
+                #{idCard})
     </insert>
 
     <select id="queryByMobilePhone" resultType="User">
@@ -86,6 +105,16 @@
         UPDATE user
         SET token       = #{param2},
             update_time = NOW()
+        WHERE id = #{param1}
+    </update>
+
+    <update id="resetPassword">
+        UPDATE user
+        SET password        = #{param2},
+            token           = #{param3},
+            last_login_ip   = #{param4},
+            update_time     = NOW(),
+            last_login_time = NOW()
         WHERE id = #{param1}
     </update>
 
