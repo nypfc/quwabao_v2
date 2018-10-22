@@ -2,9 +2,12 @@ package com.gedoumi.quwabao.user.service;
 
 import com.gedoumi.quwabao.common.base.LoginToken;
 import com.gedoumi.quwabao.common.constants.Constants;
-import com.gedoumi.quwabao.common.enums.*;
+import com.gedoumi.quwabao.common.enums.CodeEnum;
+import com.gedoumi.quwabao.common.enums.SmsType;
 import com.gedoumi.quwabao.common.exception.BusinessException;
-import com.gedoumi.quwabao.common.utils.*;
+import com.gedoumi.quwabao.common.utils.ContextUtil;
+import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
+import com.gedoumi.quwabao.common.utils.SmsUtil;
 import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.sys.service.SysSmsService;
 import com.gedoumi.quwabao.user.dataobj.form.ResetPswdForm;
@@ -19,8 +22,6 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
-
-import static com.gedoumi.quwabao.common.constants.Constants.USER_PREFIX;
 
 
 /**
@@ -96,48 +97,6 @@ public class UserService {
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
     public void updateLogoutInfo(User user) {
         userMapper.updateLogoutInfo(user.getId(), user.getToken());
-    }
-
-    /**
-     * 创建用户
-     *
-     * @param mobile     手机号
-     * @param password   密码
-     * @param username   用户名
-     * @param inviteCode 邀请人的邀请码
-     * @return 创建后的用户对象
-     */
-    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
-    public User createUser(String mobile, String password, String username, String inviteCode) {
-        User user = new User();
-        user.setMobilePhone(mobile);
-        user.setPassword(MD5EncryptUtil.md5Encrypy(password, MD5EncryptUtil.md5Encrypy(mobile)));
-        user.setUserStatus(UserStatus.Enable.getValue());
-        Date now = new Date();
-        user.setUpdateTime(now);
-        user.setRegisterTime(now);
-        user.setLastLoginTime(now);
-        user.setLastLoginIp(ContextUtil.getClientIp());
-        user.setToken(UUID.randomUUID().toString());
-        user.setUserType(UserType.Level_0.getValue());
-        user.setErrorCount(0);
-        user.setDeviceId(ContextUtil.getDeviceFromHead());
-        user.setValidateStatus(UserValidateStatus.Init.getValue());
-        user.setRegInviteCode(inviteCode);
-        user.setInviteCode(CipherUtils.generateCode());
-        // 设置邀请码，如果重复重新生成
-        while (userCheckService.checkInviteCode(user.getInviteCode())) {
-            user.setInviteCode(CipherUtils.generateCode());
-        }
-        // 用户名不为空设置用户名
-        if (StringUtils.isEmpty(username)) {
-            int length = String.valueOf(user.getId()).length();
-            length = length > 4 ? length : 4;
-            String format = "%0" + length + "d";
-            user.setUsername(USER_PREFIX + NumberUtil.randomInt(0, 999) + String.format(format, user.getId()));
-        }
-        userMapper.createUser(user);
-        return user;
     }
 
     /**

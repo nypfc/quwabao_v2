@@ -18,6 +18,7 @@ import java.nio.charset.Charset;
  * 正确
  */
 public class AesCBC {
+
     /*已确认
      * 加密用的Key 可以用26个字母和数字组成
      * 此处使用AES-128-CBC加密模式，key需要为16位。
@@ -97,16 +98,4 @@ public class AesCBC {
         return (char) target;
     }
 
-
-    public static void main(String[] args) throws Exception {
-        // 需要加密的字串
-        String cSrc = "/api/v1/pfc_eth/queryaddress0xD10fbC84D1884015fd67255ED6446F45747DE520seq092713ts1534521749";
-        System.out.println("加密前的字串是：" + cSrc);
-        // 加密
-        String enString = AesCBC.encrypt(cSrc);
-        System.out.println("加密后的字串是：" + enString);
-
-        System.out.println("a51a9fe8cd20c32b9d5932fcb306cf21d5eda52c".endsWith(enString));
-
-    }
 }

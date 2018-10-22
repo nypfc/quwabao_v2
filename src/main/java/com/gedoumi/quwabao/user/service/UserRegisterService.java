@@ -3,15 +3,15 @@ package com.gedoumi.quwabao.user.service;
 import com.gedoumi.quwabao.asset.service.UserAssetService;
 import com.gedoumi.quwabao.common.base.LoginToken;
 import com.gedoumi.quwabao.common.constants.Constants;
-import com.gedoumi.quwabao.common.enums.CodeEnum;
-import com.gedoumi.quwabao.common.enums.SmsType;
+import com.gedoumi.quwabao.common.enums.*;
 import com.gedoumi.quwabao.common.exception.BusinessException;
-import com.gedoumi.quwabao.common.utils.SmsUtil;
+import com.gedoumi.quwabao.common.utils.*;
 import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.sys.service.SysSmsService;
 import com.gedoumi.quwabao.team.service.UserTreeService;
 import com.gedoumi.quwabao.user.dataobj.form.RegisterForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
+import com.gedoumi.quwabao.user.mapper.UserRegisterMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
@@ -21,6 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import static com.gedoumi.quwabao.common.constants.Constants.USER_PREFIX;
 
 /**
  * 用户注册Service
@@ -30,6 +34,9 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class UserRegisterService {
+
+    @Resource
+    private UserRegisterMapper userRegisterMapper;
 
     @Resource
     private UserService userService;
@@ -93,6 +100,7 @@ public class UserRegisterService {
         String username = registerForm.getUserName();
         String password = registerForm.getPassword();
         String inviteCode = registerForm.getRegInviteCode().toLowerCase();
+
         // 手机号验证
         if (userCheckService.checkMobilePhone(mobile)) {
             log.error("手机号:{}已经被注册", mobile);
@@ -114,13 +122,40 @@ public class UserRegisterService {
             log.error("邀请码:{}对应用户不存在", inviteCode);
             throw new BusinessException(CodeEnum.InviteCodeError);
         }
+
         // 创建用户
-        User user = userService.createUser(mobile, password, username, inviteCode);
+        User user = new User();
+        user.setMobilePhone(mobile);
+        user.setPassword(MD5EncryptUtil.md5Encrypy(password, MD5EncryptUtil.md5Encrypy(mobile)));
+        user.setUserStatus(UserStatus.Enable.getValue());
+        user.setLastLoginIp(ContextUtil.getClientIp());
+        user.setToken(UUID.randomUUID().toString());
+        user.setUserType(UserType.Level_0.getValue());
+        user.setErrorCount(0);
+        user.setDeviceId(ContextUtil.getDeviceFromHead());
+        user.setValidateStatus(UserValidateStatus.Init.getValue());
+        user.setRegInviteCode(inviteCode);
+        user.setInviteCode(CipherUtils.generateCode());
+        // 设置邀请码，如果重复重新生成
+        while (userCheckService.checkInviteCode(user.getInviteCode())) {
+            user.setInviteCode(CipherUtils.generateCode());
+        }
+        // 用户名为空设置用户名
+        if (StringUtils.isEmpty(username)) {
+            int length = String.valueOf(user.getId()).length();
+            length = length > 4 ? length : 4;
+            String format = "%0" + length + "d";
+            user.setUsername(USER_PREFIX + NumberUtil.randomInt(0, 999) + String.format(format, user.getId()));
+        }
+        userRegisterMapper.createUser(user);
         Long userId = user.getId();  // 创建完成的用户ID
+
         // 更新短信
         sysSmsService.updateSmsStatus(user.getMobilePhone());
+
         // 创建用户资产
         userAssetService.createUserAsset(userId);
+
         // 创建用户上下级关系
         Long parentId = userService.getParentUserId(inviteCode);
         try {
@@ -129,14 +164,30 @@ public class UserRegisterService {
             log.error("userId:{} parentId:{} 一个用户只能拥有一个上级", userId, parentId);
             throw new BusinessException(CodeEnum.BindInviteCodeError);
         }
+
         // 设置缓存
         redisCache.setKeyValueData(user.getToken(), user);
+
         // 设置Token
         LoginToken loginToken = new LoginToken();
         loginToken.setUserName(user.getUsername());
         loginToken.setMobilePhone(user.getMobilePhone());
         loginToken.setToken(user.getToken());
+
         return loginToken;
+    }
+
+    /**
+     * 产生验证码
+     *
+     * @param mobile 手机号
+     * @return 验证码
+     */
+    public String generateValidateCode(String mobile) {
+        String validateCode = CipherUtils.generateValidateCode();
+        // 设置2分钟失效的验证码
+        redisCache.setExpireKeyValueData("reg:" + mobile, validateCode, 2L, TimeUnit.MINUTES);
+        return validateCode;
     }
 
 }

@@ -52,17 +52,4 @@ public class UserCheckService {
         return userCheckMapper.countByUsername(username) != 0;
     }
 
-    /**
-     * 产生验证码
-     *
-     * @param mobile 手机号
-     * @return 验证码
-     */
-    public String generateValidateCode(String mobile) {
-        String validateCode = CipherUtils.generateValidateCode();
-        // 设置2分钟失效的验证码
-        redisCache.setExpireKeyValueData("reg:" + mobile, validateCode, 2L, TimeUnit.MINUTES);
-        return validateCode;
-    }
-
 }

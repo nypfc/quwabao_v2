@@ -20,14 +20,6 @@ public interface UserMapper {
     User queryByToken(String token);
 
     /**
-     * 创建用户
-     *
-     * @param user 用户对象
-     * @return 用户ID
-     */
-    Long createUser(User user);
-
-    /**
      * 根据手机号查询
      *
      * @param mobilePhone 手机号
@@ -79,13 +71,5 @@ public interface UserMapper {
      * @param lastLoginIp 最后登录IP
      */
     void resetPassword(Long userId, String password, String token, String lastLoginIp);
-
-    /**
-     * 根据身份证号查询
-     *
-     * @param idCard 身份证号
-     * @return 用户对象
-     */
-    User queryByIdCard(String idCard);
 
 }

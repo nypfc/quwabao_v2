@@ -1,14 +1,13 @@
 package com.gedoumi.quwabao.common.base;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.Data;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TreeJson implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+@Data
+public class TreeJson {
 
 	private String id;
 	private String pid;
@@ -17,7 +16,7 @@ public class TreeJson implements Serializable {
 	private String state;
 	private String checked;
 	private JSONObject attributes = new JSONObject();
-	private List<TreeJson> children = new ArrayList<TreeJson>();
+	private List<TreeJson> children = new ArrayList<>();
 	
 	public static List<TreeJson> formatTree(List<TreeJson> list) {
         TreeJson root = new TreeJson();
@@ -62,69 +61,5 @@ public class TreeJson implements Serializable {
             }
         }
     }
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getPid() {
-		return pid;
-	}
-
-	public void setPid(String pid) {
-		this.pid = pid;
-	}
-
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	public String getIconCls() {
-		return iconCls;
-	}
-
-	public void setIconCls(String iconCls) {
-		this.iconCls = iconCls;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getChecked() {
-		return checked;
-	}
-
-	public void setChecked(String checked) {
-		this.checked = checked;
-	}
-
-	public JSONObject getAttributes() {
-		return attributes;
-	}
-
-	public void setAttributes(JSONObject attributes) {
-		this.attributes = attributes;
-	}
-
-	public List<TreeJson> getChildren() {
-		return children;
-	}
-
-	public void setChildren(List<TreeJson> children) {
-		this.children = children;
-	}
 
 }

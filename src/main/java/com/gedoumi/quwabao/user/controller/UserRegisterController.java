@@ -69,7 +69,7 @@ public class UserRegisterController {
      */
     @GetMapping("/validateCode")
     public ResponseObject generateValidateCode(@NotBlank @MobilePhone String mobile) {
-        return new ResponseObject<>(userCheckService.generateValidateCode(mobile));
+        return new ResponseObject<>(userRegisterService.generateValidateCode(mobile));
     }
 
     /**
