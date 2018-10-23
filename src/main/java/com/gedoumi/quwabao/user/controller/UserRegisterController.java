@@ -64,30 +64,6 @@ public class UserRegisterController {
     }
 
     /**
-     * 产生验证码
-     *
-     * @param mobile 手机号
-     * @return ResponseObject
-     */
-    @GetMapping("/validateCode")
-    public ResponseObject generateValidateCode(@NotBlank @MobilePhone String mobile) {
-        return new ResponseObject<>(userRegisterService.generateValidateCode(mobile));
-    }
-
-    /**
-     * 发送注册用短信验证码
-     *
-     * @param mobile 手机号
-     * @param vcode  验证码
-     * @return ResponseObject
-     */
-    @GetMapping("/getRegSmsCode")
-    public ResponseObject getRegSmsCode(@NotBlank @MobilePhone String mobile, @NotBlank String vcode) {
-        userRegisterService.getRegSmsCode(mobile, vcode);
-        return new ResponseObject();
-    }
-
-    /**
      * 注册
      *
      * @param registerForm 注册表单
@@ -96,11 +72,12 @@ public class UserRegisterController {
     @PostMapping("/reg")
     public ResponseObject register(@RequestBody @Valid RegisterForm registerForm) {
         User user = userRegisterService.register(registerForm);
+        // 封装返回数据
         LoginTokenVO loginTokenVO = new LoginTokenVO();
         loginTokenVO.setUserName(user.getUsername());
         loginTokenVO.setMobilePhone(user.getMobilePhone());
         loginTokenVO.setToken(user.getToken());
-        return new ResponseObject<>(loginTokenVO);
+        return new ResponseObject<>();
     }
 
 }

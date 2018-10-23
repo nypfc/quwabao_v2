@@ -27,12 +27,6 @@ public class ResetPasswordForm {
     private String password;
 
     /**
-     * 验证码
-     */
-    @NotBlank
-    private String validateCode;
-
-    /**
      * 短信验证码
      */
     @NotBlank

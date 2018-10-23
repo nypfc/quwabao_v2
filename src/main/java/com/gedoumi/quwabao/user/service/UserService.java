@@ -6,14 +6,15 @@ import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.SmsType;
 import com.gedoumi.quwabao.common.exception.BusinessException;
-import com.gedoumi.quwabao.common.utils.CodeUtils;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
 import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.sys.service.SysSmsService;
+import com.gedoumi.quwabao.user.dataobj.dto.UserInfoDTO;
 import com.gedoumi.quwabao.user.dataobj.form.ResetPasswordForm;
+import com.gedoumi.quwabao.user.dataobj.form.UpdatePasswordForm;
+import com.gedoumi.quwabao.user.dataobj.form.UpdateUsernameForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
-import com.gedoumi.quwabao.user.dataobj.vo.LoginTokenVO;
 import com.gedoumi.quwabao.user.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -38,8 +39,6 @@ public class UserService {
     private UserMapper userMapper;
 
     @Resource
-    private UserCheckService userCheckService;
-    @Resource
     private UserAssetService userAssetService;
     @Resource
     private SysSmsService sysSmsService;
@@ -58,92 +57,97 @@ public class UserService {
     }
 
     /**
-     * 获取用户资产
+     * 获取用户信息
      *
-     * @param userId 用户ID
-     * @return 用户资产对象
+     * @return 用户信息传递对象
      */
-    public UserAsset getUserAsset(Long userId) {
-        return userAssetService.getUserAsset(userId);
-    }
+    public UserInfoDTO getUserInfo() {
+        // 获取作用域中用户
+        User user = ContextUtil.getUserFromRequest();
+        // 获取用户资产
+        UserAsset userAsset = userAssetService.getUserAsset(user.getId());
 
-    /**
-     * 获取重置密码用的短信验证码
-     *
-     * @param mobile 手机号
-     * @param vCode  验证码
-     * @return 验证码
-     */
-    public String getRpSmsCode(String mobile, String vCode) {
-        // 手机号验证
-        if (!userCheckService.checkMobilePhone(mobile)) {
-            log.error("手机号:{}不存在", mobile);
-            throw new BusinessException(CodeEnum.MobileError);
-        }
-        // 验证码验证
-        String cacheValidateCode = (String) redisCache.getKeyValueData("vCode:" + mobile);
-        if (cacheValidateCode == null) {
-            log.error("未获取到缓存验证码，cacheValidateCode:null");
-            throw new BusinessException(CodeEnum.ValidateCodeExpire);
-        }
-        if (!StringUtils.equals(cacheValidateCode, vCode.toUpperCase())) {
-            log.error("缓存的验证码:{}与参数验证码:{}不匹配", cacheValidateCode, vCode);
-            throw new BusinessException(CodeEnum.ValidateCodeError);
-        }
-        // 当日短信上限验证
-        if (sysSmsService.smsCurrentDayCount(mobile) >= Constants.SMS_DAY_COUNT) {
-            log.error("手机号:{}当日验证码数量已达上限", mobile);
-            throw new BusinessException(CodeEnum.SmsCountError);
-        }
-        // 发送短信
-        String smsCode = CodeUtils.generateSMSCode();
-        sysSmsService.sendSms(mobile, smsCode, SmsType.ResetPswd.getValue());
-        return smsCode;
+        UserInfoDTO userInfoDTO = new UserInfoDTO();
+        userInfoDTO.setUser(user);
+        userInfoDTO.setUserAsset(userAsset);
+        return userInfoDTO;
     }
 
     /**
      * 重置密码
      *
      * @param resetPasswordForm 重置密码表单
-     * @return 令牌对象
+     * @return 重置密码后的用户对象
      */
-    public LoginTokenVO resetPswd(ResetPasswordForm resetPasswordForm) {
+    public User resetPassword(ResetPasswordForm resetPasswordForm) {
         // 获取用户
         User user = ContextUtil.getUserFromRequest();
         // 获取参数
         String mobile = resetPasswordForm.getMobile();
         String password = resetPasswordForm.getPassword();
-        String validateCode = resetPasswordForm.getValidateCode();
         String smsCode = resetPasswordForm.getSmsCode();
-        // 验证码验证
-        String cacheValidateCode = (String) redisCache.getKeyValueData("vCode:" + mobile);
-        if (cacheValidateCode == null) {
-            log.error("未获取到缓存验证码，cacheValidateCode:null");
-            throw new BusinessException(CodeEnum.ValidateCodeExpire);
-        }
-        if (!StringUtils.equals(cacheValidateCode, validateCode.toUpperCase())) {
-            log.error("缓存的验证码:{}与参数验证码:{}不匹配", cacheValidateCode, validateCode);
-            throw new BusinessException(CodeEnum.ValidateCodeError);
-        }
         // 短信验证
         Date date = Optional.ofNullable(sysSmsService.getSms(mobile, smsCode, SmsType.ResetPswd.getValue())).orElseThrow(() -> new BusinessException(CodeEnum.ValidateCodeExpire));
         long second = (new Date().getTime() - date.getTime()) / 1000;
         if (second >= Constants.EXPIRE_TIMES) {
-            log.error("手机号:{}注册验证码:{}已过期", mobile, smsCode);
+            log.error("手机号:{}注册短信验证码:{}已过期", mobile, smsCode);
             throw new BusinessException(CodeEnum.ValidateCodeExpire);
         }
-        // 更新密码
+        // 重置密码
         String token = UUID.randomUUID().toString();
         String encrypedPassword = MD5EncryptUtil.md5Encrypy(password, MD5EncryptUtil.md5Encrypy(mobile));  // 密码加密
-        userMapper.resetPassword(user.getId(), encrypedPassword, token, ContextUtil.getClientIp());
+        user.setPassword(encrypedPassword);
+        user.setToken(token);
+        user.setLastLoginIp(ContextUtil.getClientIp());
+        userMapper.resetPassword(user);
         // 更新缓存
         redisCache.setKeyValueData(token, user);
-        // 封装令牌对象
-        LoginTokenVO loginTokenVO = new LoginTokenVO();
-        loginTokenVO.setUserName(user.getUsername());
-        loginTokenVO.setMobilePhone(user.getMobilePhone());
-        loginTokenVO.setToken(token);
-        return loginTokenVO;
+        return user;
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param updatePasswordForm 修改密码表单
+     */
+    public void updatePassword(UpdatePasswordForm updatePasswordForm) {
+        // 从作用域中获取用户
+        User user = ContextUtil.getUserFromRequest();
+        // 对比原密码是否正确
+        String salt = MD5EncryptUtil.md5Encrypy(user.getMobilePhone());
+        String orgPassword = MD5EncryptUtil.md5Encrypy(updatePasswordForm.getOrgPswd(), salt);
+        if (!StringUtils.equals(user.getPassword(), orgPassword)) {
+            log.error("手机号:{}修改密码，原密码:{}与参数原密码:{}不相同", user.getMobilePhone(), user.getPassword(), orgPassword);
+            throw new BusinessException(CodeEnum.OrgPswdError);
+        }
+        // 修改密码
+        String pswd = MD5EncryptUtil.md5Encrypy(updatePasswordForm.getPswd(), salt);
+        user.setPassword(pswd);
+        userMapper.updatePassword(user);
+        // 更新缓存
+        redisCache.setKeyValueData(user.getToken(), user);
+    }
+
+    /**
+     * 修改用户名
+     *
+     * @param updateUsernameForm 修改用户名表单
+     */
+    public void updateUsername(UpdateUsernameForm updateUsernameForm) {
+        // 获取参数
+        String username = updateUsernameForm.getUserName();
+        // 从作用域中获取用户
+        User user = ContextUtil.getUserFromRequest();
+        // 判断用户名是否重复
+        if (userMapper.countByUsername(username) > 0) {
+            log.error("用户名:{}重复", username);
+            throw new BusinessException(CodeEnum.NameError);
+        }
+        // 更新用户名
+        user.setUsername(username);
+        userMapper.updateUsername(user);
+        // 更新缓存
+        redisCache.setKeyValueData(user.getToken(), user);
     }
 
 }

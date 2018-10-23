@@ -12,7 +12,6 @@ import com.gedoumi.quwabao.sys.service.SysSmsService;
 import com.gedoumi.quwabao.team.service.UserTreeService;
 import com.gedoumi.quwabao.user.dataobj.form.RegisterForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
-import com.gedoumi.quwabao.user.dataobj.vo.LoginTokenVO;
 import com.gedoumi.quwabao.user.mapper.UserRegisterMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +24,6 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import static com.gedoumi.quwabao.common.constants.Constants.USER_PREFIX;
 
@@ -42,8 +40,6 @@ public class UserRegisterService {
     private UserRegisterMapper userRegisterMapper;
 
     @Resource
-    private UserService userService;
-    @Resource
     private SysSmsService sysSmsService;
     @Resource
     private UserCheckService userCheckService;
@@ -55,56 +51,10 @@ public class UserRegisterService {
     private RedisCache redisCache;
 
     /**
-     * 产生验证码
-     *
-     * @param mobile 手机号
-     * @return 验证码
-     */
-    public String generateValidateCode(String mobile) {
-        String validateCode = CodeUtils.generateValidateCode();
-        // 设置2分钟失效的验证码
-        redisCache.setExpireKeyValueData("reg:" + mobile, validateCode, 2L, TimeUnit.MINUTES);
-        return validateCode;
-    }
-
-    /**
-     * 发送注册用短信验证码
-     *
-     * @param mobile 手机号
-     * @param vCode  验证码
-     */
-    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
-    public void getRegSmsCode(String mobile, String vCode) {
-        // 手机号验证
-        if (userCheckService.checkMobilePhone(mobile)) {
-            log.error("手机号:{}已被注册", mobile);
-            throw new BusinessException(CodeEnum.MobileExist);
-        }
-        // 验证码验证
-        String cacheValidateCode = (String) redisCache.getKeyValueData("vCode:" + mobile);
-        if (cacheValidateCode == null) {
-            log.error("未获取到缓存验证码，cacheValidateCode:null");
-            throw new BusinessException(CodeEnum.ValidateCodeExpire);
-        }
-        if (!StringUtils.equals(cacheValidateCode, vCode.toUpperCase())) {
-            log.error("缓存的验证码:{}与参数验证码:{}不匹配", cacheValidateCode, vCode);
-            throw new BusinessException(CodeEnum.ValidateCodeError);
-        }
-        // 当日短信上限验证
-        if (sysSmsService.smsCurrentDayCount(mobile) >= Constants.SMS_DAY_COUNT) {
-            log.error("手机号:{}当日验证码数量已达上限", mobile);
-            throw new BusinessException(CodeEnum.SmsCountError);
-        }
-        // 发送短信
-        String smsCode = CodeUtils.generateSMSCode();
-        sysSmsService.sendSms(mobile, smsCode, SmsType.Register.getValue());
-    }
-
-    /**
      * 注册用户
      *
      * @param registerForm 注册表单
-     * @return 用户对象
+     * @return 注册成功的用户对象
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
     public User register(RegisterForm registerForm) {
@@ -150,14 +100,10 @@ public class UserRegisterService {
         user.setValidateStatus(UserValidateStatus.Init.getValue());
         user.setRegInviteCode(inviteCode);
         user.setInviteCode(CodeUtils.generateCode());
-        // 设置邀请码，如果重复重新生成
-        while (userCheckService.checkInviteCode(user.getInviteCode())) {
-            user.setInviteCode(CodeUtils.generateCode());
-        }
-        // 用户名为空设置用户名
-        if (StringUtils.isEmpty(username)) {
-            user.setUsername(USER_PREFIX + new Random().nextInt(999) + user.getId());
-        }
+        while (userCheckService.checkInviteCode(user.getInviteCode()))
+            user.setInviteCode(CodeUtils.generateCode());  // 设置邀请码，如果重复重新生成
+        if (StringUtils.isEmpty(username))
+            user.setUsername(USER_PREFIX + new Random().nextInt(999) + user.getId());  // 用户名为空设置默认用户名
         userRegisterMapper.createUser(user);
         Long userId = user.getId();  // 创建完成的用户ID
 
@@ -176,7 +122,7 @@ public class UserRegisterService {
             throw new BusinessException(CodeEnum.BindInviteCodeError);
         }
 
-        // 设置缓存
+        // 更新缓存
         redisCache.setKeyValueData(user.getToken(), user);
         return user;
     }

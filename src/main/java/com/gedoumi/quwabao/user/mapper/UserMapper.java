@@ -20,13 +20,32 @@ public interface UserMapper {
     User queryByToken(String token);
 
     /**
+     * 重置密码
+     *
+     * @param user 用户对象
+     */
+    void resetPassword(User user);
+
+    /**
      * 更新密码
      *
-     * @param userId      用户ID
-     * @param password    密码
-     * @param token       令牌
-     * @param lastLoginIp 最后登录IP
+     * @param user 用户对象
      */
-    void resetPassword(Long userId, String password, String token, String lastLoginIp);
+    void updatePassword(User user);
+
+    /**
+     * 查询用户名是否重复
+     *
+     * @param username 用户名
+     * @return 查询结果数量
+     */
+    Integer countByUsername(String username);
+
+    /**
+     * 更新用户名
+     *
+     * @param user 用户对象
+     */
+    void updateUsername(User user);
 
 }

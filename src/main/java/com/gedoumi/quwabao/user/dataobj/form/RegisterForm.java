@@ -21,12 +21,6 @@ public class RegisterForm {
     private String mobile;
 
     /**
-     * 验证码
-     */
-    @NotBlank
-    private String validateCode;
-
-    /**
      * 短信验证码
      */
     @NotBlank

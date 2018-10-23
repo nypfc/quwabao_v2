@@ -33,6 +33,7 @@ public class LoginController {
     @PostMapping("/submit")
     public ResponseObject submit(@RequestBody @Valid LoginForm loginForm) {
         User user = loginService.login(loginForm);
+        // 封装返回信息
         LoginTokenVO loginTokenVO = new LoginTokenVO();
         loginTokenVO.setUserName(user.getUsername());
         loginTokenVO.setMobilePhone(user.getMobilePhone());

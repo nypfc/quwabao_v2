@@ -1,9 +1,13 @@
 package com.gedoumi.quwabao.sys.service;
 
 import com.gedoumi.quwabao.common.config.properties.SMSProperties;
+import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
+import com.gedoumi.quwabao.common.enums.SmsType;
 import com.gedoumi.quwabao.common.exception.BusinessException;
+import com.gedoumi.quwabao.common.utils.CodeUtils;
 import com.gedoumi.quwabao.common.utils.CurrentDate;
+import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.sys.dataobj.model.SysSms;
 import com.gedoumi.quwabao.sys.mapper.SysSmsMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -35,21 +39,60 @@ public class SysSmsService {
     @Resource
     private SMSProperties smsProperties;
 
+    @Resource
+    private RedisCache redisCache;
+
     /**
      * 发送短信
      *
-     * @param mobile 手机号
-     * @param code   验证码
-     * @param type   类型
+     * @param sendType 类型
+     * @param mobile   手机号
+     * @param code     验证码
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
-    public void sendSms(String mobile, String code, Integer type) {
+    public void sendSms(String sendType, String mobile, String code) {
+
+        // =========== 1.验证 ===========
+
+        // 类型验证
+        int type;  // 短信类型参数
+        if (StringUtils.equals(SmsType.Register.getName(), sendType)) {
+            type = SmsType.Register.getValue();
+        } else if (StringUtils.equals(SmsType.Login.getName(), sendType)) {
+            type = SmsType.Login.getValue();
+        } else if (StringUtils.equals(SmsType.ResetPswd.getName(), sendType)) {
+            type = SmsType.ResetPswd.getValue();
+        } else {
+            log.error("短信类型参数错误，sendType:{}", sendType);
+            throw new BusinessException(CodeEnum.SendSMSError);
+        }
+        // 图片验证码验证
+        String cacheValidateCode = (String) redisCache.getKeyValueData("vCode:" + mobile);
+        if (cacheValidateCode == null) {
+            log.error("未获取到缓存验证码，cacheValidateCode:null");
+            throw new BusinessException(CodeEnum.ValidateCodeExpire);
+        }
+        if (!StringUtils.equals(cacheValidateCode, code.toUpperCase())) {
+            log.error("缓存的验证码:{}与参数验证码:{}不匹配", cacheValidateCode, code);
+            throw new BusinessException(CodeEnum.ValidateCodeError);
+        }
+        // 当日短信上限验证
+        CurrentDate currentDate = new CurrentDate();
+        Integer count = sysSmsMapper.smsCurrentDayCount(mobile, currentDate.getStartTime(), currentDate.getEndTime());
+        if (count >= Constants.SMS_DAY_COUNT) {
+            log.error("手机号:{}当日验证码数量已达上限", mobile);
+            throw new BusinessException(CodeEnum.SmsCountError);
+        }
+
+        // =========== 2.发送短信 ===========
+
+        // 生成短信验证码
+        String smsCode = CodeUtils.generateSMSCode();
         // 获取短信参数
         String url = smsProperties.getUrl();
         String username = smsProperties.getUsername();
         String password = smsProperties.getPassword();
-        String content = smsProperties.getContent(code);
-
+        String content = smsProperties.getContent(smsCode);
         // 参数Map
         MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
         paramMap.add("url", url);
@@ -57,12 +100,10 @@ public class SysSmsService {
         paramMap.add("password", password);
         paramMap.add("mobile", mobile);
         paramMap.add("content", content);
-
         // 设置请求头
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");  // post请求默认为application/json方式，改为拼接key=value的形式
         HttpEntity requestEntity = new HttpEntity<>(paramMap, headers);
-
         // 发送Post请求
         String ret = new RestTemplate().postForObject(url, requestEntity, String.class);
         // 验证结果
@@ -77,23 +118,13 @@ public class SysSmsService {
             throw new BusinessException(CodeEnum.SendSMSError);
         }
 
-        // 创建短信
+        // =========== 3.创建短信 ===========
+
         SysSms sms = new SysSms();
-        sms.setCode(code);
+        sms.setCode(smsCode);
         sms.setSmsType(type);
         sms.setMobilePhone(mobile);
         sysSmsMapper.createSysSms(sms);
-    }
-
-    /**
-     * 获取当日短信数量
-     *
-     * @param mobile 手机号
-     * @return 短信数量
-     */
-    public Integer smsCurrentDayCount(String mobile) {
-        CurrentDate currentDate = new CurrentDate();
-        return sysSmsMapper.smsCurrentDayCount(mobile, currentDate.getStartTime(), currentDate.getEndTime());
     }
 
     /**

@@ -8,6 +8,7 @@ import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
 import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.user.dataobj.form.LoginForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
+import com.gedoumi.quwabao.user.dataobj.vo.LoginTokenVO;
 import com.gedoumi.quwabao.user.mapper.LoginMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +38,7 @@ public class LoginService {
      * 用户登录
      *
      * @param loginForm 登录表单
-     * @return 用户对象
+     * @return 登录成功的用户对象
      */
     @Transactional(noRollbackFor = {BusinessException.class}, rollbackFor = {Exception.class, RuntimeException.class})
     public User login(LoginForm loginForm) {
@@ -66,6 +67,7 @@ public class LoginService {
 
         // 缓存用户
         redisCache.setKeyValueData(token, user);
+
         return user;
     }
 

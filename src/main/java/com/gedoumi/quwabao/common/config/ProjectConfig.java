@@ -49,8 +49,12 @@ public class ProjectConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(apiRequestInterceptor())
                 .addPathPatterns("/v2/**")
+                // 登录与注册不需要拦截
                 .excludePathPatterns("/v2/login/**")
                 .excludePathPatterns("/v2/register/**")
+                // 重置密码不需要拦截
+                .excludePathPatterns("/v2/user/getRpSmsCode/**")
+                .excludePathPatterns("/v2/user/resetPswd")
                 .order(0);
         registry.addInterceptor(realNameInterceptor())
                 .addPathPatterns("/v2/uasset/rent", "/v2/uasset/transfer", "/v2/uasset/withdraw")
