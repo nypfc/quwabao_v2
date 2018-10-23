@@ -53,7 +53,6 @@ public class TransApi {
         return test_url;
     }
 
-
     public static ApiResponse getEthAddress(QueryVO queryVO) throws Exception {
         List<NameValuePair> params = Lists.newArrayList();
         params.add(new BasicNameValuePair("pfc_account", queryVO.getPfc_account()));
@@ -87,7 +86,6 @@ public class TransApi {
         return result;
     }
 
-
     private static String getFormString(HttpPost httpPost, HttpEntity formEntity) throws IOException {
         log.info("formEntity = {}", formEntity);
         httpPost.setEntity(formEntity);
@@ -97,7 +95,6 @@ public class TransApi {
         log.info("call result = {}", result);
         return result;
     }
-
 
     public static ApiResponse postWithDrawToGateWay(WithDrawVO withDrawVO) throws Exception {
         log.info("withDrawVO = {}", JsonUtil.objectToJson(withDrawVO));
@@ -121,7 +118,6 @@ public class TransApi {
         String result = getPostResult(httpPost, JsonUtil.objectToJson(appWithDrawVO));
         return JsonUtil.jsonToPojo(result, ResponseObject.class);
     }
-
 
     private static HttpEntity getFormEntity(RechargeVO rechargeVO) throws UnsupportedEncodingException {
         List<NameValuePair> formParams = new ArrayList<>();
