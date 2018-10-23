@@ -1,10 +1,9 @@
-package com.gedoumi.quwabao.common.security;
+package com.gedoumi.quwabao.component;
 
 import com.gedoumi.quwabao.common.config.AppConfig;
-import com.gedoumi.quwabao.common.base.ResponseObject;
+import com.gedoumi.quwabao.common.utils.ResponseObject;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
-import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

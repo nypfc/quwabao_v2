@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
  * @author Minced
  */
 @Data
-public class ResetForm {
+public class UpdateUsernameForm {
 
     /**
      * 用户名

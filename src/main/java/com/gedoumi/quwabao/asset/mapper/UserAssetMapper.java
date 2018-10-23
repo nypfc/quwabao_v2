@@ -12,6 +12,14 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UserAssetMapper {
 
     /**
+     * 根据用户ID查询用户资产
+     *
+     * @param userId 用户ID
+     * @return 用户资产对象
+     */
+    UserAsset queryByUserId(Long userId);
+
+    /**
      * 创建用户资产
      *
      * @param userAsset 用户资产对象

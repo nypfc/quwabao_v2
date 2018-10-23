@@ -1,8 +1,10 @@
 package com.gedoumi.quwabao.user.controller;
 
-import com.gedoumi.quwabao.common.base.ResponseObject;
+import com.gedoumi.quwabao.common.utils.ResponseObject;
 import com.gedoumi.quwabao.common.validate.MobilePhone;
 import com.gedoumi.quwabao.user.dataobj.form.RegisterForm;
+import com.gedoumi.quwabao.user.dataobj.model.User;
+import com.gedoumi.quwabao.user.dataobj.vo.LoginTokenVO;
 import com.gedoumi.quwabao.user.service.UserCheckService;
 import com.gedoumi.quwabao.user.service.UserRegisterService;
 import org.hibernate.validator.constraints.Length;
@@ -19,7 +21,7 @@ import javax.validation.constraints.NotBlank;
  * @author Minced
  */
 @Validated
-@RequestMapping("/v2/login")
+@RequestMapping("/v2/register")
 @RestController
 public class UserRegisterController {
 
@@ -93,7 +95,12 @@ public class UserRegisterController {
      */
     @PostMapping("/reg")
     public ResponseObject register(@RequestBody @Valid RegisterForm registerForm) {
-        return new ResponseObject<>(userRegisterService.register(registerForm));
+        User user = userRegisterService.register(registerForm);
+        LoginTokenVO loginTokenVO = new LoginTokenVO();
+        loginTokenVO.setUserName(user.getUsername());
+        loginTokenVO.setMobilePhone(user.getMobilePhone());
+        loginTokenVO.setToken(user.getToken());
+        return new ResponseObject<>(loginTokenVO);
     }
 
 }

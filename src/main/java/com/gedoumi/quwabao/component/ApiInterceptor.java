@@ -11,6 +11,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
 import static com.gedoumi.quwabao.common.constants.Constants.*;
 
@@ -39,7 +40,12 @@ public class ApiInterceptor implements HandlerInterceptor {
         if (StringUtils.isEmpty(authToken)) throw new BusinessException(CodeEnum.FailedToGetToken);
         User user = (User) redisCache.getKeyValueData(authToken);
         // 如果未能从缓存中获取到用户，则从数据库中获取用户
-        if (user == null) user = userService.getByToken(authToken);
+        if (user == null) {
+            user = Optional.ofNullable(userService.getByToken(authToken)).orElseThrow(() -> {
+                log.error("token:{}未查询到用户", authToken);
+                return new BusinessException(CodeEnum.UnLogin);
+            });
+        }
         // 判断重复登录
         if (!StringUtils.equals(deviceId, user.getDeviceId())) {
             log.error("{}用户已经在其他设备上登录", user.getMobilePhone());

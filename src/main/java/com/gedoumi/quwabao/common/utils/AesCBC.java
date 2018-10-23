@@ -19,7 +19,8 @@ import java.nio.charset.Charset;
  */
 public class AesCBC {
 
-    /*已确认
+    /*
+     * 已确认
      * 加密用的Key 可以用26个字母和数字组成
      * 此处使用AES-128-CBC加密模式，key需要为16位。
      */
@@ -31,7 +32,6 @@ public class AesCBC {
 
     //private static
     private AesCBC() {
-
     }
 
     public static AesCBC getInstance() {
@@ -42,7 +42,6 @@ public class AesCBC {
 
     // 加密
     public static String encrypt(String sSrc) throws Exception {
-//        Security.addProvider(new BouncyCastleProvider());
         Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
         File f = ResourceUtils.getFile("classpath:" + PRIVATE_KEY_PATH2);
         byte[] fileBytes = FileUtils.readFileToByteArray(f);
@@ -56,10 +55,7 @@ public class AesCBC {
 
         byte[] padding = pKCS7Encode(sSrc.getBytes(CHARSET).length);
         byte[] unEncrypted = ArrayUtils.addAll(sSrc.getBytes(CHARSET), padding);
-//        System.out.println(new String(unEncrypted));
-//        System.out.println(new String(unEncrypted).length());
         byte[] encrypted = cipher.doFinal(unEncrypted);
-//        byte[] encrypted = cipher.doFinal(sSrc.getBytes(CHARSET));
         return DigestUtils.sha1Hex(encrypted);
     }
 

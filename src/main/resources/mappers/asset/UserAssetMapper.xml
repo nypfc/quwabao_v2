@@ -5,6 +5,12 @@
 
 <mapper namespace="com.gedoumi.quwabao.asset.mapper.UserAssetMapper">
 
+    <select id="queryByUserId" resultType="UserAsset">
+        SELECT frozen_asset, remain_asset
+        FROM user_asset
+        WHERE user_id = #{param1}
+    </select>
+
     <insert id="createUserAsset" parameterType="UserAsset">
         INSERT INTO user_asset (create_time,
                                 frozen_asset,

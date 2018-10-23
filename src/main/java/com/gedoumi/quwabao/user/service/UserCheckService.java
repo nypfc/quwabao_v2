@@ -1,12 +1,9 @@
 package com.gedoumi.quwabao.user.service;
 
-import com.gedoumi.quwabao.common.utils.CipherUtils;
-import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.user.mapper.UserCheckMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 用户验证Service
@@ -18,9 +15,6 @@ public class UserCheckService {
 
     @Resource
     private UserCheckMapper userCheckMapper;
-
-    @Resource
-    private RedisCache redisCache;
 
     /**
      * 查询手机号是否被使用

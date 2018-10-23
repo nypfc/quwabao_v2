@@ -7,18 +7,40 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.Objects;
+
 import static com.gedoumi.quwabao.common.constants.Constants.API_USER_KEY;
 
+/**
+ * 上下文工具类
+ *
+ * @author Minced
+ */
 public class ContextUtil {
 
+    /**
+     * 获取HttpServletRequest对象
+     *
+     * @return HttpServletRequest对象
+     */
     public static HttpServletRequest getRequest() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
     }
 
+    /**
+     * 获取HttpServletResponse对象
+     *
+     * @return HttpServletResponse对象
+     */
     public static HttpServletResponse getResponse() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+        return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getResponse();
     }
 
+    /**
+     * 获取请求IP
+     *
+     * @return 请求IP
+     */
     public static String getClientIp() {
         String remoteAddr;
         remoteAddr = getRequest().getHeader("X-FORWARDED-FOR");
@@ -28,10 +50,20 @@ public class ContextUtil {
         return remoteAddr;
     }
 
+    /**
+     * 从Request作用域中获取令牌
+     *
+     * @return 令牌
+     */
     public static String getTokenFromHead() {
         return getRequest().getHeader("auth-token");
     }
 
+    /**
+     * 从Request作用域中获取设备ID
+     *
+     * @return 设备ID
+     */
     public static String getDeviceFromHead() {
         return getRequest().getHeader("deviceid");
     }

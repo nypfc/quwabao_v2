@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.common.security;
+package com.gedoumi.quwabao.component;
 
 import com.gedoumi.quwabao.api.gateway.ApiResponse;
 import com.gedoumi.quwabao.api.gateway.vo.RechargeVO;

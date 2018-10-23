@@ -19,4 +19,12 @@ public interface UserRegisterMapper {
      */
     Long createUser(User user);
 
+    /**
+     * 根据邀请码查询用户ID
+     *
+     * @param inviteCode 邀请码
+     * @return 用户ID
+     */
+    Long queryUserIdByInviteCode(String inviteCode);
+
 }

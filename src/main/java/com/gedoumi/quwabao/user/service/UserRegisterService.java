@@ -1,16 +1,18 @@
 package com.gedoumi.quwabao.user.service;
 
 import com.gedoumi.quwabao.asset.service.UserAssetService;
-import com.gedoumi.quwabao.common.base.LoginToken;
 import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.enums.*;
 import com.gedoumi.quwabao.common.exception.BusinessException;
-import com.gedoumi.quwabao.common.utils.*;
+import com.gedoumi.quwabao.common.utils.CodeUtils;
+import com.gedoumi.quwabao.common.utils.ContextUtil;
+import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
 import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.sys.service.SysSmsService;
 import com.gedoumi.quwabao.team.service.UserTreeService;
 import com.gedoumi.quwabao.user.dataobj.form.RegisterForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
+import com.gedoumi.quwabao.user.dataobj.vo.LoginTokenVO;
 import com.gedoumi.quwabao.user.mapper.UserRegisterMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -52,6 +55,19 @@ public class UserRegisterService {
     private RedisCache redisCache;
 
     /**
+     * 产生验证码
+     *
+     * @param mobile 手机号
+     * @return 验证码
+     */
+    public String generateValidateCode(String mobile) {
+        String validateCode = CodeUtils.generateValidateCode();
+        // 设置2分钟失效的验证码
+        redisCache.setExpireKeyValueData("reg:" + mobile, validateCode, 2L, TimeUnit.MINUTES);
+        return validateCode;
+    }
+
+    /**
      * 发送注册用短信验证码
      *
      * @param mobile 手机号
@@ -80,20 +96,18 @@ public class UserRegisterService {
             throw new BusinessException(CodeEnum.SmsCountError);
         }
         // 发送短信
-        String smsCode = SmsUtil.generateCode();
-        SmsUtil.sendReg(mobile, smsCode);
-        // 创建短信信息
-        sysSmsService.createSysSms(mobile, smsCode, SmsType.Register.getValue());
+        String smsCode = CodeUtils.generateSMSCode();
+        sysSmsService.sendSms(mobile, smsCode, SmsType.Register.getValue());
     }
 
     /**
      * 注册用户
      *
      * @param registerForm 注册表单
-     * @return 令牌对象
+     * @return 用户对象
      */
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
-    public LoginToken register(RegisterForm registerForm) {
+    public User register(RegisterForm registerForm) {
         // 获取参数
         String mobile = registerForm.getMobile();
         String smsCode = registerForm.getSmsCode();
@@ -135,17 +149,14 @@ public class UserRegisterService {
         user.setDeviceId(ContextUtil.getDeviceFromHead());
         user.setValidateStatus(UserValidateStatus.Init.getValue());
         user.setRegInviteCode(inviteCode);
-        user.setInviteCode(CipherUtils.generateCode());
+        user.setInviteCode(CodeUtils.generateCode());
         // 设置邀请码，如果重复重新生成
         while (userCheckService.checkInviteCode(user.getInviteCode())) {
-            user.setInviteCode(CipherUtils.generateCode());
+            user.setInviteCode(CodeUtils.generateCode());
         }
         // 用户名为空设置用户名
         if (StringUtils.isEmpty(username)) {
-            int length = String.valueOf(user.getId()).length();
-            length = length > 4 ? length : 4;
-            String format = "%0" + length + "d";
-            user.setUsername(USER_PREFIX + NumberUtil.randomInt(0, 999) + String.format(format, user.getId()));
+            user.setUsername(USER_PREFIX + new Random().nextInt(999) + user.getId());
         }
         userRegisterMapper.createUser(user);
         Long userId = user.getId();  // 创建完成的用户ID
@@ -157,7 +168,7 @@ public class UserRegisterService {
         userAssetService.createUserAsset(userId);
 
         // 创建用户上下级关系
-        Long parentId = userService.getParentUserId(inviteCode);
+        Long parentId = userRegisterMapper.queryUserIdByInviteCode(inviteCode);
         try {
             userTreeService.createUserTree(userId, parentId);
         } catch (DuplicateKeyException ex) {
@@ -167,27 +178,7 @@ public class UserRegisterService {
 
         // 设置缓存
         redisCache.setKeyValueData(user.getToken(), user);
-
-        // 设置Token
-        LoginToken loginToken = new LoginToken();
-        loginToken.setUserName(user.getUsername());
-        loginToken.setMobilePhone(user.getMobilePhone());
-        loginToken.setToken(user.getToken());
-
-        return loginToken;
-    }
-
-    /**
-     * 产生验证码
-     *
-     * @param mobile 手机号
-     * @return 验证码
-     */
-    public String generateValidateCode(String mobile) {
-        String validateCode = CipherUtils.generateValidateCode();
-        // 设置2分钟失效的验证码
-        redisCache.setExpireKeyValueData("reg:" + mobile, validateCode, 2L, TimeUnit.MINUTES);
-        return validateCode;
+        return user;
     }
 
 }

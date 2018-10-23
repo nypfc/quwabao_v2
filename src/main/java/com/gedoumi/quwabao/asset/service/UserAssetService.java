@@ -20,6 +20,16 @@ public class UserAssetService {
     private UserAssetMapper userAssetMapper;
 
     /**
+     * 获取用户资产
+     *
+     * @param userId 用户ID
+     * @return 用户资产对象
+     */
+    public UserAsset getUserAsset(Long userId) {
+        return userAssetMapper.queryByUserId(userId);
+    }
+
+    /**
      * 创建用户资产
      *
      * @param userId 用户ID

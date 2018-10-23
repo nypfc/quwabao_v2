@@ -61,7 +61,9 @@ public enum CodeEnum {
     NotBetting(51, "2266", "非投注期"),
     Gaming(52, "2267", "游戏期"),
     Bouns(53, "2268", "算奖期"),
-    ParamError(54, "2269", "参数错误");
+    ParamError(54, "2269", "参数错误"),
+    SendSMSError(55, "2270", "发送短息错误"),
+    ;
 
     private int value;
 

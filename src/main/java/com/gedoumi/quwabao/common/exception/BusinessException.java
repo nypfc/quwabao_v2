@@ -1,7 +1,11 @@
 package com.gedoumi.quwabao.common.exception;
 
 import com.gedoumi.quwabao.common.enums.CodeEnum;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class BusinessException extends RuntimeException {
 
     private CodeEnum codeEnum;
@@ -11,11 +15,4 @@ public class BusinessException extends RuntimeException {
         this.codeEnum = codeEnum;
     }
 
-    public CodeEnum getCodeEnum() {
-        return codeEnum;
-    }
-
-    public void setCodeEnum(CodeEnum codeEnum) {
-        this.codeEnum = codeEnum;
-    }
 }

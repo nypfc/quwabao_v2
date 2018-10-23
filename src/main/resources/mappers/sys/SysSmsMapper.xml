@@ -7,7 +7,7 @@
 
     <insert id="createSysSms" parameterType="SysSms">
         INSERT INTO sys_sms (code, create_time, mobile_phone, sms_status, sms_type, update_time)
-        VALUES (#{code}, #{createTime}, #{mobilePhone}, #{smsStatus}, #{smsType}, #{updateTime})
+        VALUES (#{code}, NOW(), #{mobilePhone}, #{smsStatus}, #{smsType}, NOW())
     </insert>
 
     <select id="smsCurrentDayCount" resultType="SysSms">

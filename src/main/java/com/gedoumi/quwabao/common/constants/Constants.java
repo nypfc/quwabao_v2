@@ -1,7 +1,5 @@
 package com.gedoumi.quwabao.common.constants;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
-
 import java.math.BigDecimal;
 
 /**

@@ -41,3 +41,10 @@ pagehelper:  # MyBatis分页插件配置
 #  reasonable: true  # 分页合理性
   support-methods-arguments: true
   params: count=countSql
+
+# 账号：xiangqiandaihy 密码：65tkXZ 这个是正式账号
+# 账e号账号：yingdinghy 密码：e0pHmm
+sms:  # 短信配置
+  url: http://www.api.zthysms.com/sendSms.do
+  username: xiangqiandaihy
+  password: 65tkXZ

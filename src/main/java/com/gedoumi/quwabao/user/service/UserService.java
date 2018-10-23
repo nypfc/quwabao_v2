@@ -1,22 +1,23 @@
 package com.gedoumi.quwabao.user.service;
 
-import com.gedoumi.quwabao.common.base.LoginToken;
+import com.gedoumi.quwabao.asset.dataobj.model.UserAsset;
+import com.gedoumi.quwabao.asset.service.UserAssetService;
 import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.SmsType;
 import com.gedoumi.quwabao.common.exception.BusinessException;
+import com.gedoumi.quwabao.common.utils.CodeUtils;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
-import com.gedoumi.quwabao.common.utils.SmsUtil;
 import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.sys.service.SysSmsService;
-import com.gedoumi.quwabao.user.dataobj.form.ResetPswdForm;
+import com.gedoumi.quwabao.user.dataobj.form.ResetPasswordForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
+import com.gedoumi.quwabao.user.dataobj.vo.LoginTokenVO;
 import com.gedoumi.quwabao.user.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -39,6 +40,8 @@ public class UserService {
     @Resource
     private UserCheckService userCheckService;
     @Resource
+    private UserAssetService userAssetService;
+    @Resource
     private SysSmsService sysSmsService;
 
     @Resource
@@ -51,62 +54,17 @@ public class UserService {
      * @return 用户对象
      */
     public User getByToken(String token) {
-        return Optional.ofNullable(userMapper.queryByToken(token)).orElseThrow(() -> {
-            log.error("token:{}未查询到用户", token);
-            return new BusinessException(CodeEnum.UnLogin);
-        });
+        return userMapper.queryByToken(token);
     }
 
     /**
-     * 根据手机号获取用户
+     * 获取用户资产
      *
-     * @param mobile 手机号
-     * @return 用户数据
+     * @param userId 用户ID
+     * @return 用户资产对象
      */
-    public User getByMobilePhone(String mobile) {
-        return userMapper.queryByMobilePhone(mobile);
-    }
-
-    /**
-     * 更新登录错误信息
-     *
-     * @param user 用户对象
-     */
-    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
-    public void updateLoginErrorInfo(User user) {
-        int errorCount = user.getErrorCount();
-        errorCount++;
-        userMapper.updateLoginErrorInfo(user.getId(), errorCount, user.getDeviceId());
-    }
-
-    /**
-     * 更新登录信息
-     *
-     * @param user 用户对象
-     */
-    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
-    public void updateLoginInfo(User user) {
-        userMapper.updateLoginInfo(user.getId(), ContextUtil.getClientIp(), user.getToken(), ContextUtil.getDeviceFromHead());
-    }
-
-    /**
-     * 更新退出信息
-     *
-     * @param user 用户对象
-     */
-    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
-    public void updateLogoutInfo(User user) {
-        userMapper.updateLogoutInfo(user.getId(), user.getToken());
-    }
-
-    /**
-     * 获取上级用户ID
-     *
-     * @param inviteCode 邀请码
-     * @return 上级用户ID
-     */
-    Long getParentUserId(String inviteCode) {
-        return userMapper.queryUserIdByInviteCode(inviteCode);
+    public UserAsset getUserAsset(Long userId) {
+        return userAssetService.getUserAsset(userId);
     }
 
     /**
@@ -138,25 +96,25 @@ public class UserService {
             throw new BusinessException(CodeEnum.SmsCountError);
         }
         // 发送短信
-        String smsCode = SmsUtil.generateCode();
-        SmsUtil.sendReg(mobile, smsCode);
-        // 创建短信信息
-        sysSmsService.createSysSms(mobile, smsCode, SmsType.ResetPswd.getValue());
+        String smsCode = CodeUtils.generateSMSCode();
+        sysSmsService.sendSms(mobile, smsCode, SmsType.ResetPswd.getValue());
         return smsCode;
     }
 
     /**
      * 重置密码
      *
-     * @param resetPswdForm 重置密码表单
+     * @param resetPasswordForm 重置密码表单
      * @return 令牌对象
      */
-    public LoginToken resetPswd(ResetPswdForm resetPswdForm) {
+    public LoginTokenVO resetPswd(ResetPasswordForm resetPasswordForm) {
+        // 获取用户
+        User user = ContextUtil.getUserFromRequest();
         // 获取参数
-        String mobile = resetPswdForm.getMobile();
-        String password = resetPswdForm.getPassword();
-        String validateCode = resetPswdForm.getValidateCode();
-        String smsCode = resetPswdForm.getSmsCode();
+        String mobile = resetPasswordForm.getMobile();
+        String password = resetPasswordForm.getPassword();
+        String validateCode = resetPasswordForm.getValidateCode();
+        String smsCode = resetPasswordForm.getSmsCode();
         // 验证码验证
         String cacheValidateCode = (String) redisCache.getKeyValueData("vCode:" + mobile);
         if (cacheValidateCode == null) {
@@ -174,11 +132,6 @@ public class UserService {
             log.error("手机号:{}注册验证码:{}已过期", mobile, smsCode);
             throw new BusinessException(CodeEnum.ValidateCodeExpire);
         }
-        // 获取用户
-        User user = Optional.ofNullable(userMapper.queryByMobilePhone(mobile)).orElseThrow(() -> {
-            log.error("手机号:{}未能查询到用户", mobile);
-            return new BusinessException(CodeEnum.MobileError);
-        });
         // 更新密码
         String token = UUID.randomUUID().toString();
         String encrypedPassword = MD5EncryptUtil.md5Encrypy(password, MD5EncryptUtil.md5Encrypy(mobile));  // 密码加密
@@ -186,11 +139,11 @@ public class UserService {
         // 更新缓存
         redisCache.setKeyValueData(token, user);
         // 封装令牌对象
-        LoginToken loginToken = new LoginToken();
-        loginToken.setUserName(user.getUsername());
-        loginToken.setMobilePhone(user.getMobilePhone());
-        loginToken.setToken(token);
-        return loginToken;
+        LoginTokenVO loginTokenVO = new LoginTokenVO();
+        loginTokenVO.setUserName(user.getUsername());
+        loginTokenVO.setMobilePhone(user.getMobilePhone());
+        loginTokenVO.setToken(token);
+        return loginTokenVO;
     }
 
 }

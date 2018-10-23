@@ -1,5 +1,6 @@
 package com.gedoumi.quwabao.common.config;
 
+import com.gedoumi.quwabao.common.config.properties.SMSProperties;
 import com.gedoumi.quwabao.component.ApiInterceptor;
 import com.gedoumi.quwabao.component.RealNameInterceptor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -49,6 +50,7 @@ public class ProjectConfig implements WebMvcConfigurer {
         registry.addInterceptor(apiRequestInterceptor())
                 .addPathPatterns("/v2/**")
                 .excludePathPatterns("/v2/login/**")
+                .excludePathPatterns("/v2/register/**")
                 .order(0);
         registry.addInterceptor(realNameInterceptor())
                 .addPathPatterns("/v2/uasset/rent", "/v2/uasset/transfer", "/v2/uasset/withdraw")
@@ -74,6 +76,16 @@ public class ProjectConfig implements WebMvcConfigurer {
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(0);  // 跨域Filter排序，排到第一个
         return bean;
+    }
+
+    /**
+     * 短信配置
+     *
+     * @return 短信配置类
+     */
+    @Bean
+    public SMSProperties smsProperties() {
+        return new SMSProperties();
     }
 
 }

@@ -1,10 +1,12 @@
 package com.gedoumi.quwabao.user.controller;
 
-import com.gedoumi.quwabao.common.base.ResponseObject;
+import com.gedoumi.quwabao.asset.dataobj.model.UserAsset;
+import com.gedoumi.quwabao.common.utils.ContextUtil;
+import com.gedoumi.quwabao.common.utils.ResponseObject;
 import com.gedoumi.quwabao.common.validate.MobilePhone;
-import com.gedoumi.quwabao.sys.service.SysLogService;
-import com.gedoumi.quwabao.user.dataobj.form.ResetPswdForm;
+import com.gedoumi.quwabao.user.dataobj.form.ResetPasswordForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
+import com.gedoumi.quwabao.user.dataobj.vo.UserInfoVO;
 import com.gedoumi.quwabao.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -28,20 +30,24 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    @Resource
-    private SysLogService logService;
-
     /**
      * 获取用户数据
      *
-     * @param mobile 手机号
      * @return ResponseObject
      */
     @GetMapping("/getUser")
-    public ResponseObject getUser(@NotBlank @MobilePhone String mobile) {
-        User user = userService.getByMobilePhone(mobile);
-        // TODO 使用VO代替
-        return new ResponseObject<>(user);
+    public ResponseObject getUser() {
+        // 获取作用域中用户
+        User user = ContextUtil.getUserFromRequest();
+        // 获取用户资产
+        UserAsset userAsset = userService.getUserAsset(user.getId());
+        // 封装返回信息
+        UserInfoVO userInfoVO = new UserInfoVO();
+        userInfoVO.setUsername(user.getUsername());
+        userInfoVO.setMobilePhone(user.getMobilePhone());
+        userInfoVO.setFrozenAsset(String.valueOf(userAsset.getFrozenAsset()));
+        userInfoVO.setRemainAsset(String.valueOf(userAsset.getRemainAsset()));
+        return new ResponseObject<>(userInfoVO);
     }
 
     /**
@@ -57,14 +63,14 @@ public class UserController {
     }
 
     /**
-     * 重置密码
+     * 重置密码（忘记密码）
      *
-     * @param resetPswdForm 重置密码
+     * @param resetPasswordForm 重置密码表单
      * @return ResponseObject
      */
     @PutMapping("/resetPswd")
-    public ResponseObject resetPswd(@RequestBody @Valid ResetPswdForm resetPswdForm) {
-        return new ResponseObject<>(userService.resetPswd(resetPswdForm));
+    public ResponseObject resetPswd(@RequestBody @Valid ResetPasswordForm resetPasswordForm) {
+        return new ResponseObject<>(userService.resetPswd(resetPasswordForm));
     }
 
 //    /**
@@ -74,7 +80,7 @@ public class UserController {
 //     * @return ResponseObject
 //     */
 //    @PutMapping("/updatePswd")
-//    public ResponseObject updatePswd(@RequestBody @Valid PswdVO pswdVO) {
+//    public ResponseObject updatePswd(@RequestBody @Valid UpdatePasswordForm pswdVO) {
 //
 //        ResponseObject responseObject = new ResponseObject();
 //        if (StringUtils.isEmpty(pswdVO.getOrgPswd()) || StringUtils.isEmpty(pswdVO.getPswd())) {
@@ -105,7 +111,7 @@ public class UserController {
 //     * @return ResponseObject
 //     */
 //    @PutMapping("/updateUsername")
-//    public ResponseObject updateUsername(@RequestBody ResetForm resetForm) {
+//    public ResponseObject updateUsername(@RequestBody UpdateUsernameForm resetForm) {
 //        User user = (User) ContextUtil.getSession().getAttribute(Constants.API_USER_KEY);
 //
 //        if (StringUtils.isEmpty(resetForm.getUserName())) {

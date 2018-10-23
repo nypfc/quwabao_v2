@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.component;
 
-import com.gedoumi.quwabao.common.base.ErrorResponseObject;
+import com.gedoumi.quwabao.common.utils.ResponseObject;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +33,8 @@ public class ApiExceptionAdvice {
      */
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(BAD_REQUEST)
-    public ErrorResponseObject businessException(BusinessException ex) {
-        return new ErrorResponseObject(ex.getCodeEnum());
+    public ResponseObject businessException(BusinessException ex) {
+        return new ResponseObject(ex.getCodeEnum());
     }
 
     /**
@@ -45,10 +45,10 @@ public class ApiExceptionAdvice {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
-    public ErrorResponseObject httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
+    public ResponseObject httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
         StringBuilder message = new StringBuilder("不支持的请求方式，当前请求方式为[");
         message.append(ex.getMethod()).append("]，支持的请求方式为").append(Arrays.toString(ex.getSupportedMethods()));
-        return new ErrorResponseObject(message.toString());
+        return new ResponseObject(message.toString());
     }
 
     /**
@@ -59,7 +59,7 @@ public class ApiExceptionAdvice {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(BAD_REQUEST)
-    public ErrorResponseObject methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseObject methodArgumentNotValidException(MethodArgumentNotValidException ex) {
         BindingResult bindingResult = ex.getBindingResult();
         StringBuilder sb = new StringBuilder("有");
         sb.append(bindingResult.getErrorCount()).append("个参数出现错误；");
@@ -69,7 +69,7 @@ public class ApiExceptionAdvice {
                 .append(fieldError.getDefaultMessage())
                 .append("；"));
         log.error(sb.toString());
-        return new ErrorResponseObject(CodeEnum.ParamError);
+        return new ResponseObject(CodeEnum.ParamError);
     }
 
     /**
@@ -80,9 +80,9 @@ public class ApiExceptionAdvice {
      */
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
-    public ErrorResponseObject runtimeException(RuntimeException ex) {
+    public ResponseObject runtimeException(RuntimeException ex) {
         ex.printStackTrace();
-        return new ErrorResponseObject(CodeEnum.SysError);
+        return new ResponseObject(CodeEnum.SysError);
     }
 
     /**
@@ -93,9 +93,9 @@ public class ApiExceptionAdvice {
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
-    public ErrorResponseObject exception(Exception ex) {
+    public ResponseObject exception(Exception ex) {
         ex.printStackTrace();
-        return new ErrorResponseObject(CodeEnum.SysError);
+        return new ResponseObject(CodeEnum.SysError);
     }
 
 }

@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
  * @author Minced
  */
 @Data
-public class ResetPswdForm {
+public class ResetPasswordForm {
 
     /**
      * 手机号

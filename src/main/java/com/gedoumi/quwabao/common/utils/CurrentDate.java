@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.common.base;
+package com.gedoumi.quwabao.common.utils;
 
 import lombok.Data;
 

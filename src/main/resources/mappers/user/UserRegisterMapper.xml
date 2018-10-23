@@ -48,4 +48,10 @@
                 #{idCard})
     </insert>
 
+    <select id="queryUserIdByInviteCode" resultType="Long">
+        SELECT id
+        FROM user
+        WHERE invite_code = #{param1}
+    </select>
+
 </mapper>
