@@ -30,14 +30,13 @@ public class FaceApi {
     public static String mall_id = "111381";
 
 
-    public static String getUrl(){
+    public static String getUrl() {
         String value = PropertiesUtils.getInstance().getValue("faceapi.url");
-        if(StringUtils.isNotEmpty(value)){
+        if (StringUtils.isNotEmpty(value)) {
             return value;
         }
         return url;
     }
-
 
     private static String getPostResult(HttpPost httpPost, String jsonString) throws IOException {
         httpPost.setHeader("Content-Type", "application/json");
@@ -52,11 +51,10 @@ public class FaceApi {
         return result;
     }
 
-
     private static String getFormString(HttpPost httpPost, HttpEntity formEntity) throws IOException {
         logger.info("formEntity = {}", formEntity);
 //        httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
-        httpPost.setHeader("Connection","close");
+        httpPost.setHeader("Connection", "close");
         httpPost.setEntity(formEntity);
         HttpResponse resp = HttpClientUtils.getInstance().getHttpClient().execute(httpPost);
         HttpEntity entity = resp.getEntity();
@@ -65,19 +63,16 @@ public class FaceApi {
         return result;
     }
 
-
-
     public static FaceApiResponse testFace(FaceVO faceVO) throws Exception {
         logger.info("faceVO {}", faceVO);
-        HttpPost httpPost=new HttpPost(getUrl()+path);
+        HttpPost httpPost = new HttpPost(getUrl() + path);
         String result = getFormString(httpPost, getFormEntity(faceVO));
 //        String result = getFormString(httpPost, getFormEntity(rechargeVO));
         logger.info("result = {}", result);
         return JsonUtil.jsonToPojo(result, FaceApiResponse.class);
     }
 
-
-    public static HttpEntity getFormEntity(FaceVO faceVO) throws UnsupportedEncodingException {
+    private static HttpEntity getFormEntity(FaceVO faceVO) throws UnsupportedEncodingException {
         List<NameValuePair> formParams = new ArrayList<>();
         formParams.add(new BasicNameValuePair("mall_id", faceVO.getMall_id()));
         formParams.add(new BasicNameValuePair("realname", faceVO.getRealname()));
@@ -90,6 +85,5 @@ public class FaceApi {
 //        return new GzipCompressingEntity(new UrlEncodedFormEntity(formParams, "UTF-8"));
 
     }
-
 
 }
