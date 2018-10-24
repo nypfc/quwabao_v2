@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,8 +24,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/v2/asset")
 @RestController
 public class UserAssetDetailController {
-
-    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     @Resource
     private UserAssetDetailService userAssetDetailService;
@@ -46,7 +43,7 @@ public class UserAssetDetailController {
         // 封装返回信息
         List<UserAssetDetailVO> assetDetailVOList = userAssetDetailList.stream().map(userAssetDetail -> {
             UserAssetDetailVO assetDetailVO = new UserAssetDetailVO();
-            assetDetailVO.setDay(sdf.format(userAssetDetail.getCreateTime()));
+            assetDetailVO.setDay(userAssetDetail.getCreateTime());
             assetDetailVO.setTransType(userAssetDetail.getTransType());
             assetDetailVO.setTransMoney(String.valueOf(userAssetDetail.getMoney()));
             return assetDetailVO;

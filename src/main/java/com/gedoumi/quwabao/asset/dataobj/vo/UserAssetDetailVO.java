@@ -1,6 +1,9 @@
 package com.gedoumi.quwabao.asset.dataobj.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 public class UserAssetDetailVO {
@@ -8,7 +11,8 @@ public class UserAssetDetailVO {
     /**
      * 日期
      */
-    private String day;
+    @JsonFormat(pattern = "yyyy.MM.dd")
+    private Date day;
 
     /**
      * 交易类型
