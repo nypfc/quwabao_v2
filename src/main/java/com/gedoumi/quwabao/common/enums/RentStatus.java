@@ -1,33 +1,26 @@
 package com.gedoumi.quwabao.common.enums;
 
+import lombok.Getter;
 
+/**
+ * 矿机状态枚举
+ *
+ * @author Minced
+ */
+@Getter
 public enum RentStatus {
 
-    Expired(0,"到期"),
-    Active(1,"激活");
+    STOP(0, "停止租用"),
+    ACTIVE(1, "正常"),
+    ;
 
-    private RentStatus(int value, String name){
+    private Integer value;
+
+    private String description;
+
+    RentStatus(Integer value, String description) {
         this.value = value;
-        this.name = name;
+        this.description = description;
     }
 
-    private int value;
-
-    private String name;
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

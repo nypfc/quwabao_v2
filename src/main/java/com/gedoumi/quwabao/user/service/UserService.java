@@ -1,7 +1,5 @@
 package com.gedoumi.quwabao.user.service;
 
-import com.gedoumi.quwabao.asset.dataobj.model.UserAsset;
-import com.gedoumi.quwabao.asset.service.UserAssetService;
 import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.SmsType;
@@ -10,7 +8,6 @@ import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
 import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.sys.service.SysSmsService;
-import com.gedoumi.quwabao.user.dataobj.dto.UserInfoDTO;
 import com.gedoumi.quwabao.user.dataobj.form.ResetPasswordForm;
 import com.gedoumi.quwabao.user.dataobj.form.UpdatePasswordForm;
 import com.gedoumi.quwabao.user.dataobj.form.UpdateUsernameForm;
@@ -39,8 +36,6 @@ public class UserService {
     private UserMapper userMapper;
 
     @Resource
-    private UserAssetService userAssetService;
-    @Resource
     private SysSmsService sysSmsService;
 
     @Resource
@@ -54,23 +49,6 @@ public class UserService {
      */
     public User getByToken(String token) {
         return userMapper.queryByToken(token);
-    }
-
-    /**
-     * 获取用户信息
-     *
-     * @return 用户信息传递对象
-     */
-    public UserInfoDTO getUserInfo() {
-        // 获取作用域中用户
-        User user = ContextUtil.getUserFromRequest();
-        // 获取用户资产
-        UserAsset userAsset = userAssetService.getUserAsset(user.getId());
-
-        UserInfoDTO userInfoDTO = new UserInfoDTO();
-        userInfoDTO.setUser(user);
-        userInfoDTO.setUserAsset(userAsset);
-        return userInfoDTO;
     }
 
     /**

@@ -21,7 +21,7 @@ import javax.validation.constraints.NotBlank;
  * @author Minced
  */
 @Validated
-@RequestMapping("/v2/register")
+@RequestMapping("/v2/user")
 @RestController
 public class UserRegisterController {
 
@@ -36,31 +36,31 @@ public class UserRegisterController {
      * @param mobile 手机号
      * @return ResponseObject
      */
-    @GetMapping("/check")
-    public ResponseObject checkMobilePhone(@NotBlank @MobilePhone String mobile) {
+    @GetMapping("/check/mobile/{mobile}")
+    public ResponseObject checkMobilePhone(@NotBlank @MobilePhone @PathVariable String mobile) {
         return new ResponseObject<>(userCheckService.checkMobilePhone(mobile));
     }
 
     /**
      * 验证邀请码
      *
-     * @param regInviteCode 注册邀请码
+     * @param inviteCode 邀请码
      * @return ResponseObject
      */
-    @GetMapping("/checkInviteCode")
-    public ResponseObject checkInviteCode(@NotBlank @Length(min = 4, max = 4) String regInviteCode) {
-        return new ResponseObject<>(userCheckService.checkInviteCode(regInviteCode));
+    @GetMapping("/check/inviteCode/{inviteCode}")
+    public ResponseObject checkInviteCode(@NotBlank @Length(min = 8, max = 8, message = "邀请码必须为8位") @PathVariable String inviteCode) {
+        return new ResponseObject<>(userCheckService.checkInviteCode(inviteCode));
     }
 
     /**
      * 验证用户名
      *
-     * @param userName 用户名
+     * @param username 用户名
      * @return ResponseObject
      */
-    @GetMapping("/checkName")
-    public ResponseObject checkUserName(@NotBlank String userName) {
-        return new ResponseObject<>(userCheckService.checkUsername(userName));
+    @GetMapping("/check/username/{username}")
+    public ResponseObject checkUserName(@NotBlank @PathVariable String username) {
+        return new ResponseObject<>(userCheckService.checkUsername(username));
     }
 
     /**
@@ -69,7 +69,7 @@ public class UserRegisterController {
      * @param registerForm 注册表单
      * @return ResponseObject
      */
-    @PostMapping("/reg")
+    @PostMapping
     public ResponseObject register(@RequestBody @Valid RegisterForm registerForm) {
         User user = userRegisterService.register(registerForm);
         // 封装返回数据

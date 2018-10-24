@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.common.utils;
 
-import lombok.Data;
+import lombok.Getter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,8 +12,8 @@ import java.util.Date;
  *
  * @author Minced
  */
-@Data
-public class CurrentDate {
+@Getter
+public final class CurrentDateUtil {
 
     /**
      * 当日开始时间
@@ -27,8 +27,9 @@ public class CurrentDate {
 
     /**
      * 构造方法
+     * 获取到当前日期的0点与隔天日期的0点
      */
-    public CurrentDate() {
+    public CurrentDateUtil() {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date startTime = sdf.parse(sdf.format(new Date()));

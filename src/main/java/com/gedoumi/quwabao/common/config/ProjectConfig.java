@@ -47,15 +47,19 @@ public class ProjectConfig implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        // 令牌验证拦截器
         registry.addInterceptor(apiRequestInterceptor())
                 .addPathPatterns("/v2/**")
-                // 登录与注册不需要拦截
+                // 登录不需要拦截
                 .excludePathPatterns("/v2/login/**")
-                .excludePathPatterns("/v2/register/**")
-                // 重置密码不需要拦截
-                .excludePathPatterns("/v2/user/getRpSmsCode/**")
-                .excludePathPatterns("/v2/user/resetPswd")
+                // 验证接口不需要拦截
+                .excludePathPatterns("/v2/user/check/**")
+                // 注册接口不需要拦截
+                .excludePathPatterns("/v2/user")
+                // 重置密码（忘记密码）接口不需要拦截
+                .excludePathPatterns("/v2/user/password/reset")
                 .order(0);
+        // 实名验证拦截器
         registry.addInterceptor(realNameInterceptor())
                 .addPathPatterns("/v2/uasset/rent", "/v2/uasset/transfer", "/v2/uasset/withdraw")
                 .order(1);
@@ -85,7 +89,7 @@ public class ProjectConfig implements WebMvcConfigurer {
     /**
      * 短信配置
      *
-     * @return 短信配置类
+     * @return 短信属性类
      */
     @Bean
     public SMSProperties smsProperties() {

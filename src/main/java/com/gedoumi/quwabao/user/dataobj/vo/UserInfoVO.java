@@ -21,13 +21,8 @@ public class UserInfoVO {
     private String mobilePhone;
 
     /**
-     * 余额
+     * 邀请码
      */
-    private String remainAsset;
-
-    /**
-     * 天使钻
-     */
-    private String frozenAsset;
+    private String inviteCode;
 
 }

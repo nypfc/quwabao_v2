@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gedoumi.quwabao.miner.mapper.MinerMapper">
+
+    <select id="queryList" resultType="SysRent">
+        SELECT *
+        FROM sys_rent
+        WHERE rent_status = #{param1}
+    </select>
+
+    <select id="queryUserRent" resultMap="rent">
+        SELECT ur.id,
+               ur.rent_asset,
+               ur.already_dig,
+               ur.total_asset,
+               ur.user_id,
+               ur.rent_type,
+               sr.name,
+               sr.money
+        FROM user_rent ur
+                 LEFT JOIN sys_rent sr ON sr.rent_code = ur.rent_type
+        WHERE ur.user_id = #{param1}
+          AND ur.rent_status = #{param2}
+    </select>
+    <resultMap id="rent" type="UserRent">
+        <id column="id" property="id"/>
+        <result column="rent_asset" property="rent_asset"/>
+        <result column="already_dig" property="already_dig"/>
+        <result column="total_asset" property="total_asset"/>
+        <result column="user_id" property="user_id"/>
+        <result column="rent_type" property="rent_type"/>
+        <collection property="rent" ofType="SysRent">
+            <result column="name" property="name"/>
+            <result column="money" property="money"/>
+        </collection>
+    </resultMap>
+
+</mapper>

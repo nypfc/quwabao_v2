@@ -1,12 +1,14 @@
 package com.gedoumi.quwabao.asset.service;
 
 import com.gedoumi.quwabao.asset.dataobj.model.UserAsset;
+import com.gedoumi.quwabao.asset.dataobj.model.UserAssetDetail;
 import com.gedoumi.quwabao.asset.mapper.UserAssetMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 用户资产Service

@@ -6,8 +6,7 @@ import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.SmsType;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.CodeUtils;
-import com.gedoumi.quwabao.common.utils.CurrentDate;
-import com.gedoumi.quwabao.component.RedisCache;
+import com.gedoumi.quwabao.common.utils.CurrentDateUtil;
 import com.gedoumi.quwabao.sys.dataobj.model.SysSms;
 import com.gedoumi.quwabao.sys.mapper.SysSmsMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +38,6 @@ public class SysSmsService {
     @Resource
     private SMSProperties smsProperties;
 
-    @Resource
-    private RedisCache redisCache;
-
     /**
      * 发送短信
      *
@@ -66,19 +62,9 @@ public class SysSmsService {
             log.error("短信类型参数错误，sendType:{}", sendType);
             throw new BusinessException(CodeEnum.SendSMSError);
         }
-        // 图片验证码验证
-        String cacheValidateCode = (String) redisCache.getKeyValueData("vCode:" + mobile);
-        if (cacheValidateCode == null) {
-            log.error("未获取到缓存验证码，cacheValidateCode:null");
-            throw new BusinessException(CodeEnum.ValidateCodeExpire);
-        }
-        if (!StringUtils.equals(cacheValidateCode, code.toUpperCase())) {
-            log.error("缓存的验证码:{}与参数验证码:{}不匹配", cacheValidateCode, code);
-            throw new BusinessException(CodeEnum.ValidateCodeError);
-        }
         // 当日短信上限验证
-        CurrentDate currentDate = new CurrentDate();
-        Integer count = sysSmsMapper.smsCurrentDayCount(mobile, currentDate.getStartTime(), currentDate.getEndTime());
+        CurrentDateUtil dateUtil = new CurrentDateUtil();
+        Integer count = sysSmsMapper.smsCurrentDayCount(mobile, dateUtil.getStartTime(), dateUtil.getEndTime());
         if (count >= Constants.SMS_DAY_COUNT) {
             log.error("手机号:{}当日验证码数量已达上限", mobile);
             throw new BusinessException(CodeEnum.SmsCountError);
@@ -100,9 +86,9 @@ public class SysSmsService {
         paramMap.add("password", password);
         paramMap.add("mobile", mobile);
         paramMap.add("content", content);
-        // 设置请求头
+        // post请求默认为application/json方式，改为拼接key=value的形式
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");  // post请求默认为application/json方式，改为拼接key=value的形式
+        headers.set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         HttpEntity requestEntity = new HttpEntity<>(paramMap, headers);
         // 发送Post请求
         String ret = new RestTemplate().postForObject(url, requestEntity, String.class);

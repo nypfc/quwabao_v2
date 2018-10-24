@@ -30,7 +30,7 @@ public class LoginController {
      * @param loginForm 登录表单
      * @return ResponseObject
      */
-    @PostMapping("/submit")
+    @PostMapping
     public ResponseObject submit(@RequestBody @Valid LoginForm loginForm) {
         User user = loginService.login(loginForm);
         // 封装返回信息
@@ -46,7 +46,7 @@ public class LoginController {
      *
      * @return ResponseObject
      */
-    @GetMapping("/logout")
+    @DeleteMapping
     public ResponseObject logout() {
         loginService.logout();
         return new ResponseObject();

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gedoumi.quwabao.asset.mapper.UserAssetDetailMapper">
+
+    <select id="queryDetailList" resultType="UserAssetDetail">
+        SELECT create_time, money, trans_type
+        FROM user_asset_detail
+        WHERE user_id = #{param1}
+        AND trans_type IN
+        <foreach collection="param2" index="index" item="item" open="(" separator="," close=")">#{param2}</foreach>
+    </select>
+
+</mapper>

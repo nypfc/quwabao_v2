@@ -17,9 +17,8 @@ public class MobilePhoneValidator implements ConstraintValidator<MobilePhone, St
 
     @Override
     public boolean isValid(String phone, ConstraintValidatorContext context) {
-        if (StringUtils.isEmpty(phone)) {
+        if (StringUtils.isEmpty(phone))
             return true;
-        }
         return Pattern.matches(REGEX, phone);
     }
 
