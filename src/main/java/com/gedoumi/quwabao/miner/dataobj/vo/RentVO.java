@@ -11,6 +11,11 @@ import lombok.Data;
 public class RentVO {
 
     /**
+     * 矿机类型
+     */
+    private Integer rentType;
+
+    /**
      * 矿机名称
      */
     private String rentName;

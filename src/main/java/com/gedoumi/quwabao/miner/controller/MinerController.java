@@ -5,7 +5,6 @@ import com.gedoumi.quwabao.common.utils.ResponseObject;
 import com.gedoumi.quwabao.miner.dataobj.model.Rent;
 import com.gedoumi.quwabao.miner.dataobj.model.UserRent;
 import com.gedoumi.quwabao.miner.dataobj.vo.RentVO;
-import com.gedoumi.quwabao.miner.dataobj.vo.UserRentInfoVO;
 import com.gedoumi.quwabao.miner.dataobj.vo.UserRentVO;
 import com.gedoumi.quwabao.miner.service.MinerService;
 import com.gedoumi.quwabao.user.dataobj.model.User;
@@ -71,10 +70,7 @@ public class MinerController {
             userRentVO.setRemainProfit(String.valueOf(remainProfit));
             return userRentVO;
         }).collect(Collectors.toList());
-        UserRentInfoVO userRentInfoVO = new UserRentInfoVO();
-        userRentInfoVO.setMobile(user.getMobilePhone());
-        userRentInfoVO.setUserRentVOList(userRentVOList);
-        return new ResponseObject<>(userRentInfoVO);
+        return new ResponseObject<>(userRentVOList);
     }
 
 }
