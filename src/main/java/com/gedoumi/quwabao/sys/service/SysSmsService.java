@@ -1,12 +1,11 @@
 package com.gedoumi.quwabao.sys.service;
 
 import com.gedoumi.quwabao.common.config.properties.SMSProperties;
-import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
-import com.gedoumi.quwabao.common.enums.SmsType;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.CodeUtils;
 import com.gedoumi.quwabao.common.utils.CurrentDateUtil;
+import com.gedoumi.quwabao.common.utils.DateUtil;
 import com.gedoumi.quwabao.sys.dataobj.model.SysSms;
 import com.gedoumi.quwabao.sys.mapper.SysSmsMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +14,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -43,35 +44,26 @@ public class SysSmsService {
      *
      * @param sendType 类型
      * @param mobile   手机号
-     * @param code     验证码
      */
-    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
-    public void sendSms(String sendType, String mobile, String code) {
-
+    @Transactional(rollbackFor = Exception.class)
+    public void sendSms(Integer sendType, String mobile) {
         // =========== 1.验证 ===========
-
-        // 类型验证
-        int type;  // 短信类型参数
-        if (StringUtils.equals(SmsType.Register.getName(), sendType)) {
-            type = SmsType.Register.getValue();
-        } else if (StringUtils.equals(SmsType.Login.getName(), sendType)) {
-            type = SmsType.Login.getValue();
-        } else if (StringUtils.equals(SmsType.ResetPswd.getName(), sendType)) {
-            type = SmsType.ResetPswd.getValue();
-        } else {
-            log.error("短信类型参数错误，sendType:{}", sendType);
-            throw new BusinessException(CodeEnum.SendSMSError);
+        // 判断是否重复发短信
+        CurrentDateUtil dateUtil = new CurrentDateUtil();
+        List<Date> dates = sysSmsMapper.smsCurrentDayCount(mobile, dateUtil.getStartTime(), dateUtil.getEndTime());
+        if (!CollectionUtils.isEmpty(dates)) {
+            if (DateUtil.timeDiffSec(dates.get(0), new Date()) <= smsProperties.getIntervalSecond()) {
+                log.error("手机号:{}重复发短信", mobile);
+                throw new BusinessException(CodeEnum.RepeatedlySMS);
+            }
         }
         // 当日短信上限验证
-        CurrentDateUtil dateUtil = new CurrentDateUtil();
-        Integer count = sysSmsMapper.smsCurrentDayCount(mobile, dateUtil.getStartTime(), dateUtil.getEndTime());
-        if (count >= Constants.SMS_DAY_COUNT) {
+        if (dates.size() >= smsProperties.getDayCount()) {
             log.error("手机号:{}当日验证码数量已达上限", mobile);
             throw new BusinessException(CodeEnum.SmsCountError);
         }
 
         // =========== 2.发送短信 ===========
-
         // 生成短信验证码
         String smsCode = CodeUtils.generateSMSCode();
         // 获取短信参数
@@ -86,7 +78,7 @@ public class SysSmsService {
         paramMap.add("password", password);
         paramMap.add("mobile", mobile);
         paramMap.add("content", content);
-        // post请求默认为application/json方式，改为拼接key=value的形式
+        // RestTemplate的post请求方式默认为application/json方式，改为拼接key=value的形式
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         HttpEntity requestEntity = new HttpEntity<>(paramMap, headers);
@@ -105,10 +97,9 @@ public class SysSmsService {
         }
 
         // =========== 3.创建短信 ===========
-
         SysSms sms = new SysSms();
         sms.setCode(smsCode);
-        sms.setSmsType(type);
+        sms.setSmsType(sendType);
         sms.setMobilePhone(mobile);
         sysSmsMapper.createSysSms(sms);
     }
@@ -131,7 +122,7 @@ public class SysSmsService {
      * @param mobile 手机号
      */
     public void updateSmsStatus(String mobile) {
-        sysSmsMapper.updateSmsStatus(mobile);
+        sysSmsMapper.updateSmsStatus(mobile, new Date());
     }
 
 }

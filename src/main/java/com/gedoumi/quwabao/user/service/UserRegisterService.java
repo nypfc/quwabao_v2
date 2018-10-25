@@ -56,7 +56,7 @@ public class UserRegisterService {
      * @param registerForm 注册表单
      * @return 注册成功的用户对象
      */
-    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
+    @Transactional(rollbackFor = Exception.class)
     public User register(RegisterForm registerForm) {
         // 获取参数
         String mobile = registerForm.getMobile();

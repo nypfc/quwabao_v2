@@ -11,16 +11,6 @@ import lombok.Data;
 public class LoginTokenVO {
 
     /**
-     * 手机号
-     */
-    private String mobilePhone;
-
-    /**
-     * 用户名
-     */
-    private String userName;
-
-    /**
      * 令牌
      */
     private String token;

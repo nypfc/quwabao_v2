@@ -34,25 +34,25 @@
     <update id="updateLoginErrorInfo" parameterType="User">
         UPDATE user
         SET error_count = #{errorCount},
-            error_time  = NOW(),
+            error_time  = #{errorTime},
             deviceId    = #{deviceId}
         WHERE id = #{id}
     </update>
 
     <update id="updateLoginInfo" parameterType="User">
         UPDATE user
-        SET last_login_time = NOW(),
+        SET last_login_time = #{lastLoginTime},
             error_count     = 0,
             last_login_ip   = #{lastLoginIp},
             token           = #{token},
             deviceId        = #{deviceId}
-        WHERE id = #{param1}
+        WHERE id = #{id}
     </update>
 
     <update id="updateLogoutInfo" parameterType="User">
         UPDATE user
         SET token       = #{token},
-            update_time = NOW()
+            update_time = #{updateTime}
         WHERE id = #{id}
     </update>
 

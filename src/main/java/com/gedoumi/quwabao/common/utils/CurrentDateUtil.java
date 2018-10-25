@@ -38,8 +38,7 @@ public final class CurrentDateUtil {
             calendar.setTime(startTime);
             calendar.add(Calendar.DAY_OF_MONTH, 1);
             this.endTime = calendar.getTime();
-        } catch (ParseException ex) {
-            ex.printStackTrace();
+        } catch (ParseException ignored) {
         }
     }
 

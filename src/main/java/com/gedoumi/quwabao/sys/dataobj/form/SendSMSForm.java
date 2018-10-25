@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.user.dataobj.form;
+package com.gedoumi.quwabao.sys.dataobj.form;
 
 import com.gedoumi.quwabao.common.validate.MobilePhone;
 import lombok.Data;
@@ -6,24 +6,18 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 /**
- * 登录表单
+ * 发送短信表单
  *
  * @author Minced
  */
 @Data
-public class LoginForm {
+public class SendSMSForm {
 
     /**
-     * 用户名
+     * 手机号
      */
     @NotBlank
     @MobilePhone
     private String mobile;
-
-    /**
-     * 密码
-     */
-    @NotBlank
-    private String password;
 
 }

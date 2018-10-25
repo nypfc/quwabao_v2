@@ -4,6 +4,7 @@ import com.gedoumi.quwabao.sys.dataobj.model.SysSms;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Date;
+import java.util.List;
 
 @Mapper
 public interface SysSmsMapper {
@@ -16,14 +17,14 @@ public interface SysSmsMapper {
     void createSysSms(SysSms sms);
 
     /**
-     * 查询当日短信数量
+     * 查询当日短信创建时间
      *
      * @param mobile    手机号
      * @param startTime 开始时间
      * @param endTime   结束时间
-     * @return 查询结果数量
+     * @return 日期集合
      */
-    Integer smsCurrentDayCount(String mobile, Date startTime, Date endTime);
+    List<Date> smsCurrentDayCount(String mobile, Date startTime, Date endTime);
 
     /**
      * 验证短信验证码
@@ -38,8 +39,9 @@ public interface SysSmsMapper {
     /**
      * 更新短息状态
      *
-     * @param mobile 手机号
+     * @param mobile     手机号
+     * @param updateTime 更新时间
      */
-    void updateSmsStatus(String mobile);
+    void updateSmsStatus(String mobile, Date updateTime);
 
 }

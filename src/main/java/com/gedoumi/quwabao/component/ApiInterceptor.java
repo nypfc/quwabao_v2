@@ -31,19 +31,20 @@ public class ApiInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // 获取设备ID与令牌
-        log.debug("in preHandler : {}", request.getRequestURI());
+        log.info("RequestURI: {}", request.getRequestURI());
         String deviceId = request.getHeader(DEVICE_ID);
-        log.debug("in preHandler deviceId: {}", deviceId);
+        log.info("DeviceID: {}", deviceId);
         String authToken = request.getHeader(AUTH_TOKEN);
-        log.debug("in preHandler authToken: {}", authToken);
+        log.info("AuthToken: {}", authToken);
         // 判断令牌有效性
-        if (StringUtils.isEmpty(authToken)) throw new BusinessException(CodeEnum.FailedToGetToken);
+        if (StringUtils.isEmpty(authToken) || StringUtils.isEmpty(deviceId))
+            throw new BusinessException(CodeEnum.EmptyTokenOrDeviceId);
         User user = (User) redisCache.getKeyValueData(authToken);
         // 如果未能从缓存中获取到用户，则从数据库中获取用户
         if (user == null) {
             user = Optional.ofNullable(userService.getByToken(authToken)).orElseThrow(() -> {
                 log.error("token:{}未查询到用户", authToken);
-                return new BusinessException(CodeEnum.UnLogin);
+                return new BusinessException(CodeEnum.InvalidToken);
             });
         }
         // 判断重复登录

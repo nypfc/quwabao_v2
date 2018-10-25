@@ -7,7 +7,7 @@ public enum SmsType {
 
     Register(0, "register", "注册"),
     Login(1, "login", "登录"),
-    ResetPswd(2, "resetPwd", "重置密码"),
+    ResetPassword(2, "resetPwd", "重置密码"),
     ;
 
     private int value;

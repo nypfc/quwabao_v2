@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 
 /**
  * 用户注册Controller
@@ -37,7 +36,7 @@ public class UserRegisterController {
      * @return ResponseObject
      */
     @GetMapping("/check/mobile/{mobile}")
-    public ResponseObject checkMobilePhone(@NotBlank @MobilePhone @PathVariable String mobile) {
+    public ResponseObject checkMobilePhone(@MobilePhone @PathVariable String mobile) {
         return new ResponseObject<>(userCheckService.checkMobilePhone(mobile));
     }
 
@@ -48,7 +47,7 @@ public class UserRegisterController {
      * @return ResponseObject
      */
     @GetMapping("/check/inviteCode/{inviteCode}")
-    public ResponseObject checkInviteCode(@NotBlank @Length(min = 8, max = 8, message = "邀请码必须为8位") @PathVariable String inviteCode) {
+    public ResponseObject checkInviteCode(@Length(min = 8, max = 8, message = "Invite code length must be 8 characters") @PathVariable String inviteCode) {
         return new ResponseObject<>(userCheckService.checkInviteCode(inviteCode));
     }
 
@@ -59,7 +58,7 @@ public class UserRegisterController {
      * @return ResponseObject
      */
     @GetMapping("/check/username/{username}")
-    public ResponseObject checkUserName(@NotBlank @PathVariable String username) {
+    public ResponseObject checkUserName(@PathVariable String username) {
         return new ResponseObject<>(userCheckService.checkUsername(username));
     }
 
@@ -69,13 +68,11 @@ public class UserRegisterController {
      * @param registerForm 注册表单
      * @return ResponseObject
      */
-    @PostMapping
+    @PostMapping("/register")
     public ResponseObject register(@RequestBody @Valid RegisterForm registerForm) {
         User user = userRegisterService.register(registerForm);
         // 封装返回数据
         LoginTokenVO loginTokenVO = new LoginTokenVO();
-        loginTokenVO.setUserName(user.getUsername());
-        loginTokenVO.setMobilePhone(user.getMobilePhone());
         loginTokenVO.setToken(user.getToken());
         return new ResponseObject<>();
     }

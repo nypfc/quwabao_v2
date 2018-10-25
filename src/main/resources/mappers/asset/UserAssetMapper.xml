@@ -6,7 +6,14 @@
 <mapper namespace="com.gedoumi.quwabao.asset.mapper.UserAssetMapper">
 
     <select id="queryByUserId" resultType="UserAsset">
-        SELECT frozen_asset, remain_asset, profit
+        SELECT id,
+               create_time,
+               frozen_asset,
+               remain_asset,
+               profit,
+               total_asset,
+               update_time,
+               user_id
         FROM user_asset
         WHERE user_id = #{param1}
     </select>
@@ -21,7 +28,7 @@
                                 user_id,
                                 init_frozen_asset,
                                 init_base_asset)
-        VALUES (${createTime},
+        VALUES (#{createTime},
                 #{frozenAsset},
                 #{profit},
                 #{remainAsset},

@@ -41,8 +41,8 @@ public class MinerController {
         List<RentVO> rentVOList = rentList.stream().map(rent -> {
             RentVO rentVO = new RentVO();
             rentVO.setRentName(rent.getName());
-            rentVO.setRentMoney(String.valueOf(rent.getMoney()));
-            rentVO.setTotalRemain(String.valueOf(rent.getProfitMoneyExt()));
+            rentVO.setRentMoney(rent.getMoney().stripTrailingZeros().toPlainString());
+            rentVO.setTotalRemain(rent.getProfitMoneyExt().stripTrailingZeros().toPlainString());
             return rentVO;
         }).collect(Collectors.toList());
         return new ResponseObject<>(rentVOList);
@@ -53,7 +53,7 @@ public class MinerController {
      *
      * @return ResponseObject
      */
-    @GetMapping("/rentList")
+    @GetMapping("/list/rent")
     public ResponseObject userRentList() {
         // 获取用户信息
         User user = ContextUtil.getUserFromRequest();
@@ -63,11 +63,11 @@ public class MinerController {
         List<UserRentVO> userRentVOList = userRents.stream().map(userRent -> {
             UserRentVO userRentVO = new UserRentVO();
             userRentVO.setRentName(userRent.getRent().getName());
-            userRentVO.setRentMoney(String.valueOf(userRent.getRent().getMoney()));
-            userRentVO.setLastDig(String.valueOf(userRent.getLastDig()));
+            userRentVO.setLastDig(userRent.getLastDig().stripTrailingZeros().toPlainString());
             // 矿机剩余收益
-            BigDecimal remainProfit = userRent.getTotalAsset().subtract(userRent.getAlreadyDig()).setScale(5, BigDecimal.ROUND_DOWN);
-            userRentVO.setRemainProfit(String.valueOf(remainProfit));
+            BigDecimal remainProfit = userRent.getTotalAsset().subtract(userRent.getAlreadyDig())
+                    .setScale(5, BigDecimal.ROUND_DOWN).stripTrailingZeros();
+            userRentVO.setRemainProfit(remainProfit.toPlainString());
             return userRentVO;
         }).collect(Collectors.toList());
         return new ResponseObject<>(userRentVOList);

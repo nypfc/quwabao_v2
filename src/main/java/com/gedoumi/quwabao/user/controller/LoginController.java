@@ -1,5 +1,8 @@
 package com.gedoumi.quwabao.user.controller;
 
+import com.gedoumi.quwabao.common.enums.CodeEnum;
+import com.gedoumi.quwabao.common.exception.BusinessException;
+import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.ResponseObject;
 import com.gedoumi.quwabao.user.dataobj.form.LoginForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
@@ -35,8 +38,6 @@ public class LoginController {
         User user = loginService.login(loginForm);
         // 封装返回信息
         LoginTokenVO loginTokenVO = new LoginTokenVO();
-        loginTokenVO.setUserName(user.getUsername());
-        loginTokenVO.setMobilePhone(user.getMobilePhone());
         loginTokenVO.setToken(user.getToken());
         return new ResponseObject<>(loginTokenVO);
     }
@@ -48,7 +49,7 @@ public class LoginController {
      */
     @DeleteMapping
     public ResponseObject logout() {
-        loginService.logout();
+        loginService.logout(ContextUtil.getTokenFromHead());
         return new ResponseObject();
     }
 

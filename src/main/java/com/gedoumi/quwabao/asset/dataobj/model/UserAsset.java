@@ -21,7 +21,7 @@ public class UserAsset {
     /**
      * 创建时间
      */
-    private Date createTime;
+    private Date createTime = new Date();
 
     /**
      * 天使钻
@@ -46,7 +46,7 @@ public class UserAsset {
     /**
      * 更新时间
      */
-    private Date updateTime;
+    private Date updateTime = new Date();
 
     /**
      * 用户ID
@@ -54,12 +54,12 @@ public class UserAsset {
     private Long userId;
 
     /**
-     * 上线交易所后，初始的解冻资产
+     * 冗余字段
      */
     private BigDecimal initFrozenAsset = BigDecimal.ZERO;
 
     /**
-     * 上线交易所后，初始的业绩基数,本人及所有下线天使钻之和
+     * 冗余字段
      */
     private BigDecimal initBaseAsset = BigDecimal.ZERO;
 

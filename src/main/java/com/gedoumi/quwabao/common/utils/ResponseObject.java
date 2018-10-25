@@ -15,7 +15,7 @@ public class ResponseObject<T> {
     /**
      * 状态码
      */
-    private String code;
+    private Integer code;
 
     /**
      * 信息
@@ -49,21 +49,22 @@ public class ResponseObject<T> {
     /**
      * 错误信息构造方法
      *
-     * @param message 信息
+     * @param codeEnum 状态枚举
      */
-    public ResponseObject(String message) {
-        this.code = CodeEnum.SysError.getCode();
-        this.message = message;
+    public ResponseObject(CodeEnum codeEnum) {
+        this.code = codeEnum.getCode();
+        this.message = codeEnum.getMessage();
     }
 
     /**
      * 错误信息构造方法
      *
      * @param codeEnum 状态枚举
+     * @param message  自定义信息
      */
-    public ResponseObject(CodeEnum codeEnum) {
+    public ResponseObject(CodeEnum codeEnum, String message) {
         this.code = codeEnum.getCode();
-        this.message = codeEnum.getMessage();
+        this.message = message;
     }
 
 }

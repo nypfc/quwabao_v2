@@ -24,7 +24,7 @@ public class SysLogService {
      *
      * @param sysLog 日志对象
      */
-    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
+    @Transactional(rollbackFor = Exception.class)
     public void createSysLog(SysLog sysLog) {
         sysLogMapper.createSysLog(sysLog);
     }

@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.asset.dataobj.vo;
+package com.gedoumi.quwabao.user.dataobj.vo;
 
 import lombok.Data;
 
@@ -11,11 +11,6 @@ import lombok.Data;
 public class UserAssetVO {
 
     /**
-     * 手机号
-     */
-    private String mobile;
-
-    /**
      * 总收益
      */
     private String totalProfit;
@@ -24,10 +19,5 @@ public class UserAssetVO {
      * 余额
      */
     private String remainAsset;
-
-    /**
-     * 天使钻
-     */
-    private String frozenAsset;
 
 }

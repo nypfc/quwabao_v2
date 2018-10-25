@@ -10,7 +10,7 @@
         FROM user_asset_detail
         WHERE user_id = #{param1}
         AND trans_type IN
-        <foreach collection="param2" index="index" item="item" open="(" separator="," close=")">#{param2}</foreach>
+        <foreach collection="param2" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
     </select>
 
 </mapper>

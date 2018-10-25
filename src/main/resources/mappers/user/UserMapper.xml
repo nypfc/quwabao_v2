@@ -40,15 +40,15 @@
         SET password        = #{password},
             token           = #{token},
             last_login_ip   = #{lastLoginIp},
-            update_time     = NOW(),
-            last_login_time = NOW()
+            update_time     = #{updateTime},
+            last_login_time = #{lastLoginTime}
         WHERE id = #{id}
     </update>
 
     <update id="updatePassword" parameterType="User">
         UPDATE user
         SET password    = #{password},
-            update_time = NOW()
+            update_time = #{updateTime}
         WHERE id = #{id}
     </update>
 

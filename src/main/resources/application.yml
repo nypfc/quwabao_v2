@@ -1,30 +1,9 @@
+# ============ 公共配置 ============
 spring:
-  datasource:
-    druid:  # druid连接池配置
-      url: jdbc:mysql://localhost:3306/pfc?characterEncoding=utf-8&useSSL=false  # 数据库URL
-      username: root  # 数据库用户名
-      password: root  # 数据库密码
-      driverClassName: com.mysql.jdbc.Driver  # 数据库驱动类
-      maxActive: 30  # 最大连接数
-      minIdle: 5  # 最小保持的连接数
-      maxWait: 10000  # 获取连接的最大等待时间
-      validationQuery: 'SELECT 1'  # 解决Mysql8小时的问题，验证连接是否有效
-      timeBetweenEvictionRunsMillis: 60000  # 空闲连接检查的时间间隔
-      minEvictableIdleTimeMillis: 300000  # 空闲连接最小空闲时间
   jackson:  # Jackson序列化配置
     default-property-inclusion: non_null
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
-  redis:  # Redis配置
-    host: 192.168.12.235
-    port: 9999
-    password: redis
-    jedis:
-      pool:
-        min-idle: 10
-        max-idle: 100
-        max-wait: 1000
-        max-active: 20
 
 mybatis:  # MyBatis配置
   type-aliases-package: com.gedoumi.quwabao  # 别名包
@@ -42,9 +21,9 @@ pagehelper:  # MyBatis分页插件配置
   support-methods-arguments: true
   params: count=countSql
 
-# 账号：xiangqiandaihy 密码：65tkXZ 这个是正式账号
-# 账e号账号：yingdinghy 密码：e0pHmm
 sms:  # 短信配置
   url: http://www.api.zthysms.com/sendSms.do
   username: xiangqiandaihy
   password: 65tkXZ
+  day-count: 10  # 每日短信数量
+  interval-second: 60  # 短信间隔时间

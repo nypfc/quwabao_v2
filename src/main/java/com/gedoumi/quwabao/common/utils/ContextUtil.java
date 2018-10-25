@@ -6,10 +6,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.util.Objects;
 
 import static com.gedoumi.quwabao.common.constants.Constants.API_USER_KEY;
+import static com.gedoumi.quwabao.common.constants.Constants.AUTH_TOKEN;
 
 /**
  * 上下文工具类
@@ -56,7 +56,7 @@ public class ContextUtil {
      * @return 令牌
      */
     public static String getTokenFromHead() {
-        return getRequest().getHeader("auth-token");
+        return getRequest().getHeader(AUTH_TOKEN);
     }
 
     /**

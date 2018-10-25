@@ -7,14 +7,15 @@
 
     <insert id="createSysSms" parameterType="SysSms">
         INSERT INTO sys_sms (code, create_time, mobile_phone, sms_status, sms_type, update_time)
-        VALUES (#{code}, NOW(), #{mobilePhone}, #{smsStatus}, #{smsType}, NOW())
+        VALUES (#{code}, #{createTime}, #{mobilePhone}, #{smsStatus}, #{smsType}, #{updateTime})
     </insert>
 
-    <select id="smsCurrentDayCount" resultType="SysSms">
-        SELECT count(0)
+    <select id="smsCurrentDayCount" resultType="Date">
+        SELECT create_time
         FROM sys_sms
         WHERE mobile_phone = #{param1}
           AND create_time BETWEEN #{param2} AND #{param3}
+        ORDER BY create_time DESC
     </select>
 
     <select id="checkSms" resultType="Date">
@@ -30,7 +31,8 @@
 
     <update id="updateSmsStatus">
         UPDATE sys_sms
-        SET sms_status = 0
+        SET sms_status  = 0,
+            update_time = #{param2}
         WHERE mobile_phone = #{param1}
     </update>
 

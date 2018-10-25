@@ -5,8 +5,8 @@
 
 <mapper namespace="com.gedoumi.quwabao.miner.mapper.MinerMapper">
 
-    <select id="queryList" resultType="SysRent">
-        SELECT *
+    <select id="queryList" resultType="Rent">
+        SELECT rent_code, name, money, profit_money_ext
         FROM sys_rent
         WHERE rent_status = #{param1}
     </select>
@@ -14,6 +14,7 @@
     <select id="queryUserRent" resultMap="rent">
         SELECT ur.id,
                ur.rent_asset,
+               ur.last_dig,
                ur.already_dig,
                ur.total_asset,
                ur.user_id,
@@ -27,12 +28,13 @@
     </select>
     <resultMap id="rent" type="UserRent">
         <id column="id" property="id"/>
-        <result column="rent_asset" property="rent_asset"/>
-        <result column="already_dig" property="already_dig"/>
-        <result column="total_asset" property="total_asset"/>
-        <result column="user_id" property="user_id"/>
-        <result column="rent_type" property="rent_type"/>
-        <collection property="rent" ofType="SysRent">
+        <result column="rent_asset" property="rentAsset"/>
+        <result column="last_dig" property="lastDig"/>
+        <result column="already_dig" property="alreadyDig"/>
+        <result column="total_asset" property="totalAsset"/>
+        <result column="user_id" property="userId"/>
+        <result column="rent_type" property="rentType"/>
+        <collection property="rent" ofType="Rent">
             <result column="name" property="name"/>
             <result column="money" property="money"/>
         </collection>

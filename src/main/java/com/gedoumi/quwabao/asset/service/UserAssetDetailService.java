@@ -35,14 +35,13 @@ public class UserAssetDetailService {
      * @return 资产详情集合
      */
     public List<UserAssetDetail> getUserAssetDetailList(Long userId, String type) {
-        String uri = ContextUtil.getRequest().getRequestURI();
         List<Integer> transTypeList;
-        switch (uri) {
+        switch (type) {
             case "profit":
                 // TODO 后面添加俱乐部收益（绩差收益）
                 transTypeList = Lists.newArrayList(TransType.Profit.getValue(), TransType.Reward.getValue());
                 break;
-            case "transaction":
+            case "trans":
                 transTypeList = Lists.newArrayList(TransType.TransOut.getValue(), TransType.TransIn.getValue(),
                         TransType.NetIn.getValue(), TransType.NetOut.getValue(), TransType.FrozenIn.getValue());
                 break;

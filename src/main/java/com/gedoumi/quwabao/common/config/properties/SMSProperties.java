@@ -33,6 +33,16 @@ public class SMSProperties {
     private String password;
 
     /**
+     * 每日短信上限
+     */
+    private Integer dayCount;
+
+    /**
+     * 短信间隔时间
+     */
+    private Integer intervalSecond;
+
+    /**
      * @return MD5加密后的密码
      */
     public String getPassword() {

@@ -18,11 +18,6 @@ public class UserRentVO {
     private String rentName;
 
     /**
-     * 矿机价格
-     */
-    private String rentMoney;
-
-    /**
      * 上次挖矿收益
      */
     private String lastDig;

@@ -52,6 +52,8 @@ public class ProjectConfig implements WebMvcConfigurer {
                 .addPathPatterns("/v2/**")
                 // 登录不需要拦截
                 .excludePathPatterns("/v2/login/**")
+                // 短信接口不需要拦截
+                .excludePathPatterns("/v2/sms/**")
                 // 验证接口不需要拦截
                 .excludePathPatterns("/v2/user/check/**")
                 // 注册接口不需要拦截

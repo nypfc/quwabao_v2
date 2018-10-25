@@ -21,7 +21,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface MobilePhone {
 
-    String message() default "手机号格式不正确";
+    String message() default "wrong phone number";
 
     Class<?>[] groups() default {};
 

@@ -16,6 +16,7 @@ import com.gedoumi.quwabao.user.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -57,6 +58,7 @@ public class UserService {
      * @param resetPasswordForm 重置密码表单
      * @return 重置密码后的用户对象
      */
+    @Transactional(rollbackFor = Exception.class)
     public User resetPassword(ResetPasswordForm resetPasswordForm) {
         // 获取用户
         User user = ContextUtil.getUserFromRequest();
@@ -65,7 +67,7 @@ public class UserService {
         String password = resetPasswordForm.getPassword();
         String smsCode = resetPasswordForm.getSmsCode();
         // 短信验证
-        Date date = Optional.ofNullable(sysSmsService.getSms(mobile, smsCode, SmsType.ResetPswd.getValue())).orElseThrow(() -> new BusinessException(CodeEnum.ValidateCodeExpire));
+        Date date = Optional.ofNullable(sysSmsService.getSms(mobile, smsCode, SmsType.ResetPassword.getValue())).orElseThrow(() -> new BusinessException(CodeEnum.ValidateCodeExpire));
         long second = (new Date().getTime() - date.getTime()) / 1000;
         if (second >= Constants.EXPIRE_TIMES) {
             log.error("手机号:{}注册短信验证码:{}已过期", mobile, smsCode);
@@ -77,6 +79,9 @@ public class UserService {
         user.setPassword(encrypedPassword);
         user.setToken(token);
         user.setLastLoginIp(ContextUtil.getClientIp());
+        Date now = new Date();
+        user.setUpdateTime(now);
+        user.setLastLoginTime(now);
         userMapper.resetPassword(user);
         // 更新缓存
         redisCache.setKeyValueData(token, user);
@@ -88,6 +93,7 @@ public class UserService {
      *
      * @param updatePasswordForm 修改密码表单
      */
+    @Transactional(rollbackFor = Exception.class)
     public void updatePassword(UpdatePasswordForm updatePasswordForm) {
         // 从作用域中获取用户
         User user = ContextUtil.getUserFromRequest();
@@ -101,6 +107,7 @@ public class UserService {
         // 修改密码
         String pswd = MD5EncryptUtil.md5Encrypy(updatePasswordForm.getPswd(), salt);
         user.setPassword(pswd);
+        user.setUpdateTime(new Date());
         userMapper.updatePassword(user);
         // 更新缓存
         redisCache.setKeyValueData(user.getToken(), user);
@@ -111,6 +118,7 @@ public class UserService {
      *
      * @param updateUsernameForm 修改用户名表单
      */
+    @Transactional(rollbackFor = Exception.class)
     public void updateUsername(UpdateUsernameForm updateUsernameForm) {
         // 获取参数
         String username = updateUsernameForm.getUserName();
