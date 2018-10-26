@@ -2,10 +2,12 @@ package com.gedoumi.quwabao.sys.service;
 
 import com.gedoumi.quwabao.common.config.properties.SMSProperties;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
+import com.gedoumi.quwabao.common.enums.SmsStatus;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.CodeUtils;
 import com.gedoumi.quwabao.common.utils.CurrentDateUtil;
 import com.gedoumi.quwabao.common.utils.DateUtil;
+import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.sys.dataobj.model.SysSms;
 import com.gedoumi.quwabao.sys.mapper.SysSmsMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -39,6 +42,9 @@ public class SysSmsService {
     @Resource
     private SMSProperties smsProperties;
 
+    @Resource
+    private RedisCache redisCache;
+
     /**
      * 发送短信
      *
@@ -48,19 +54,19 @@ public class SysSmsService {
     @Transactional(rollbackFor = Exception.class)
     public void sendSms(Integer sendType, String mobile) {
         // =========== 1.验证 ===========
-        // 判断是否重复发短信
         CurrentDateUtil dateUtil = new CurrentDateUtil();
         List<Date> dates = sysSmsMapper.smsCurrentDayCount(mobile, dateUtil.getStartTime(), dateUtil.getEndTime());
+        // 当日短信上限验证
+        if (dates.size() >= smsProperties.getDayCount()) {
+            log.error("手机号:{}当日验证码数量已达上限", mobile);
+            throw new BusinessException(CodeEnum.SmsCountError);
+        }
+        // 判断是否重复发短信
         if (!CollectionUtils.isEmpty(dates)) {
             if (DateUtil.timeDiffSec(dates.get(0), new Date()) <= smsProperties.getIntervalSecond()) {
                 log.error("手机号:{}重复发短信", mobile);
                 throw new BusinessException(CodeEnum.RepeatedlySMS);
             }
-        }
-        // 当日短信上限验证
-        if (dates.size() >= smsProperties.getDayCount()) {
-            log.error("手机号:{}当日验证码数量已达上限", mobile);
-            throw new BusinessException(CodeEnum.SmsCountError);
         }
 
         // =========== 2.发送短信 ===========
@@ -102,6 +108,10 @@ public class SysSmsService {
         sms.setSmsType(sendType);
         sms.setMobilePhone(mobile);
         sysSmsMapper.createSysSms(sms);
+
+        // =========== 4.缓存短信 ===========
+        String key = "sms:" + mobile;
+        redisCache.setExpireKeyValueData(key, sms, (long) smsProperties.getExpiredSecond(), TimeUnit.SECONDS);
     }
 
     /**
@@ -113,7 +123,7 @@ public class SysSmsService {
      * @return 短信创建日期
      */
     public Date getSms(String mobilePhone, String smsCode, Integer type) {
-        return sysSmsMapper.checkSms(mobilePhone, smsCode, type);
+        return sysSmsMapper.checkSms(mobilePhone, smsCode, type, SmsStatus.Enable.getValue());
     }
 
     /**
@@ -122,7 +132,7 @@ public class SysSmsService {
      * @param mobile 手机号
      */
     public void updateSmsStatus(String mobile) {
-        sysSmsMapper.updateSmsStatus(mobile, new Date());
+        sysSmsMapper.updateSmsStatus(mobile, new Date(), SmsStatus.Disable.getValue(), SmsStatus.Enable.getValue());
     }
 
 }

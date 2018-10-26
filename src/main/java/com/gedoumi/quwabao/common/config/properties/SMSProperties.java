@@ -43,6 +43,11 @@ public class SMSProperties {
     private Integer intervalSecond;
 
     /**
+     * 短信过期时间
+     */
+    private Integer expiredSecond;
+
+    /**
      * @return MD5加密后的密码
      */
     public String getPassword() {

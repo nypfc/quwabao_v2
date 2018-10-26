@@ -4,6 +4,17 @@ spring:
     default-property-inclusion: non_null
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  freemarker:  # Freemarker配置
+    charset: UTF-8
+    content-type: text/html;charset=UTF-8
+    expose-request-attributes: true
+    expose-session-attributes: true
+    expose-spring-macro-helpers: true
+    suffix: .ftl  # 后缀.ftl可省略
+    settings:
+      datetime_format: yyyy-MM-dd HH:mm:ss
+      default_encoding: UTF-8
+      auto_import: common/common.ftl as common  # 将common.ftl设置为包文件并设置别名为common
 
 mybatis:  # MyBatis配置
   type-aliases-package: com.gedoumi.quwabao  # 别名包
@@ -26,4 +37,13 @@ sms:  # 短信配置
   username: xiangqiandaihy
   password: 65tkXZ
   day-count: 10  # 每日短信数量
-  interval-second: 60  # 短信间隔时间
+  interval-second: 60  # 短信间隔时间（单位：秒）
+  expired-second: 60  # 短信过期时间（单位：秒）
+
+task:  # 线程池配置
+  pool:
+    core-pool-size: 10
+    max-pool-size: 20
+    queue-capacity: 100
+    keep-alive-second: 60
+    thread-name-prefix: SMS-Thread

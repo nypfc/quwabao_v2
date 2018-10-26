@@ -6,6 +6,11 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 短信Mapper
+ *
+ * @author Minced
+ */
 @Mapper
 public interface SysSmsMapper {
 
@@ -29,19 +34,22 @@ public interface SysSmsMapper {
     /**
      * 验证短信验证码
      *
-     * @param mobile  手机号
-     * @param smsCode 短信验证码
-     * @param smsType 短信类型
+     * @param mobile    手机号
+     * @param smsCode   短信验证码
+     * @param smsType   短信类型
+     * @param smsStatus 短信状态
      * @return 短信创建时间
      */
-    Date checkSms(String mobile, String smsCode, Integer smsType);
+    Date checkSms(String mobile, String smsCode, Integer smsType, Integer smsStatus);
 
     /**
      * 更新短息状态
      *
-     * @param mobile     手机号
-     * @param updateTime 更新时间
+     * @param mobile       手机号
+     * @param updateTime   更新时间
+     * @param updateStatus 待更新的状态
+     * @param queryStatus  查询条件状态
      */
-    void updateSmsStatus(String mobile, Date updateTime);
+    void updateSmsStatus(String mobile, Date updateTime, Integer updateStatus, Integer queryStatus);
 
 }
