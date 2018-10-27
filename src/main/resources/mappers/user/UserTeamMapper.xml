@@ -3,7 +3,14 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.gedoumi.quwabao.team.mapper.UserTreeMapper">
+<mapper namespace="com.gedoumi.quwabao.user.mapper.UserTeamMapper">
+
+    <select id="queryUserByParentId" resultType="User">
+        SELECT u.mobile_phone, u.username
+        FROM user_tree ut
+                 LEFT JOIN user u ON u.id = ut.child_id
+        WHERE ut.parent_id = #{param1}
+    </select>
 
     <insert id="createUserTree">
         INSERT INTO user_tree (child_id, parent_id)

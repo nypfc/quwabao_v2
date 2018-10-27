@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.team.dataobj.model;
+package com.gedoumi.quwabao.user.dataobj.model;
 
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import lombok.Data;

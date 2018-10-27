@@ -4,6 +4,8 @@ import com.gedoumi.quwabao.asset.dataobj.model.UserAsset;
 import com.gedoumi.quwabao.asset.service.UserAssetService;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.ResponseObject;
+import com.gedoumi.quwabao.user.dataobj.model.UserRent;
+import com.gedoumi.quwabao.user.dataobj.vo.UserRentVO;
 import com.gedoumi.quwabao.user.dataobj.form.ResetPasswordForm;
 import com.gedoumi.quwabao.user.dataobj.form.UpdatePasswordForm;
 import com.gedoumi.quwabao.user.dataobj.form.UpdateUsernameForm;
@@ -19,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户Controller

@@ -9,7 +9,6 @@ import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
 import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.sys.service.SysSmsService;
-import com.gedoumi.quwabao.team.service.UserTreeService;
 import com.gedoumi.quwabao.user.dataobj.form.RegisterForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import com.gedoumi.quwabao.user.mapper.UserRegisterMapper;
@@ -46,7 +45,7 @@ public class UserRegisterService {
     @Resource
     private UserAssetService userAssetService;
     @Resource
-    private UserTreeService userTreeService;
+    private UserTeamService userTeamService;
     @Resource
     private RedisCache redisCache;
 
@@ -100,6 +99,10 @@ public class UserRegisterService {
         user.setValidateStatus(UserValidateStatus.Init.getValue());
         user.setRegInviteCode(inviteCode);
         user.setInviteCode(CodeUtils.generateCode());
+        Date now = new Date();
+        user.setLastLoginTime(now);
+        user.setRegisterTime(now);
+        user.setUpdateTime(now);
         while (userCheckService.checkInviteCode(user.getInviteCode()))
             user.setInviteCode(CodeUtils.generateCode());  // 设置邀请码，如果重复重新生成
         if (StringUtils.isEmpty(username))
@@ -116,7 +119,7 @@ public class UserRegisterService {
         // 创建用户上下级关系
         Long parentId = userRegisterMapper.queryUserIdByInviteCode(inviteCode);
         try {
-            userTreeService.createUserTree(userId, parentId);
+            userTeamService.createUserTree(userId, parentId);
         } catch (DuplicateKeyException ex) {
             log.error("userId:{} parentId:{} 一个用户只能拥有一个上级", userId, parentId);
             throw new BusinessException(CodeEnum.BindInviteCodeError);

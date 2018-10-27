@@ -15,9 +15,8 @@ public interface UserRegisterMapper {
      * 创建用户
      *
      * @param user 用户对象
-     * @return 用户ID
      */
-    Long createUser(User user);
+    void createUser(User user);
 
     /**
      * 根据邀请码查询用户ID
