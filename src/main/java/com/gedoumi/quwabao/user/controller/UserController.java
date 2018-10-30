@@ -4,17 +4,13 @@ import com.gedoumi.quwabao.asset.dataobj.model.UserAsset;
 import com.gedoumi.quwabao.asset.service.UserAssetService;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.ResponseObject;
-import com.gedoumi.quwabao.user.dataobj.model.UserRent;
-import com.gedoumi.quwabao.user.dataobj.vo.UserRentVO;
 import com.gedoumi.quwabao.user.dataobj.form.ResetPasswordForm;
 import com.gedoumi.quwabao.user.dataobj.form.UpdatePasswordForm;
 import com.gedoumi.quwabao.user.dataobj.form.UpdateUsernameForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
-import com.gedoumi.quwabao.user.dataobj.vo.LoginTokenVO;
-import com.gedoumi.quwabao.user.dataobj.vo.UserAssetVO;
-import com.gedoumi.quwabao.user.dataobj.vo.UserInfoVO;
-import com.gedoumi.quwabao.user.dataobj.vo.UserVO;
+import com.gedoumi.quwabao.user.dataobj.vo.*;
 import com.gedoumi.quwabao.user.service.UserService;
+import com.gedoumi.quwabao.user.service.UserTeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 用户Controller
@@ -38,9 +32,10 @@ public class UserController {
 
     @Resource
     private UserService userService;
-
     @Resource
     private UserAssetService userAssetService;
+    @Resource
+    private UserTeamService userTeamService;
 
     /**
      * 获取用户数据
@@ -53,18 +48,25 @@ public class UserController {
         User user = ContextUtil.getUserFromRequest();
         // 获取用户资产信息
         UserAsset userAsset = userAssetService.getUserAsset(user.getId());
-        System.out.println(userAsset);
         // 封装返回信息
         UserInfoVO userInfoVO = new UserInfoVO();
         userInfoVO.setUsername(user.getUsername());
         userInfoVO.setMobilePhone(user.getMobilePhone());
         userInfoVO.setInviteCode(user.getInviteCode());
+
         UserAssetVO userAssetVO = new UserAssetVO();
         userAssetVO.setRemainAsset(userAsset.getRemainAsset().stripTrailingZeros().toPlainString());
         userAssetVO.setTotalProfit(userAsset.getTotalAsset().stripTrailingZeros().toPlainString());
+
+        BigDecimal teamTotalRentMoney = userTeamService.getTeamTotalRentMoney(user.getId());
+        UserTeamInfoVO teamInfoVO = new UserTeamInfoVO();
+        teamInfoVO.setTotalRentMoney(teamTotalRentMoney.stripTrailingZeros().toPlainString());
+
         UserVO userVO = new UserVO();
         userVO.setUserInfo(userInfoVO);
         userVO.setUserAsset(userAssetVO);
+        userVO.setUserTeamInfo(teamInfoVO);
+
         return new ResponseObject<>(userVO);
     }
 

@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
-import static com.gedoumi.quwabao.common.constants.Constants.*;
+import static com.gedoumi.quwabao.common.constants.Constants.API_USER_KEY;
+import static com.gedoumi.quwabao.common.constants.Constants.AUTH_TOKEN;
 
 /**
  * API拦截器
@@ -32,12 +33,10 @@ public class ApiInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // 获取设备ID与令牌
         log.info("RequestURI: {}", request.getRequestURI());
-        String deviceId = request.getHeader(DEVICE_ID);
-        log.info("DeviceID: {}", deviceId);
         String authToken = request.getHeader(AUTH_TOKEN);
         log.info("AuthToken: {}", authToken);
         // 判断令牌有效性
-        if (StringUtils.isEmpty(authToken) || StringUtils.isEmpty(deviceId))
+        if (StringUtils.isEmpty(authToken))
             throw new BusinessException(CodeEnum.EmptyTokenOrDeviceId);
         User user = (User) redisCache.getKeyValueData(authToken);
         // 如果未能从缓存中获取到用户，则从数据库中获取用户
@@ -46,11 +45,6 @@ public class ApiInterceptor implements HandlerInterceptor {
                 log.error("token:{}未查询到用户", authToken);
                 return new BusinessException(CodeEnum.InvalidToken);
             });
-        }
-        // 判断重复登录
-        if (!StringUtils.equals(deviceId, user.getDeviceId())) {
-            log.error("{}用户已经在其他设备上登录", user.getMobilePhone());
-            throw new BusinessException(CodeEnum.RepeatLogin);
         }
         // 存入Redis缓存
         redisCache.setKeyValueData(authToken, user);

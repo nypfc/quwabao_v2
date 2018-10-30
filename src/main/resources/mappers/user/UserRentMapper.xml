@@ -34,4 +34,41 @@
         </collection>
     </resultMap>
 
+    <insert id="createUserRent" parameterType="UserRent">
+        INSERT INTO user_rent (create_time,
+                               rent_asset,
+                               last_dig,
+                               already_dig,
+                               total_asset,
+                               update_time,
+                               user_id,
+                               rent_type,
+                               rent_status)
+        VALUES (#{createTime},
+                #{rentAsset},
+                #{lastDig},
+                #{alreadyDig},
+                #{totalAsset},
+                #{updateTime},
+                #{userId},
+                #{rentType},
+                #{rentStatus})
+    </insert>
+
+    <select id="countUserRentsByIds" resultType="UserRentNumberDTO">
+        SELECT user_id, count(0) AS number
+        FROM user_rent
+        WHERE rent_status = #{param2}
+        AND user_id IN
+        <foreach collection="param1" item="item" open="(" separator="," close=")">#{item}</foreach>
+        GROUP BY user_id
+    </select>
+
+    <select id="queryTotalRentAsset" resultType="BigDecimal">
+        SELECT sum(rent_asset)
+        FROM user_rent
+        WHERE user_id IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">#{item}</foreach>
+    </select>
+
 </mapper>

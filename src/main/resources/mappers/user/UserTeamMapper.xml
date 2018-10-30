@@ -6,10 +6,16 @@
 <mapper namespace="com.gedoumi.quwabao.user.mapper.UserTeamMapper">
 
     <select id="queryUserByParentId" resultType="User">
-        SELECT u.mobile_phone, u.username
+        SELECT u.id, u.mobile_phone, u.username
         FROM user_tree ut
                  LEFT JOIN user u ON u.id = ut.child_id
         WHERE ut.parent_id = #{param1}
+    </select>
+
+    <select id="queryUserIdsByParentId" resultType="Long">
+        SELECT child_id
+        FROM user_tree
+        WHERE parent_id IN <foreach collection="list" item="item" open="(" separator="," close=")">#{item}</foreach>
     </select>
 
     <insert id="createUserTree">

@@ -20,4 +20,9 @@ public class UserVO {
      */
     private UserAssetVO userAsset;
 
+    /**
+     * 用户团队VO
+     */
+    private UserTeamInfoVO userTeamInfo;
+
 }

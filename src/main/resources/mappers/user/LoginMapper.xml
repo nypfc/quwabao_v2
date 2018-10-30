@@ -20,7 +20,6 @@
                username,
                invite_code,
                token,
-               deviceId,
                reg_invite_code,
                user_type,
                sex,
@@ -34,8 +33,7 @@
     <update id="updateLoginErrorInfo" parameterType="User">
         UPDATE user
         SET error_count = #{errorCount},
-            error_time  = #{errorTime},
-            deviceId    = #{deviceId}
+            error_time  = #{errorTime}
         WHERE id = #{id}
     </update>
 
@@ -44,8 +42,7 @@
         SET last_login_time = #{lastLoginTime},
             error_count     = 0,
             last_login_ip   = #{lastLoginIp},
-            token           = #{token},
-            deviceId        = #{deviceId}
+            token           = #{token}
         WHERE id = #{id}
     </update>
 

@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -64,7 +63,6 @@ public class LoginService {
             throw new BusinessException(CodeEnum.TooManyPasswordMistakes);
         }
         if (!StringUtils.equals(encryptedPassword, user.getPassword())) {
-            user.setDeviceId(ContextUtil.getDeviceFromHead());
             user.setErrorCount(user.getErrorCount() + 1);
             user.setErrorTime(new Date());
             loginMapper.updateLoginErrorInfo(user);
@@ -77,7 +75,6 @@ public class LoginService {
         user.setToken(token);
         user.setLastLoginTime(new Date());
         user.setLastLoginIp(ContextUtil.getClientIp());
-        user.setDeviceId(ContextUtil.getDeviceFromHead());
         loginMapper.updateLoginInfo(user);
 
         // 缓存用户（失效时间1小时）

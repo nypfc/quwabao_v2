@@ -1,13 +1,15 @@
-package com.gedoumi.quwabao.team.mapper;
+package com.gedoumi.quwabao.user.mapper;
 
 import com.gedoumi.quwabao.QuwabaoApplicationTests;
-import com.gedoumi.quwabao.user.mapper.UserTeamMapper;
+import com.google.common.collect.Lists;
 import org.junit.Test;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 @Component
 public class UserTeamMapperTest extends QuwabaoApplicationTests {
@@ -16,9 +18,9 @@ public class UserTeamMapperTest extends QuwabaoApplicationTests {
     private UserTeamMapper userTeamMapper;
 
     @Test
-    public void queryChildIdListByParentId() {
-        List<Long> longList = userTeamMapper.queryChildIdListByParentId(102L);
-        System.out.println(longList);
+    public void queryUserIdsByParentId() {
+        List<Long> userIds = userTeamMapper.queryUserIdsByParentId(Lists.newArrayList(138L));
+        System.out.println(userIds);
     }
 
 }

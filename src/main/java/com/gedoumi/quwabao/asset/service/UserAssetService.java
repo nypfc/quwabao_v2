@@ -28,7 +28,7 @@ public class UserAssetService {
      */
     public UserAsset getUserAsset(Long userId) {
         // 未查询到资产创建资产
-        return Optional.ofNullable(userAssetMapper.queryByUserId(userId)).orElse(createUserAsset(userId));
+        return Optional.ofNullable(userAssetMapper.queryByUserId(userId)).orElseGet(() -> createUserAsset(userId));
     }
 
     /**
@@ -47,6 +47,16 @@ public class UserAssetService {
         userAsset.setUserId(userId);
         userAssetMapper.createUserAsset(userAsset);
         return userAsset;
+    }
+
+    /**
+     * 更新用户资产
+     *
+     * @param userAsset 用户资产对象
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateUserAsset(UserAsset userAsset) {
+
     }
 
 }

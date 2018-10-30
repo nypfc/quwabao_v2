@@ -21,4 +21,12 @@ public interface MinerMapper {
      */
     List<Rent> queryList(Integer rentStatus);
 
+    /**
+     * 查询矿机
+     *
+     * @param rentType 矿机类型
+     * @return 矿机对象
+     */
+    Rent queryRent(Integer rentType);
+
 }

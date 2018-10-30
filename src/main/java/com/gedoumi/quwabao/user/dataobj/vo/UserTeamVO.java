@@ -23,6 +23,6 @@ public class UserTeamVO {
     /**
      * 租用矿机数量
      */
-    private Integer rentNumber;
+    private Integer rentNumber = 0;
 
 }

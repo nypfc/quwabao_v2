@@ -60,15 +60,6 @@ public class ContextUtil {
     }
 
     /**
-     * 从Request作用域中获取设备ID
-     *
-     * @return 设备ID
-     */
-    public static String getDeviceFromHead() {
-        return getRequest().getHeader("deviceid");
-    }
-
-    /**
      * 从Request作用域中获取用户
      *
      * @return 用户对象

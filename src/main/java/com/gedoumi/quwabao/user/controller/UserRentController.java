@@ -2,15 +2,15 @@ package com.gedoumi.quwabao.user.controller;
 
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.ResponseObject;
+import com.gedoumi.quwabao.user.dataobj.form.RentForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import com.gedoumi.quwabao.user.dataobj.model.UserRent;
 import com.gedoumi.quwabao.user.dataobj.vo.UserRentVO;
 import com.gedoumi.quwabao.user.service.UserRentService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,6 +50,18 @@ public class UserRentController {
             return userRentVO;
         }).collect(Collectors.toList());
         return new ResponseObject<>(userRentVOList);
+    }
+
+    /**
+     * 矿机租用
+     *
+     * @param rentForm 租用表单
+     * @return ResponseObject
+     */
+    @PostMapping("/rent")
+    public ResponseObject rentMiner(@RequestBody @Valid RentForm rentForm) {
+        userRentService.rent(rentForm);
+        return new ResponseObject();
     }
 
 }
