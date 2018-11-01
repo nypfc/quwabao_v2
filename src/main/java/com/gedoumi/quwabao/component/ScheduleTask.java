@@ -1,19 +1,22 @@
-package com.gedoumi.quwabao.miner.service;
+package com.gedoumi.quwabao.component;
 
+import com.gedoumi.quwabao.miner.service.MinerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
 /**
- * 挖矿定时任务Service
+ * 定时任务
  *
  * @author Minced
  */
 @Slf4j
+@Component
 @Service
-public class MinerTaskScheduledService {
+public class ScheduleTask {
 
     @Resource
     private MinerService minerService;
@@ -31,7 +34,7 @@ public class MinerTaskScheduledService {
     /**
      * 计算推荐人奖励
      */
-    @Scheduled(cron = "0 30 23 * * ? ", zone = "Asia/Shanghai")
+    @Scheduled(cron = "0 15 23 * * ? ", zone = "Asia/Shanghai")
     public void runReward() {
         log.info(" ==============开始处理推荐人奖励===========");
         minerService.rewardTask();
