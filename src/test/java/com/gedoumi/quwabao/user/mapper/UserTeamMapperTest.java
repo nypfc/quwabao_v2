@@ -6,10 +6,7 @@ import org.junit.Test;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 @Component
 public class UserTeamMapperTest extends QuwabaoApplicationTests {

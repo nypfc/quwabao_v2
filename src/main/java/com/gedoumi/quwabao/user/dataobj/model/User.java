@@ -1,5 +1,7 @@
 package com.gedoumi.quwabao.user.dataobj.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.util.Date;
@@ -9,6 +11,7 @@ import java.util.Date;
  *
  * @author Minced
  */
+@TableName("user")
 @Data
 public class User {
 
@@ -85,6 +88,7 @@ public class User {
     /**
      * 设备ID
      */
+    @TableField("deviceId")
     private String deviceId;
 
     /**

@@ -1,5 +1,6 @@
 package com.gedoumi.quwabao.user.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -9,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @author Minced
  */
 @Mapper
-public interface LoginMapper {
+public interface LoginMapper extends BaseMapper<User> {
 
     /**
      * 根据手机号查询
