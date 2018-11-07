@@ -1,6 +1,8 @@
 package com.gedoumi.quwabao.user.service;
 
-import com.gedoumi.quwabao.user.mapper.UserCheckMapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.gedoumi.quwabao.user.dataobj.model.User;
+import com.gedoumi.quwabao.user.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -14,36 +16,36 @@ import javax.annotation.Resource;
 public class UserCheckService {
 
     @Resource
-    private UserCheckMapper userCheckMapper;
+    private UserMapper userMapper;
 
     /**
-     * 查询手机号是否被使用
+     * 查询手机号是存在
      *
      * @param mobile 手机号
      * @return Boolean
      */
     public Boolean checkMobilePhone(String mobile) {
-        return userCheckMapper.countByMobilePhone(mobile) != 0;
+        return userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getMobilePhone, mobile)) != 0;
     }
 
     /**
-     * 验证邀请码是否对应一个用户
+     * 查询邀请码对应用户是否存在
      *
      * @param inviteCode 邀请码
      * @return Boolean
      */
     public Boolean checkInviteCode(String inviteCode) {
-        return userCheckMapper.countByInviteCode(inviteCode) != 0;
+        return userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getInviteCode, inviteCode)) != 0;
     }
 
     /**
-     * 验证用户名的有效性
+     * 查询用户名对应用户是否存在
      *
      * @param username 用户名
      * @return Boolean
      */
     public Boolean checkUsername(String username) {
-        return userCheckMapper.countByUsername(username) != 0;
+        return userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getUsername, username)) != 0;
     }
 
 }

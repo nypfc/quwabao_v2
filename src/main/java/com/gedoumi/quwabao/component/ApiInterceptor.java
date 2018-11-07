@@ -25,9 +25,10 @@ import static com.gedoumi.quwabao.common.constants.Constants.AUTH_TOKEN;
 public class ApiInterceptor implements HandlerInterceptor {
 
     @Resource
-    private RedisCache redisCache;
-    @Resource
     private UserService userService;
+
+    @Resource
+    private RedisCache redisCache;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

@@ -107,7 +107,7 @@ public class User {
     private Integer sex;
 
     /**
-     *
+     * 以太返地址
      */
     private String ethAddress;
 

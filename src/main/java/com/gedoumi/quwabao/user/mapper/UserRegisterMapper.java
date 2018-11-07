@@ -24,6 +24,6 @@ public interface UserRegisterMapper {
      * @param inviteCode 邀请码
      * @return 用户ID
      */
-    Long queryUserIdByInviteCode(String inviteCode);
+    Long queryIdByInviteCode(String inviteCode);
 
 }

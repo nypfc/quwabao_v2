@@ -46,7 +46,7 @@
                 #{idCard})
     </insert>
 
-    <select id="queryUserIdByInviteCode" resultType="Long">
+    <select id="queryIdByInviteCode" resultType="java.lang.Long">
         SELECT id
         FROM user
         WHERE invite_code = #{param1}

@@ -3,7 +3,6 @@ package com.gedoumi.quwabao.common.config;
 import com.gedoumi.quwabao.common.config.properties.SMSProperties;
 import com.gedoumi.quwabao.common.config.properties.TaskThreadPoolProperties;
 import com.gedoumi.quwabao.component.ApiInterceptor;
-import com.gedoumi.quwabao.component.RealNameInterceptor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,16 +31,6 @@ public class ProjectConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 注册实名验证拦截器
-     *
-     * @return 实名验证拦截器
-     */
-    @Bean
-    public RealNameInterceptor realNameInterceptor() {
-        return new RealNameInterceptor();
-    }
-
-    /**
      * 添加拦截器
      *
      * @param registry 拦截器注册器
@@ -60,12 +49,7 @@ public class ProjectConfig implements WebMvcConfigurer {
                 // 注册接口不需要拦截
                 .excludePathPatterns("/v2/user")
                 // 重置密码（忘记密码）接口不需要拦截
-                .excludePathPatterns("/v2/user/password/reset")
-                .order(0);
-        // 实名验证拦截器
-        registry.addInterceptor(realNameInterceptor())
-                .addPathPatterns("/v2/uasset/rent", "/v2/uasset/transfer", "/v2/uasset/withdraw")
-                .order(1);
+                .excludePathPatterns("/v2/user/password/reset");
     }
 
     /**

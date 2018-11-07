@@ -1,5 +1,6 @@
 package com.gedoumi.quwabao.user.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -9,7 +10,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @author Minced
  */
 @Mapper
-public interface UserMapper {
+public interface UserMapper extends BaseMapper<User> {
 
     /**
      * 根据令牌查询
@@ -32,14 +33,6 @@ public interface UserMapper {
      * @param user 用户对象
      */
     void updatePassword(User user);
-
-    /**
-     * 查询用户名是否重复
-     *
-     * @param username 用户名
-     * @return 查询结果数量
-     */
-    Integer countByUsername(String username);
 
     /**
      * 更新用户名

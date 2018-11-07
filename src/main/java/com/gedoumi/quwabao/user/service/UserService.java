@@ -1,5 +1,6 @@
 package com.gedoumi.quwabao.user.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.SmsType;
@@ -49,7 +50,7 @@ public class UserService {
      * @return 用户对象
      */
     public User getByToken(String token) {
-        return userMapper.queryByToken(token);
+        return userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getToken, token));
     }
 
     /**
@@ -125,7 +126,8 @@ public class UserService {
         // 从作用域中获取用户
         User user = ContextUtil.getUserFromRequest();
         // 判断用户名是否重复
-        if (userMapper.countByUsername(username) > 0) {
+        Integer count = userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getUsername, username));
+        if (count > 0) {
             log.error("用户名:{}重复", username);
             throw new BusinessException(CodeEnum.NameError);
         }

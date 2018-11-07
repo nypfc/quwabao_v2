@@ -16,29 +16,21 @@ spring:
       default_encoding: UTF-8
       auto_import: common/common.ftl as common  # 将common.ftl设置为包文件并设置别名为common
 
-mybatis-plus:  # MyBatis配置
+mybatis-plus:  # MyBatis-Plus配置
   type-aliases-package: com.gedoumi.quwabao  # 别名包
   mapper-locations: classpath:mappers/**/**.xml  # xml文件位置
-  #  type-enums-package:
   global-config:  # MyBatis-Plus配置
     db-config:  # 数据库相关配置
       id-type: id_worker  # 主键类型  AUTO:"数据库ID自增", INPUT:"用户输入ID",ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
       field-strategy: not_empty  # 字段策略 IGNORED:"忽略判断",NOT_NULL:"非 NULL 判断"),NOT_EMPTY:"非空判断"
-      #capital-mode: true  # 数据库大写下划线转换
       db-type: mysql  # 数据库类型
-    refresh: true  # 刷新mapper 调试神器
+    refresh: true  # 刷新mapper，不需要重启，生产环境建议关闭
   configuration:  # 原生Mybatis配置
     cache-enabled: false  # 关闭缓存
     map-underscore-to-camel-case: true  # 是否开启自动驼峰命名规则
     use-generated-keys: true  # 自动生成主键
     default-executor-type: reuse  # 配置默认的执行器（REUSE 执行器会重用预处理语句）
     default-statement-timeout: 600  # 事务超时时间
-
-#pagehelper:  # MyBatis分页插件配置
-#  helperDialect: mysql
-##  reasonable: true  # 分页合理性
-#  support-methods-arguments: true
-#  params: count=countSql
 
 sms:  # 短信配置
   url: http://www.api.zthysms.com/sendSms.do

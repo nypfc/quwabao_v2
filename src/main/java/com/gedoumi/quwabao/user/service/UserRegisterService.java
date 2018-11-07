@@ -11,6 +11,7 @@ import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.sys.service.SysSmsService;
 import com.gedoumi.quwabao.user.dataobj.form.RegisterForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
+import com.gedoumi.quwabao.user.mapper.UserMapper;
 import com.gedoumi.quwabao.user.mapper.UserRegisterMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +38,9 @@ public class UserRegisterService {
 
     @Resource
     private UserRegisterMapper userRegisterMapper;
+
+    @Resource
+    private UserMapper userMapper;
 
     @Resource
     private SysSmsService sysSmsService;
@@ -116,7 +120,7 @@ public class UserRegisterService {
         userAssetService.createUserAsset(userId);
 
         // 创建用户上下级关系
-        Long parentId = userRegisterMapper.queryUserIdByInviteCode(inviteCode);
+        Long parentId = userRegisterMapper.queryIdByInviteCode(inviteCode);
         try {
             userTeamService.createUserTree(userId, parentId);
         } catch (DuplicateKeyException ex) {

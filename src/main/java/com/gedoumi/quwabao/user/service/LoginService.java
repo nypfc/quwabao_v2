@@ -1,5 +1,8 @@
 package com.gedoumi.quwabao.user.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.UserStatus;
 import com.gedoumi.quwabao.common.exception.BusinessException;
@@ -8,7 +11,7 @@ import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
 import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.user.dataobj.form.LoginForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
-import com.gedoumi.quwabao.user.mapper.LoginMapper;
+import com.gedoumi.quwabao.user.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -29,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 public class LoginService {
 
     @Resource
-    private LoginMapper loginMapper;
+    private UserMapper userMapper;
 
     @Resource
     private RedisCache redisCache;
@@ -49,7 +52,7 @@ public class LoginService {
         String encryptedPassword = MD5EncryptUtil.md5Encrypy(password, salt);
 
         // 获取用户并验证
-        User user = loginMapper.queryByMobilePhone(mobile);
+        User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getMobilePhone, mobile));
         if (user == null) {
             log.error("手机号:{}未能查询到用户", mobile);
             throw new BusinessException(CodeEnum.MobileNotExist);
@@ -65,7 +68,7 @@ public class LoginService {
         if (!StringUtils.equals(encryptedPassword, user.getPassword())) {
             user.setErrorCount(user.getErrorCount() + 1);
             user.setErrorTime(new Date());
-            loginMapper.updateLoginErrorInfo(user);
+            userMapper.updateById(user);
             log.error("手机号:{}，密码:{}错误", mobile, password);
             throw new BusinessException(CodeEnum.PasswordError);
         }
@@ -75,7 +78,7 @@ public class LoginService {
         user.setToken(token);
         user.setLastLoginTime(new Date());
         user.setLastLoginIp(ContextUtil.getClientIp());
-        loginMapper.updateLoginInfo(user);
+        userMapper.updateById(user);
 
         // 缓存用户（失效时间1小时）
         redisCache.setExpireKeyValueData(token, user, 1L, TimeUnit.HOURS);
@@ -96,7 +99,7 @@ public class LoginService {
                 // 更新退出信息，Token置空
                 user.setToken(null);
                 user.setUpdateTime(new Date());
-                loginMapper.updateLogoutInfo(user);
+                userMapper.updateById(user);
                 redisCache.deleteKeyValueData(token);
             }
         }
