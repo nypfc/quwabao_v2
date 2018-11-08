@@ -99,7 +99,6 @@ public class UserRegisterService {
         user.setToken(UUID.randomUUID().toString());
         user.setUserType(UserType.Level_0.getValue());
         user.setErrorCount(0);
-        user.setValidateStatus(UserValidateStatus.Init.getValue());
         user.setRegInviteCode(inviteCode);
         user.setInviteCode(CodeUtils.generateCode());
         Date now = new Date();

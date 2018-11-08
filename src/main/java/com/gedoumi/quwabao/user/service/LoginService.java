@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -51,12 +52,11 @@ public class LoginService {
         String salt = MD5EncryptUtil.md5Encrypy(mobile);
         String encryptedPassword = MD5EncryptUtil.md5Encrypy(password, salt);
 
-        // 获取用户并验证
-        User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getMobilePhone, mobile));
-        if (user == null) {
+        // 根据手机号获取用户并验证
+        User user = Optional.ofNullable(userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getMobilePhone, mobile))).orElseThrow(() -> {
             log.error("手机号:{}未能查询到用户", mobile);
-            throw new BusinessException(CodeEnum.MobileNotExist);
-        }
+            return new BusinessException(CodeEnum.MobileNotExist);
+        });
         if (user.getUserStatus() == UserStatus.Disable.getValue()) {
             log.error("手机号:{}已经锁定", mobile);
             throw new BusinessException(CodeEnum.UserLocked);

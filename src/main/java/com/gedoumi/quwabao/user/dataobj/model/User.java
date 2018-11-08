@@ -112,9 +112,9 @@ public class User {
     private String ethAddress;
 
     /**
-     * 实名验证状态
+     * 实名验证状态（现已废弃）
      */
-    private Integer validateStatus;
+    private Integer validateStatus = 0;
 
     /**
      * 身份证号
