@@ -80,10 +80,6 @@ public class UserRegisterService {
             log.error("手机号:{}注册验证码:{}已过期", mobile, smsCode);
             throw new BusinessException(CodeEnum.ValidateCodeExpire);
         }
-        // 用户名验证
-        if (StringUtils.isNotEmpty(username))
-            if (userCheckService.checkUsername(username))
-                throw new BusinessException(CodeEnum.NameError);
         // 邀请码验证
         if (!userCheckService.checkInviteCode(inviteCode)) {
             log.error("邀请码:{}对应用户不存在", inviteCode);
@@ -107,8 +103,17 @@ public class UserRegisterService {
         user.setUpdateTime(now);
         while (userCheckService.checkInviteCode(user.getInviteCode()))
             user.setInviteCode(CodeUtils.generateCode());  // 设置邀请码，如果重复重新生成
-        if (StringUtils.isEmpty(username))
-            user.setUsername(USER_PREFIX + new Random().nextInt(999) + user.getId());  // 用户名为空设置默认用户名
+        // 设置用户名
+        if (StringUtils.isEmpty(username)) {
+            user.setUsername(USER_PREFIX + new Random().nextInt(999999));  // 用户名为空设置默认用户名
+            while (userCheckService.checkUsername(username)) {  // 如果重复继续设置用户名
+                user.setUsername(USER_PREFIX + new Random().nextInt(999999));
+            }
+        } else {
+            if (userCheckService.checkUsername(username))
+                throw new BusinessException(CodeEnum.NameError);
+            user.setUsername(username);
+        }
         userRegisterMapper.createUser(user);
         Long userId = user.getId();  // 创建完成的用户ID
 

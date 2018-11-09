@@ -13,7 +13,7 @@ public class UserVO {
     /**
      * 用户信息VO
      */
-    private UserInfoVO userInfo;
+    private UserInfoVO user;
 
     /**
      * 用户资产VO
@@ -23,6 +23,6 @@ public class UserVO {
     /**
      * 用户团队VO
      */
-    private UserTeamInfoVO userTeamInfo;
+    private UserTeamInfoVO userTeam;
 
 }

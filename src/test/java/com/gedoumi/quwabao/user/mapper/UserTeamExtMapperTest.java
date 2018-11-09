@@ -9,14 +9,14 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Component
-public class UserTeamMapperTest extends QuwabaoApplicationTests {
+public class UserTeamExtMapperTest extends QuwabaoApplicationTests {
 
     @Resource
-    private UserTeamMapper userTeamMapper;
+    private UserTeamExtMapper userTeamExtMapper;
 
     @Test
     public void queryUserIdsByParentId() {
-        List<Long> userIds = userTeamMapper.queryUserIdsByParentId(Lists.newArrayList(138L));
+        List<Long> userIds = userTeamExtMapper.queryUserIdsByParentId(Lists.newArrayList(138L));
         System.out.println(userIds);
     }
 

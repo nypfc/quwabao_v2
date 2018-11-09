@@ -11,6 +11,11 @@ import lombok.Data;
 public class UserTeamInfoVO {
 
     /**
+     * 用户团队等级
+     */
+    private Integer teamLevel;
+
+    /**
      * 租用矿机价格总和
      */
     private String totalRentMoney;

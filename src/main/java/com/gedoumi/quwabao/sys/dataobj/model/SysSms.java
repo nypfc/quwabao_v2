@@ -23,7 +23,7 @@ public class SysSms {
      * 1：可用
      * 0：不可用
      */
-    private Integer smsStatus = SmsStatus.Enable.getValue();
+    private Integer smsStatus;
 
     /**
      * 类型

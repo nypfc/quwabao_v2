@@ -8,6 +8,7 @@ import com.gedoumi.quwabao.user.dataobj.form.ResetPasswordForm;
 import com.gedoumi.quwabao.user.dataobj.form.UpdatePasswordForm;
 import com.gedoumi.quwabao.user.dataobj.form.UpdateUsernameForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
+import com.gedoumi.quwabao.user.dataobj.model.UserTeamExt;
 import com.gedoumi.quwabao.user.dataobj.vo.*;
 import com.gedoumi.quwabao.user.service.UserService;
 import com.gedoumi.quwabao.user.service.UserTeamService;
@@ -32,8 +33,10 @@ public class UserController {
 
     @Resource
     private UserService userService;
+
     @Resource
     private UserAssetService userAssetService;
+
     @Resource
     private UserTeamService userTeamService;
 
@@ -58,14 +61,15 @@ public class UserController {
         userAssetVO.setRemainAsset(userAsset.getRemainAsset().stripTrailingZeros().toPlainString());
         userAssetVO.setTotalProfit(userAsset.getTotalAsset().stripTrailingZeros().toPlainString());
 
-        BigDecimal teamTotalRentMoney = userTeamService.getTeamTotalRentMoney(user.getId());
+        UserTeamExt userTeamExt = userTeamService.getTeamTotalRentMoney(user.getId());
         UserTeamInfoVO teamInfoVO = new UserTeamInfoVO();
-        teamInfoVO.setTotalRentMoney(teamTotalRentMoney.stripTrailingZeros().toPlainString());
+        teamInfoVO.setTeamLevel(userTeamExt.getTeamLevel());
+        teamInfoVO.setTotalRentMoney(userTeamExt.getTeamTotalRent().stripTrailingZeros().toPlainString());
 
         UserVO userVO = new UserVO();
-        userVO.setUserInfo(userInfoVO);
+        userVO.setUser(userInfoVO);
         userVO.setUserAsset(userAssetVO);
-        userVO.setUserTeamInfo(teamInfoVO);
+        userVO.setUserTeam(teamInfoVO);
 
         return new ResponseObject<>(userVO);
     }

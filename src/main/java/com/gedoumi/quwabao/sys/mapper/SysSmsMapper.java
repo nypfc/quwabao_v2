@@ -1,5 +1,6 @@
 package com.gedoumi.quwabao.sys.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gedoumi.quwabao.sys.dataobj.model.SysSms;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -12,14 +13,7 @@ import java.util.List;
  * @author Minced
  */
 @Mapper
-public interface SysSmsMapper {
-
-    /**
-     * 创建短信
-     *
-     * @param sms 短信对象
-     */
-    void createSysSms(SysSms sms);
+public interface SysSmsMapper extends BaseMapper<SysSms> {
 
     /**
      * 查询当日短信创建时间
@@ -46,10 +40,10 @@ public interface SysSmsMapper {
      * 更新短息状态
      *
      * @param mobile       手机号
-     * @param updateTime   更新时间
-     * @param updateStatus 待更新的状态
      * @param queryStatus  查询条件状态
+     * @param updateStatus 待更新的状态
+     * @param updateTime   更新时间
      */
-    void updateSmsStatus(String mobile, Date updateTime, Integer updateStatus, Integer queryStatus);
+    void updateSmsStatus(String mobile, Integer queryStatus, Integer updateStatus, Date updateTime);
 
 }

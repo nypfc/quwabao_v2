@@ -83,7 +83,7 @@ public class UserService {
         Date now = new Date();
         user.setUpdateTime(now);
         user.setLastLoginTime(now);
-        userMapper.resetPassword(user);
+        userMapper.updateById(user);
         // 更新缓存
         redisCache.setKeyValueData(token, user);
         return user;

@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -53,7 +54,8 @@ public class LoginService {
         String encryptedPassword = MD5EncryptUtil.md5Encrypy(password, salt);
 
         // 根据手机号获取用户并验证
-        User user = Optional.ofNullable(userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getMobilePhone, mobile))).orElseThrow(() -> {
+        User queryResult = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getMobilePhone, mobile));
+        User user = Optional.ofNullable(queryResult).orElseThrow(() -> {
             log.error("手机号:{}未能查询到用户", mobile);
             return new BusinessException(CodeEnum.MobileNotExist);
         });
@@ -63,7 +65,7 @@ public class LoginService {
         }
         if (user.getErrorCount() >= 3) {
             log.error("手机号:{}密码错误次数达到3次，需要重置密码", mobile);
-            throw new BusinessException(CodeEnum.TooManyPasswordMistakes);
+            throw new BusinessException(CodeEnum.TooManyError);
         }
         if (!StringUtils.equals(encryptedPassword, user.getPassword())) {
             user.setErrorCount(user.getErrorCount() + 1);

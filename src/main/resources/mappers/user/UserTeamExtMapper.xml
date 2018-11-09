@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.gedoumi.quwabao.user.mapper.UserTeamMapper">
+<mapper namespace="com.gedoumi.quwabao.user.mapper.UserTeamExtMapper">
 
     <select id="queryUserByParentId" resultType="User">
         SELECT u.id, u.mobile_phone, u.username
@@ -12,10 +12,11 @@
         WHERE ut.parent_id = #{param1}
     </select>
 
-    <select id="queryUserIdsByParentId" resultType="Long">
+    <select id="queryUserIdsByParentId" resultType="java.lang.Long">
         SELECT child_id
         FROM user_tree
-        WHERE parent_id IN <foreach collection="list" item="item" open="(" separator="," close=")">#{item}</foreach>
+        WHERE parent_id IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">#{item}</foreach>
     </select>
 
     <insert id="createUserTree">

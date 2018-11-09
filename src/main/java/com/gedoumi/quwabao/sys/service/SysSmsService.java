@@ -105,9 +105,10 @@ public class SysSmsService {
         // =========== 3.创建短信 ===========
         SysSms sms = new SysSms();
         sms.setCode(smsCode);
+        sms.setSmsStatus(SmsStatus.Enable.getValue());
         sms.setSmsType(sendType);
         sms.setMobilePhone(mobile);
-        sysSmsMapper.createSysSms(sms);
+        sysSmsMapper.insert(sms);
 
         // =========== 4.缓存短信 ===========
         String key = "sms:" + mobile;
@@ -132,7 +133,7 @@ public class SysSmsService {
      * @param mobile 手机号
      */
     public void updateSmsStatus(String mobile) {
-        sysSmsMapper.updateSmsStatus(mobile, new Date(), SmsStatus.Disable.getValue(), SmsStatus.Enable.getValue());
+        sysSmsMapper.updateSmsStatus(mobile, SmsStatus.Enable.getValue(), SmsStatus.Disable.getValue(), new Date());
     }
 
 }

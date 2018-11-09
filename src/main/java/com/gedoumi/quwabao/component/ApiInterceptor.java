@@ -33,20 +33,18 @@ public class ApiInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         // 获取设备ID与令牌
-        log.info("RequestURI: {}", request.getRequestURI());
+        log.info("RequestURI:{}", request.getRequestURI());
         String authToken = request.getHeader(AUTH_TOKEN);
-        log.info("AuthToken: {}", authToken);
+        log.info("AuthToken:{}", authToken);
         // 判断令牌有效性
         if (StringUtils.isEmpty(authToken))
             throw new BusinessException(CodeEnum.EmptyTokenOrDeviceId);
-        User user = (User) redisCache.getKeyValueData(authToken);
         // 如果未能从缓存中获取到用户，则从数据库中获取用户
-        if (user == null) {
-            user = Optional.ofNullable(userService.getByToken(authToken)).orElseThrow(() -> {
-                log.error("token:{}未查询到用户", authToken);
-                return new BusinessException(CodeEnum.InvalidToken);
-            });
-        }
+        User user = Optional.ofNullable((User) redisCache.getKeyValueData(authToken))
+                .orElseGet(() -> Optional.ofNullable(userService.getByToken(authToken)).orElseThrow(() -> {
+                    log.error("token:{}未查询到用户", authToken);
+                    return new BusinessException(CodeEnum.InvalidToken);
+                }));
         // 存入Redis缓存
         redisCache.setKeyValueData(authToken, user);
         // 用户存入Request作用域

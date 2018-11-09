@@ -47,8 +47,8 @@ public class ApiExceptionAdvice {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public ResponseObject httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
-        StringBuilder message = new StringBuilder("Request method [");
-        message.append(ex.getMethod()).append("] not supported, request ").append(Arrays.toString(ex.getSupportedMethods()));
+        StringBuilder message = new StringBuilder("请求方式 [");
+        message.append(ex.getMethod()).append("] 不支持, 需要 ").append(Arrays.toString(ex.getSupportedMethods()));
         return new ResponseObject(CodeEnum.SysError, message.toString());
     }
 
@@ -74,11 +74,11 @@ public class ApiExceptionAdvice {
     @ResponseStatus(BAD_REQUEST)
     public ResponseObject methodArgumentNotValidException(MethodArgumentNotValidException ex) {
         BindingResult bindingResult = ex.getBindingResult();
-        StringBuilder sb = new StringBuilder("found ");
-        sb.append(bindingResult.getErrorCount()).append(" parameters error; ");
-        bindingResult.getFieldErrors().forEach(fieldError -> sb.append("error param: ")
+        StringBuilder sb = new StringBuilder("发现 ");
+        sb.append(bindingResult.getErrorCount()).append(" 个参数错误; ");
+        bindingResult.getFieldErrors().forEach(fieldError -> sb.append("错误的参数: ")
                 .append(fieldError.getField())
-                .append(", reason: ")
+                .append(", 原因: ")
                 .append(fieldError.getDefaultMessage())
                 .append("; "));
         String message = sb.toString();
