@@ -1,6 +1,8 @@
 package com.gedoumi.quwabao.sys.dataobj.model;
 
-import com.gedoumi.quwabao.common.enums.SmsStatus;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.util.Date;
@@ -10,12 +12,14 @@ import java.util.Date;
  *
  * @author Minced
  */
+@TableName("sys_sms")
 @Data
 public class SysSms {
 
     /**
      * ID
      */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**

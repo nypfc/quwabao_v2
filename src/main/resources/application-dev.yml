@@ -22,3 +22,8 @@ spring:
         max-idle: 100
         max-wait: 1000
         max-active: 20
+
+logging:  # 测试环境DEBUG日志
+  level:
+    com.gedoumi.quwabao.user.mapper.UserMapper: debug
+    com.gedoumi.quwabao.sys.mapper.SysSmsMapper: debug

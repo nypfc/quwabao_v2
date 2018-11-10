@@ -6,7 +6,6 @@ import com.gedoumi.quwabao.common.enums.SmsStatus;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.CodeUtils;
 import com.gedoumi.quwabao.common.utils.CurrentDateUtil;
-import com.gedoumi.quwabao.common.utils.DateUtil;
 import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.sys.dataobj.model.SysSms;
 import com.gedoumi.quwabao.sys.mapper.SysSmsMapper;
@@ -16,14 +15,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
@@ -54,19 +51,17 @@ public class SysSmsService {
     @Transactional(rollbackFor = Exception.class)
     public void sendSms(Integer sendType, String mobile) {
         // =========== 1.验证 ===========
-        CurrentDateUtil dateUtil = new CurrentDateUtil();
-        List<Date> dates = sysSmsMapper.smsCurrentDayCount(mobile, dateUtil.getStartTime(), dateUtil.getEndTime());
         // 当日短信上限验证
-        if (dates.size() >= smsProperties.getDayCount()) {
+        CurrentDateUtil dateUtil = new CurrentDateUtil();
+        Integer count = sysSmsMapper.smsCurrentDayCount(mobile, dateUtil.getStartTime(), dateUtil.getEndTime());
+        if (count >= smsProperties.getDayCount()) {
             log.error("手机号:{}当日验证码数量已达上限", mobile);
             throw new BusinessException(CodeEnum.SmsCountError);
         }
         // 判断是否重复发短信
-        if (!CollectionUtils.isEmpty(dates)) {
-            if (DateUtil.timeDiffSec(dates.get(0), new Date()) <= smsProperties.getIntervalSecond()) {
-                log.error("手机号:{}重复发短信", mobile);
-                throw new BusinessException(CodeEnum.RepeatedlySMS);
-            }
+        if (redisCache.getKeyValueData("sms:" + mobile) != null) {
+            log.error("手机号:{}重复发送短信", mobile);
+            throw new BusinessException(CodeEnum.RepeatedlySMS);
         }
 
         // =========== 2.发送短信 ===========
@@ -84,9 +79,8 @@ public class SysSmsService {
         paramMap.add("password", password);
         paramMap.add("mobile", mobile);
         paramMap.add("content", content);
-        // RestTemplate的post请求方式默认为application/json方式，改为拼接key=value的形式
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        headers.set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");  // RestTemplate的post请求方式默认为application/json方式，改为拼接key=value的形式
         HttpEntity requestEntity = new HttpEntity<>(paramMap, headers);
         // 发送Post请求
         String ret = new RestTemplate().postForObject(url, requestEntity, String.class);
@@ -103,6 +97,7 @@ public class SysSmsService {
         }
 
         // =========== 3.创建短信 ===========
+        updateSmsStatus(mobile);  // 将其他短信置为失效
         SysSms sms = new SysSms();
         sms.setCode(smsCode);
         sms.setSmsStatus(SmsStatus.Enable.getValue());
@@ -116,22 +111,11 @@ public class SysSmsService {
     }
 
     /**
-     * 查询短信验证码
-     *
-     * @param mobilePhone 手机号
-     * @param smsCode     短信验证码
-     * @param type        类型
-     * @return 短信创建日期
-     */
-    public Date getSms(String mobilePhone, String smsCode, Integer type) {
-        return sysSmsMapper.checkSms(mobilePhone, smsCode, type, SmsStatus.Enable.getValue());
-    }
-
-    /**
      * 更新短信状态
      *
      * @param mobile 手机号
      */
+    @Transactional(rollbackFor = Exception.class)
     public void updateSmsStatus(String mobile) {
         sysSmsMapper.updateSmsStatus(mobile, SmsStatus.Enable.getValue(), SmsStatus.Disable.getValue(), new Date());
     }

@@ -8,6 +8,7 @@ import com.gedoumi.quwabao.common.utils.CodeUtils;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
 import com.gedoumi.quwabao.component.RedisCache;
+import com.gedoumi.quwabao.sys.dataobj.model.SysSms;
 import com.gedoumi.quwabao.sys.service.SysSmsService;
 import com.gedoumi.quwabao.user.dataobj.form.RegisterForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
@@ -74,12 +75,13 @@ public class UserRegisterService {
             throw new BusinessException(CodeEnum.MobileExist);
         }
         // 短信验证码验证
-        Date date = Optional.ofNullable(sysSmsService.getSms(mobile, smsCode, SmsType.Register.getValue())).orElseThrow(() -> new BusinessException(CodeEnum.ValidateCodeExpire));
-        long second = (new Date().getTime() - date.getTime()) / 1000;
-        if (second >= Constants.EXPIRE_TIMES) {
-            log.error("手机号:{}注册验证码:{}已过期", mobile, smsCode);
-            throw new BusinessException(CodeEnum.ValidateCodeExpire);
-        }
+        String key = "sms:" + mobile;
+        Optional.ofNullable((SysSms) redisCache.getKeyValueData(key))
+                .filter(s -> s.getSmsType().equals(SmsType.Register.getValue()))
+                .filter(s -> s.getCode().equals(smsCode)).orElseThrow(() -> {
+            log.error("手机号:{}验证码:{}错误", mobile, smsCode);
+            return new BusinessException(CodeEnum.SmsCodeError);
+        });
         // 邀请码验证
         if (!userCheckService.checkInviteCode(inviteCode)) {
             log.error("邀请码:{}对应用户不存在", inviteCode);

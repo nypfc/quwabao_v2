@@ -1,5 +1,6 @@
 package com.gedoumi.quwabao.sys.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -13,6 +14,7 @@ import javax.annotation.Resource;
  *
  * @author Minced
  */
+@Slf4j
 @Service
 public class SmsListener implements MessageListener {
 
@@ -30,7 +32,9 @@ public class SmsListener implements MessageListener {
         String[] itemValue = new String(message.getBody()).split(":");
         if (!StringUtils.equals(itemValue[0], "sms"))
             return;
-        sysSmsService.updateSmsStatus(itemValue[1]);
+        String mobile = itemValue[1];
+        log.info("手机号:{}短信失效", mobile);
+        sysSmsService.updateSmsStatus(mobile);
     }
 
 }

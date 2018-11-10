@@ -23,7 +23,7 @@ public @interface IntegerValue {
 
     int[] value();
 
-    String message() default "wrong integer value";
+    String message() default "参数值不匹配";
 
     Class<?>[] groups() default {};
 

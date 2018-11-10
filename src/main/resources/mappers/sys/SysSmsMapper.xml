@@ -5,23 +5,12 @@
 
 <mapper namespace="com.gedoumi.quwabao.sys.mapper.SysSmsMapper">
 
-    <select id="smsCurrentDayCount" resultType="Date">
-        SELECT create_time
+    <select id="smsCurrentDayCount" resultType="java.lang.Integer">
+        SELECT count(0)
         FROM sys_sms
         WHERE mobile_phone = #{param1}
           AND create_time BETWEEN #{param2} AND #{param3}
         ORDER BY create_time DESC
-    </select>
-
-    <select id="checkSms" resultType="Date">
-        SELECT create_time
-        FROM sys_sms
-        WHERE mobile_phone = #{param1}
-          AND code = #{param2}
-          AND sms_type = #{param3}
-          AND sms_status = #{param4}
-        ORDER BY create_time DESC
-        LIMIT 0, 1
     </select>
 
     <update id="updateSmsStatus">

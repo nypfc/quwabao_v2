@@ -21,7 +21,7 @@ mybatis-plus:  # MyBatis-Plus配置
   mapper-locations: classpath:mappers/**/**.xml  # xml文件位置
   global-config:  # MyBatis-Plus配置
     db-config:  # 数据库相关配置
-      id-type: id_worker  # 主键类型  AUTO:"数据库ID自增", INPUT:"用户输入ID",ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
+      id-type: auto  # 主键类型  AUTO:"数据库ID自增", INPUT:"用户输入ID",ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
       field-strategy: not_empty  # 字段策略 IGNORED:"忽略判断",NOT_NULL:"非 NULL 判断"),NOT_EMPTY:"非空判断"
       db-type: mysql  # 数据库类型
     refresh: true  # 刷新mapper，不需要重启，生产环境建议关闭
@@ -47,3 +47,7 @@ task:  # 线程池配置
     queue-capacity: 100
     keep-alive-second: 60
     thread-name-prefix: SMS-Thread
+
+#logging:
+#  pattern:
+#    console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){blue} %clr(%5p) - %clr(%-40.40logger{39}){cyan} : %m%n"

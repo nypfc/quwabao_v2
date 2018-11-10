@@ -1,6 +1,7 @@
 package com.gedoumi.quwabao.user.dataobj.form;
 
 import lombok.Data;
+import sun.security.util.Password;
 
 import javax.validation.constraints.NotBlank;
 
@@ -16,12 +17,12 @@ public class UpdatePasswordForm {
      * 原密码
      */
     @NotBlank
-    private String orgPswd;
+    private String originalPassword;
 
     /**
      * 新密码
      */
     @NotBlank
-    private String pswd;
+    private String password;
 
 }

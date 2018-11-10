@@ -5,57 +5,5 @@
 
 <mapper namespace="com.gedoumi.quwabao.user.mapper.UserMapper">
 
-    <sql id="user">
-        SELECT id,
-               error_count,
-               error_time,
-               last_login_ip,
-               last_login_time,
-               mobile_phone,
-               password,
-               real_name,
-               register_time,
-               update_time,
-               user_status,
-               username,
-               invite_code,
-               token,
-               deviceId,
-               reg_invite_code,
-               user_type,
-               sex,
-               eth_address,
-               validate_status,
-               id_card
-        FROM user
-    </sql>
-
-    <select id="queryByToken" resultType="com.gedoumi.quwabao.user.dataobj.model.User">
-        <include refid="user"/>
-        WHERE token = #{param1}
-    </select>
-
-    <update id="resetPassword" parameterType="com.gedoumi.quwabao.user.dataobj.model.User">
-        UPDATE user
-        SET password        = #{password},
-            token           = #{token},
-            last_login_ip   = #{lastLoginIp},
-            update_time     = #{updateTime},
-            last_login_time = #{lastLoginTime}
-        WHERE id = #{id}
-    </update>
-
-    <update id="updatePassword" parameterType="com.gedoumi.quwabao.user.dataobj.model.User">
-        UPDATE user
-        SET password    = #{password},
-            update_time = #{updateTime}
-        WHERE id = #{id}
-    </update>
-
-    <update id="updateUsername" parameterType="com.gedoumi.quwabao.user.dataobj.model.User">
-        UPDATE user
-        SET username = #{username}
-        WHERE id = #{id}
-    </update>
 
 </mapper>

@@ -27,6 +27,7 @@ public class UserTeamController {
 
     @Resource
     private UserTeamService userTeamService;
+
     @Resource
     private UserRentService userRentService;
 

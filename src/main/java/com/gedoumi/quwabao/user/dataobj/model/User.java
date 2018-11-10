@@ -114,7 +114,7 @@ public class User {
     /**
      * 实名验证状态（现已废弃）
      */
-    private Integer validateStatus = 0;
+    private Integer validateStatus;
 
     /**
      * 身份证号

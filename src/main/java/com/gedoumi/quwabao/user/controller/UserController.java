@@ -51,6 +51,8 @@ public class UserController {
         User user = ContextUtil.getUserFromRequest();
         // 获取用户资产信息
         UserAsset userAsset = userAssetService.getUserAsset(user.getId());
+        // 获取用户团队信息
+        UserTeamExt userTeamExt = userTeamService.getTeamTotalRentMoney(user.getId());
         // 封装返回信息
         UserInfoVO userInfoVO = new UserInfoVO();
         userInfoVO.setUsername(user.getUsername());
@@ -61,7 +63,6 @@ public class UserController {
         userAssetVO.setRemainAsset(userAsset.getRemainAsset().stripTrailingZeros().toPlainString());
         userAssetVO.setTotalProfit(userAsset.getTotalAsset().stripTrailingZeros().toPlainString());
 
-        UserTeamExt userTeamExt = userTeamService.getTeamTotalRentMoney(user.getId());
         UserTeamInfoVO teamInfoVO = new UserTeamInfoVO();
         teamInfoVO.setTeamLevel(userTeamExt.getTeamLevel());
         teamInfoVO.setTotalRentMoney(userTeamExt.getTeamTotalRent().stripTrailingZeros().toPlainString());

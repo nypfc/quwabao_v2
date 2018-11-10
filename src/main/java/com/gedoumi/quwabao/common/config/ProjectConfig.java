@@ -49,7 +49,9 @@ public class ProjectConfig implements WebMvcConfigurer {
                 // 注册接口不需要拦截
                 .excludePathPatterns("/v2/user")
                 // 重置密码（忘记密码）接口不需要拦截
-                .excludePathPatterns("/v2/user/password/reset");
+                .excludePathPatterns("/v2/user/password/reset")
+                // 错误接口不需要拦截
+                .excludePathPatterns("/error");
     }
 
     /**

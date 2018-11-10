@@ -1,7 +1,6 @@
 package com.gedoumi.quwabao.user.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.UserStatus;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -78,6 +76,7 @@ public class LoginService {
         // 更新登录信息
         String token = UUID.randomUUID().toString();
         user.setToken(token);
+        user.setErrorCount(0);  // 错误次数重置
         user.setLastLoginTime(new Date());
         user.setLastLoginIp(ContextUtil.getClientIp());
         userMapper.updateById(user);
@@ -94,17 +93,15 @@ public class LoginService {
      * @param token 令牌
      */
     public void logout(String token) {
-        // 如果token和用户存在，删除缓存
-        if (token != null) {
-            User user = (User) redisCache.getKeyValueData(token);
-            if (user != null) {
-                // 更新退出信息，Token置空
-                user.setToken(null);
-                user.setUpdateTime(new Date());
-                userMapper.updateById(user);
-                redisCache.deleteKeyValueData(token);
-            }
-        }
+        // 如果token和用户存在，更新退出信息，Token置空，删除缓存
+        Optional.ofNullable(token).ifPresent(t -> Optional.ofNullable((User) redisCache.getKeyValueData(token)).ifPresent(user -> {
+            log.info("手机号:{}退出登录", user.getMobilePhone());
+            userMapper.update(user, new UpdateWrapper<User>().lambda()
+                    .set(User::getToken, null)
+                    .set(User::getUpdateTime, new Date())
+                    .eq(User::getId, user.getId()));
+            redisCache.deleteKeyValueData(token);
+        }));
     }
 
 }

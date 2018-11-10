@@ -1,13 +1,13 @@
 package com.gedoumi.quwabao.user.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.gedoumi.quwabao.common.constants.Constants;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.SmsType;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
 import com.gedoumi.quwabao.component.RedisCache;
+import com.gedoumi.quwabao.sys.dataobj.model.SysSms;
 import com.gedoumi.quwabao.sys.service.SysSmsService;
 import com.gedoumi.quwabao.user.dataobj.form.ResetPasswordForm;
 import com.gedoumi.quwabao.user.dataobj.form.UpdatePasswordForm;
@@ -61,20 +61,25 @@ public class UserService {
      */
     @Transactional(rollbackFor = Exception.class)
     public User resetPassword(ResetPasswordForm resetPasswordForm) {
-        // 获取用户
-        User user = ContextUtil.getUserFromRequest();
         // 获取参数
         String mobile = resetPasswordForm.getMobile();
         String password = resetPasswordForm.getPassword();
         String smsCode = resetPasswordForm.getSmsCode();
         // 短信验证
-        Date date = Optional.ofNullable(sysSmsService.getSms(mobile, smsCode, SmsType.ResetPassword.getValue())).orElseThrow(() -> new BusinessException(CodeEnum.ValidateCodeExpire));
-        long second = (new Date().getTime() - date.getTime()) / 1000;
-        if (second >= Constants.EXPIRE_TIMES) {
-            log.error("手机号:{}注册短信验证码:{}已过期", mobile, smsCode);
-            throw new BusinessException(CodeEnum.ValidateCodeExpire);
-        }
+        String key = "sms:" + mobile;
+        Optional.ofNullable((SysSms) redisCache.getKeyValueData(key))
+                .filter(s -> s.getSmsType().equals(SmsType.ResetPassword.getValue()))
+                .filter(s -> s.getCode().equals(smsCode)).orElseThrow(() -> {
+            log.error("手机号:{}验证码:{}错误", mobile, smsCode);
+            return new BusinessException(CodeEnum.SmsCodeError);
+        });
+        sysSmsService.updateSmsStatus(mobile);  // 短信置为失效
+        redisCache.deleteKeyValueData(key);  // 删除缓存
         // 重置密码
+        User user = Optional.ofNullable(userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getMobilePhone, mobile))).orElseThrow(() -> {
+            log.error("手机号:{}未能查询到用户", mobile);
+            return new BusinessException(CodeEnum.MobileNotExist);
+        });
         String token = UUID.randomUUID().toString();
         String encrypedPassword = MD5EncryptUtil.md5Encrypy(password, MD5EncryptUtil.md5Encrypy(mobile));  // 密码加密
         user.setPassword(encrypedPassword);
@@ -100,16 +105,16 @@ public class UserService {
         User user = ContextUtil.getUserFromRequest();
         // 对比原密码是否正确
         String salt = MD5EncryptUtil.md5Encrypy(user.getMobilePhone());
-        String orgPassword = MD5EncryptUtil.md5Encrypy(updatePasswordForm.getOrgPswd(), salt);
-        if (!StringUtils.equals(user.getPassword(), orgPassword)) {
-            log.error("手机号:{}修改密码，原密码:{}与参数原密码:{}不相同", user.getMobilePhone(), user.getPassword(), orgPassword);
+        String originalPassword = MD5EncryptUtil.md5Encrypy(updatePasswordForm.getOriginalPassword(), salt);
+        if (!StringUtils.equals(user.getPassword(), originalPassword)) {
+            log.error("手机号:{}修改密码，原密码:{}与参数原密码:{}不相同", user.getMobilePhone(), user.getPassword(), originalPassword);
             throw new BusinessException(CodeEnum.OrgPswdError);
         }
         // 修改密码
-        String pswd = MD5EncryptUtil.md5Encrypy(updatePasswordForm.getPswd(), salt);
-        user.setPassword(pswd);
+        String password = MD5EncryptUtil.md5Encrypy(updatePasswordForm.getOriginalPassword(), salt);
+        user.setPassword(password);
         user.setUpdateTime(new Date());
-        userMapper.updatePassword(user);
+        userMapper.updateById(user);
         // 更新缓存
         redisCache.setKeyValueData(user.getToken(), user);
     }
@@ -133,7 +138,7 @@ public class UserService {
         }
         // 更新用户名
         user.setUsername(username);
-        userMapper.updateUsername(user);
+        userMapper.updateById(user);
         // 更新缓存
         redisCache.setKeyValueData(user.getToken(), user);
     }

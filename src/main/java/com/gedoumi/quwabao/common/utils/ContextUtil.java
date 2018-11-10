@@ -5,7 +5,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 import static com.gedoumi.quwabao.common.constants.Constants.API_USER_KEY;
@@ -25,15 +24,6 @@ public class ContextUtil {
      */
     public static HttpServletRequest getRequest() {
         return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
-    }
-
-    /**
-     * 获取HttpServletResponse对象
-     *
-     * @return HttpServletResponse对象
-     */
-    public static HttpServletResponse getResponse() {
-        return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getResponse();
     }
 
     /**

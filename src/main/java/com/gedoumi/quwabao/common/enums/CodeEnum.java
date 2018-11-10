@@ -14,7 +14,7 @@ public enum CodeEnum {
     PasswordError(2222, "密码错误"),
     TooManyError(2223, "错误次数超过3次，需要重置密码"),
     UserLocked(2224, "账号已被锁定"),
-    ValidateCodeExpire(2225, "验证码错误或已经过期"),
+    SmsCodeError(2225, "短信验证码错误或已经过期"),
     MobileExist(2226, "手机号已经存在"),
     MobileNotExist(2227, "手机号不存在"),
     NameError(2228, "用户名已经存在"),
