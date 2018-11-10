@@ -1,0 +1,32 @@
+package com.pfc.quwabao.sys.service;
+
+import com.pfc.quwabao.sys.dataobj.model.SysLog;
+import com.pfc.quwabao.sys.mapper.SysLogMapper;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+
+
+/**
+ * 网关日志Service
+ *
+ * @author Minced
+ */
+@Service
+public class SysLogService {
+
+    @Resource
+    private SysLogMapper sysLogMapper;
+
+    /**
+     * 创建网关日志
+     *
+     * @param sysLog 日志对象
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void createSysLog(SysLog sysLog) {
+        sysLogMapper.createSysLog(sysLog);
+    }
+
+}

@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.gedoumi.quwabao.user.mapper.UserTeamExtMapper">
+<mapper namespace="com.pfc.quwabao.user.mapper.UserTeamExtMapper">
 
     <select id="queryUserByParentId" resultType="User">
         SELECT u.id, u.mobile_phone, u.username

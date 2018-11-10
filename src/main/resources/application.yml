@@ -17,12 +17,12 @@ spring:
       auto_import: common/common.ftl as common  # 将common.ftl设置为包文件并设置别名为common
 
 mybatis-plus:  # MyBatis-Plus配置
-  type-aliases-package: com.gedoumi.quwabao  # 别名包
+  type-aliases-package: com.pfc.quwabao  # 别名包
   mapper-locations: classpath:mappers/**/**.xml  # xml文件位置
   global-config:  # MyBatis-Plus配置
     db-config:  # 数据库相关配置
-      id-type: auto  # 主键类型  AUTO:"数据库ID自增", INPUT:"用户输入ID",ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
-      field-strategy: not_empty  # 字段策略 IGNORED:"忽略判断",NOT_NULL:"非 NULL 判断"),NOT_EMPTY:"非空判断"
+      id-type: auto  # 主键类型 AUTO:"数据库ID自增", INPUT:"用户输入ID",ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
+      field-strategy: not_empty  # 字段策略 IGNORED:"忽略判断", NOT_NULL:"非 NULL 判断"), NOT_EMPTY:"非空判断"
       db-type: mysql  # 数据库类型
     refresh: true  # 刷新mapper，不需要重启，生产环境建议关闭
   configuration:  # 原生Mybatis配置
