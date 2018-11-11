@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.pfc.quwabao.user.mapper.UserRegisterMapper">
+<mapper namespace="com.gedoumi.quwabao.user.mapper.UserRegisterMapper">
 
     <insert id="createUser" parameterType="User" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO user (error_count,

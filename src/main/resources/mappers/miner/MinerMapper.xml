@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.pfc.quwabao.miner.mapper.MinerMapper">
+<mapper namespace="com.gedoumi.quwabao.miner.mapper.MinerMapper">
 
     <select id="queryList" resultType="Rent">
         SELECT rent_code, name, money, profit_money_ext

@@ -17,7 +17,7 @@ spring:
       auto_import: common/common.ftl as common  # 将common.ftl设置为包文件并设置别名为common
 
 mybatis-plus:  # MyBatis-Plus配置
-  type-aliases-package: com.pfc.quwabao  # 别名包
+  type-aliases-package: com.gedoumi.quwabao  # 别名包
   mapper-locations: classpath:mappers/**/**.xml  # xml文件位置
   global-config:  # MyBatis-Plus配置
     db-config:  # 数据库相关配置
