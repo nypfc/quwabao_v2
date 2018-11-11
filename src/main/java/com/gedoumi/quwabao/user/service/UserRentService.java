@@ -6,8 +6,8 @@ import com.gedoumi.quwabao.common.enums.UserRentStatus;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
-import com.gedoumi.quwabao.miner.dataobj.model.Rent;
-import com.gedoumi.quwabao.miner.service.MinerService;
+import com.gedoumi.quwabao.rent.dataobj.model.Rent;
+import com.gedoumi.quwabao.rent.service.RentService;
 import com.gedoumi.quwabao.user.dataobj.dto.UserRentNumberDTO;
 import com.gedoumi.quwabao.user.dataobj.form.RentForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
@@ -36,10 +36,12 @@ public class UserRentService {
 
     @Resource
     private UserAssetService userAssetService;
+
     @Resource
     private UserAssetDetailService userAssetDetailService;
+
     @Resource
-    private MinerService minerService;
+    private RentService rentService;
 
     /**
      * 获取用户租用矿机信息列表
@@ -77,7 +79,7 @@ public class UserRentService {
             throw new BusinessException(CodeEnum.PasswordError);
         }
         // 查询矿机信息
-        Rent rent = minerService.getRent(rentType);
+        Rent rent = rentService.getRent(rentType);
         // 查询资产对象判断余额
         UserAsset userAsset = Optional.ofNullable(userAssetService.getUserAsset(userId)).orElseThrow(() -> {
             log.error("手机号:{} 资产查询结果为null", mobile);

@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.miner.dataobj.vo;
+package com.gedoumi.quwabao.rent.dataobj.vo;
 
 import lombok.Data;
 

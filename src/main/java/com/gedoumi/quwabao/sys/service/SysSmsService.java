@@ -1,5 +1,6 @@
 package com.gedoumi.quwabao.sys.service;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.gedoumi.quwabao.common.config.properties.SMSProperties;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.SmsStatus;

@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.user.dataobj.model;
 
-import com.gedoumi.quwabao.miner.dataobj.model.Rent;
+import com.gedoumi.quwabao.rent.dataobj.model.Rent;
 import lombok.Data;
 
 import java.math.BigDecimal;

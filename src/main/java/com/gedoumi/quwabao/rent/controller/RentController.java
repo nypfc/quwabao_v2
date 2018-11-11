@@ -1,9 +1,9 @@
-package com.gedoumi.quwabao.miner.controller;
+package com.gedoumi.quwabao.rent.controller;
 
 import com.gedoumi.quwabao.common.utils.ResponseObject;
-import com.gedoumi.quwabao.miner.dataobj.model.Rent;
-import com.gedoumi.quwabao.miner.dataobj.vo.RentVO;
-import com.gedoumi.quwabao.miner.service.MinerService;
+import com.gedoumi.quwabao.rent.dataobj.model.Rent;
+import com.gedoumi.quwabao.rent.dataobj.vo.RentVO;
+import com.gedoumi.quwabao.rent.service.RentService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,12 +17,12 @@ import java.util.stream.Collectors;
  *
  * @author Minced
  */
-@RequestMapping("/v2/miner")
+@RequestMapping("/v2/rent")
 @RestController
-public class MinerController {
+public class RentController {
 
     @Resource
-    private MinerService minerService;
+    private RentService rentService;
 
     /**
      * 获取矿机列表
@@ -31,7 +31,7 @@ public class MinerController {
      */
     @GetMapping("/list")
     public ResponseObject minerList() {
-        List<Rent> rentList = minerService.getRentList();
+        List<Rent> rentList = rentService.getRentList();
         // 封装返回数据
         List<RentVO> rentVOList = rentList.stream().map(rent -> {
             RentVO rentVO = new RentVO();

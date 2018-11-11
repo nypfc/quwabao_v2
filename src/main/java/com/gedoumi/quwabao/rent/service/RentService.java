@@ -1,8 +1,9 @@
-package com.gedoumi.quwabao.miner.service;
+package com.gedoumi.quwabao.rent.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gedoumi.quwabao.common.enums.RentStatus;
-import com.gedoumi.quwabao.miner.dataobj.model.Rent;
-import com.gedoumi.quwabao.miner.mapper.MinerMapper;
+import com.gedoumi.quwabao.rent.dataobj.model.Rent;
+import com.gedoumi.quwabao.rent.mapper.RentMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,10 +16,10 @@ import java.util.List;
  * @author Minced
  */
 @Service
-public class MinerService {
+public class RentService {
 
     @Resource
-    private MinerMapper minerMapper;
+    private RentMapper rentMapper;
 
     /**
      * 获取矿机列表
@@ -26,7 +27,7 @@ public class MinerService {
      * @return 矿机集合
      */
     public List<Rent> getRentList() {
-        return minerMapper.queryList(RentStatus.ACTIVE.getValue());
+        return rentMapper.selectList(new LambdaQueryWrapper<Rent>().eq(Rent::getRentStatus, RentStatus.ACTIVE.getValue()));
     }
 
     /**
@@ -36,7 +37,7 @@ public class MinerService {
      * @return 矿机对象
      */
     public Rent getRent(Integer rentType) {
-        return minerMapper.queryRent(rentType);
+        return rentMapper.selectOne(new LambdaQueryWrapper<Rent>().eq(Rent::getRentCode, rentType));
     }
 
     /**

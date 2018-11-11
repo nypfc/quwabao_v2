@@ -103,19 +103,22 @@ public class UserRegisterService {
         user.setUpdateTime(now);
         while (userCheckService.checkInviteCode(user.getInviteCode()))
             user.setInviteCode(CodeUtils.generateCode());  // 设置邀请码，如果重复重新生成
-        // 设置用户名
+        userRegisterMapper.createUser(user);
+        Long userId = user.getId();  // 创建完成的用户ID
+
+        // 更新用户名
+        User update = new User();
+        update.setId(user.getId());
         if (StringUtils.isEmpty(username)) {
-            user.setUsername(USER_PREFIX + new Random().nextInt(999999));  // 用户名为空设置默认用户名
-            while (userCheckService.checkUsername(username)) {  // 如果重复继续设置用户名
-                user.setUsername(USER_PREFIX + new Random().nextInt(999999));
-            }
+            update.setUsername(USER_PREFIX + new Random().nextInt(999) + user.getId());  // 用户名为空设置默认用户名
+            while (userCheckService.checkUsername(username))  // 如果重复继续设置用户名
+                update.setUsername(USER_PREFIX + new Random().nextInt(999) + user.getId());
         } else {
             if (userCheckService.checkUsername(username))
                 throw new BusinessException(CodeEnum.NameError);
-            user.setUsername(username);
+            update.setUsername(username);
         }
-        userRegisterMapper.createUser(user);
-        Long userId = user.getId();  // 创建完成的用户ID
+        userMapper.updateById(update);
 
         // 更新短信
         sysSmsService.updateSmsStatus(user.getMobilePhone());

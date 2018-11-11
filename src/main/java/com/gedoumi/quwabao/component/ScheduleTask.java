@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.component;
 
-import com.gedoumi.quwabao.miner.service.MinerService;
+import com.gedoumi.quwabao.rent.service.RentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import javax.annotation.Resource;
 public class ScheduleTask {
 
     @Resource
-    private MinerService minerService;
+    private RentService rentService;
 
     /**
      * 计算挖矿收益
@@ -27,7 +27,7 @@ public class ScheduleTask {
     @Scheduled(cron = "0 0 23 * * ? ", zone = "Asia/Shanghai")
     public void runDig() {
         log.info(" ==============开始统计挖矿收益===========");
-        minerService.digJob();
+        rentService.digJob();
         log.info(" ==============统计挖矿收益结束===========");
     }
 
@@ -37,7 +37,7 @@ public class ScheduleTask {
     @Scheduled(cron = "0 15 23 * * ? ", zone = "Asia/Shanghai")
     public void runReward() {
         log.info(" ==============开始处理推荐人奖励===========");
-        minerService.rewardTask();
+        rentService.rewardTask();
         log.info(" ==============处理推荐人奖励结束===========");
     }
 

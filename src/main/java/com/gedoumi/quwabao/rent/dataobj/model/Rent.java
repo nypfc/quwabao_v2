@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.miner.dataobj.model;
+package com.gedoumi.quwabao.rent.dataobj.model;
 
 import lombok.Data;
 
@@ -52,6 +52,11 @@ public class Rent {
      * 更新时间
      */
     private Date updateTime;
+
+    /**
+     * 矿机类型
+     */
+    private Integer rentCode;
 
     /**
      * 矿机状态

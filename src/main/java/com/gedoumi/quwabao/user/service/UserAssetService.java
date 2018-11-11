@@ -49,14 +49,4 @@ public class UserAssetService {
         return userAsset;
     }
 
-    /**
-     * 更新用户资产
-     *
-     * @param userAsset 用户资产对象
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public void updateUserAsset(UserAsset userAsset) {
-
-    }
-
 }
