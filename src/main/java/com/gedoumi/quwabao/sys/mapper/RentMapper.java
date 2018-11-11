@@ -1,7 +1,7 @@
-package com.gedoumi.quwabao.rent.mapper;
+package com.gedoumi.quwabao.sys.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.gedoumi.quwabao.rent.dataobj.model.Rent;
+import com.gedoumi.quwabao.sys.dataobj.model.Rent;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

@@ -1,9 +1,9 @@
-package com.gedoumi.quwabao.rent.controller;
+package com.gedoumi.quwabao.sys.controller;
 
 import com.gedoumi.quwabao.common.utils.ResponseObject;
-import com.gedoumi.quwabao.rent.dataobj.model.Rent;
-import com.gedoumi.quwabao.rent.dataobj.vo.RentVO;
-import com.gedoumi.quwabao.rent.service.RentService;
+import com.gedoumi.quwabao.sys.dataobj.model.Rent;
+import com.gedoumi.quwabao.sys.dataobj.vo.RentVO;
+import com.gedoumi.quwabao.sys.service.RentService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

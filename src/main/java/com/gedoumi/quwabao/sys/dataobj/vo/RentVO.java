@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.rent.dataobj.vo;
+package com.gedoumi.quwabao.sys.dataobj.vo;
 
 import lombok.Data;
 

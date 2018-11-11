@@ -1,11 +1,10 @@
-package com.gedoumi.quwabao.rent.service;
+package com.gedoumi.quwabao.sys.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gedoumi.quwabao.common.enums.RentStatus;
-import com.gedoumi.quwabao.rent.dataobj.model.Rent;
-import com.gedoumi.quwabao.rent.mapper.RentMapper;
+import com.gedoumi.quwabao.sys.dataobj.model.Rent;
+import com.gedoumi.quwabao.sys.mapper.RentMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -38,22 +37,6 @@ public class RentService {
      */
     public Rent getRent(Integer rentType) {
         return rentMapper.selectOne(new LambdaQueryWrapper<Rent>().eq(Rent::getRentCode, rentType));
-    }
-
-    /**
-     * 计算挖矿收益
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public void digJob() {
-
-    }
-
-    /**
-     * 计算推荐人收益
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public void rewardTask() {
-
     }
 
 }

@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.rent.dataobj.model;
+package com.gedoumi.quwabao.sys.dataobj.model;
 
 import lombok.Data;
 
