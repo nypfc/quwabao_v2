@@ -1,5 +1,7 @@
 package com.gedoumi.quwabao.common.utils;
 
+import com.gedoumi.quwabao.common.enums.CodeEnum;
+import com.gedoumi.quwabao.common.exception.BusinessException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -18,6 +20,9 @@ public final class MD5EncryptUtil {
             '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
     };
 
+    /**
+     * 私有化工具类狗仔方法
+     */
     private MD5EncryptUtil() {
     }
 
@@ -48,8 +53,7 @@ public final class MD5EncryptUtil {
             return new String(encode(digest));
         } catch (NoSuchAlgorithmException ex) {
             ex.printStackTrace();
-            // TODO 自定义异常
-            throw new RuntimeException();
+            throw new BusinessException(CodeEnum.SysError);
         }
     }
 

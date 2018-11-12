@@ -55,6 +55,26 @@ public class UserRentService {
     }
 
     /**
+     * 获取指定用户租用矿机的数量
+     *
+     * @param userIds 用户ID集合
+     * @return 矿机信息集合
+     */
+    public List<UserRentNumberDTO> getUserRentNumber(List<Long> userIds) {
+        return userRentMapper.countUserRentsByIds(userIds, UserRentStatus.Active.getValue());
+    }
+
+    /**
+     * 获取指定用户已租用的矿机价格的总和
+     *
+     * @param userIds 用户ID集合
+     * @return 矿机价格总和
+     */
+    public BigDecimal getTotalRentAsset(List<Long> userIds) {
+        return userRentMapper.queryTotalRentAsset(userIds);
+    }
+
+    /**
      * 矿机租用
      *
      * @param rentForm 租用表单
@@ -98,26 +118,6 @@ public class UserRentService {
         userAssetService.updateUserAsset(userId, rentMoney.negate(), BigDecimal.ZERO);
         // 创建用户资产详情
         userAssetDetailService.createUserDetailAsset(userId, rentMoney, TransType.Rent.getValue());
-    }
-
-    /**
-     * 获取指定用户租用矿机的数量
-     *
-     * @param userIds 用户ID集合
-     * @return 矿机信息集合
-     */
-    public List<UserRentNumberDTO> getUserRentNumber(List<Long> userIds) {
-        return userRentMapper.countUserRentsByIds(userIds, UserRentStatus.Active.getValue());
-    }
-
-    /**
-     * 获取指定用户已租用的矿机价格的总和
-     *
-     * @param userIds 用户ID集合
-     * @return 矿机价格总和
-     */
-    public BigDecimal getTotalRentAsset(List<Long> userIds) {
-        return userRentMapper.queryTotalRentAsset(userIds);
     }
 
 }
