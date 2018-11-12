@@ -48,6 +48,9 @@ task:  # 线程池配置
     keep-alive-second: 60
     thread-name-prefix: SMS-Thread
 
+sys:  # 交易所私钥
+  private-key: test
+
 #logging:
 #  pattern:
 #    console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){blue} %clr(%5p) - %clr(%-40.40logger{39}){cyan} : %m%n"

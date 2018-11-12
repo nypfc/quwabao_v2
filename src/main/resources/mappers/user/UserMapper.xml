@@ -4,4 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.gedoumi.quwabao.user.mapper.UserMapper">
+
+    <select id="queryIdByInviteCode" resultType="java.lang.Long">
+        SELECT id
+        FROM user
+        WHERE invite_code = #{param1}
+    </select>
+
 </mapper>

@@ -5,12 +5,13 @@
 
 <mapper namespace="com.gedoumi.quwabao.user.mapper.UserAssetDetailMapper">
 
-    <select id="queryDetailList" resultType="UserAssetDetail">
+    <select id="selectTransInIds" resultType="com.gedoumi.quwabao.user.dataobj.model.UserAssetDetail">
         SELECT create_time, money, trans_type
         FROM user_asset_detail
-        WHERE user_id = #{param1}
+        WHERE user_id = #{userId}
         AND trans_type IN
-        <foreach collection="param2" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+        <foreach collection="transType" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
+        ORDER BY create_time DESC
     </select>
 
 </mapper>

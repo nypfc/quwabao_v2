@@ -8,7 +8,12 @@ public class QuwabaoTest {
 
     @Test
     public void test1() {
-        System.out.println(new BigDecimal(1000.10000).setScale(5, BigDecimal.ROUND_DOWN).stripTrailingZeros().toPlainString());
+        BigDecimal b = new BigDecimal("100.123");
+        BigDecimal bigDecimal = new BigDecimal("10");
+        System.out.println(bigDecimal);
+        BigDecimal negate = bigDecimal.negate();
+        System.out.println(negate);
+        System.out.println(b.add(negate));
     }
 
 }

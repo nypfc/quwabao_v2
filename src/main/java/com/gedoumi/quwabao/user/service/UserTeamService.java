@@ -26,16 +26,6 @@ public class UserTeamService {
     private UserTeamExtMapper userTeamExtMapper;
 
     /**
-     * 获取用户团队
-     *
-     * @param userId 用户ID
-     * @return 团队用户集合
-     */
-    public List<User> getChildUser(Long userId) {
-        return userTeamExtMapper.queryUserByParentId(userId);
-    }
-
-    /**
      * 获取团队业绩
      *
      * @param userId 用户ID
@@ -51,17 +41,6 @@ public class UserTeamService {
             userTeamExtMapper.insert(userTeamExt);
             return userTeamExt;
         });
-    }
-
-    /**
-     * 创建用户上下级关系
-     *
-     * @param userId   用户ID
-     * @param parentId 上级用户ID
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public void createUserTree(Long userId, Long parentId) {
-        userTeamExtMapper.createUserTree(userId, parentId);
     }
 
 }

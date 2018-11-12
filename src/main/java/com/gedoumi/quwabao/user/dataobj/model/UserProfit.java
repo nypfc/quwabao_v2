@@ -9,13 +9,13 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 团队信息
+ * 用户收益表
  *
  * @author Minced
  */
-@TableName("user_team_ext")
+@TableName("user_profit")
 @Data
-public class UserTeamExt {
+public class UserProfit {
 
     /**
      * ID
@@ -29,28 +29,33 @@ public class UserTeamExt {
     private Long userId;
 
     /**
-     * 团队等级
+     * 静态收益
      */
-    private Integer teamLevel;
+    private BigDecimal staticProfit;
 
     /**
-     * 团队总静态收益
+     * 动态收益
      */
-    private BigDecimal teamTotalStaticProfit;
+    private BigDecimal dynamicProfit;
 
     /**
-     * 团队总挖矿量
+     * 俱乐部收益
      */
-    private BigDecimal teamTotalRent;
+    private BigDecimal clubProfit;
+
+    /**
+     * 总收益
+     */
+    private BigDecimal totalProfit;
+
+    /**
+     * 日期
+     */
+    private Date date;
 
     /**
      * 创建时间
      */
     private Date createTime;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
 
 }

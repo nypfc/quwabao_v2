@@ -27,3 +27,5 @@ logging:  # 测试环境DEBUG日志
   level:
     com.gedoumi.quwabao.user.mapper.UserMapper: debug
     com.gedoumi.quwabao.sys.mapper.SysSmsMapper: debug
+    com.gedoumi.quwabao.user.mapper.UserAssetDetailMapper: debug
+    com.gedoumi.quwabao.user.mapper.UserProfitMapper: debug

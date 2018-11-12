@@ -4,39 +4,4 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.gedoumi.quwabao.user.mapper.UserAssetMapper">
-
-    <select id="queryByUserId" resultType="UserAsset">
-        SELECT id,
-               create_time,
-               frozen_asset,
-               remain_asset,
-               profit,
-               total_asset,
-               update_time,
-               user_id
-        FROM user_asset
-        WHERE user_id = #{param1}
-    </select>
-
-    <insert id="createUserAsset" parameterType="UserAsset">
-        INSERT INTO user_asset (create_time,
-                                frozen_asset,
-                                profit,
-                                remain_asset,
-                                total_asset,
-                                update_time,
-                                user_id,
-                                init_frozen_asset,
-                                init_base_asset)
-        VALUES (#{createTime},
-                #{frozenAsset},
-                #{profit},
-                #{remainAsset},
-                #{totalAsset},
-                #{updateTime},
-                #{userId},
-                #{initFrozenAsset},
-                #{initBaseAsset})
-    </insert>
-
 </mapper>

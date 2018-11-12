@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gedoumi.quwabao.user.mapper.UserTreeMapper">
+
+    <select id="selectByParentId" resultType="com.gedoumi.quwabao.user.dataobj.model.User">
+        SELECT u.id, u.mobile_phone, u.username
+        FROM user_tree ut
+                 LEFT JOIN user u ON u.id = ut.child_id
+        WHERE ut.parent_id = #{param1}
+    </select>
+
+</mapper>

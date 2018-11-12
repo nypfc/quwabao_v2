@@ -5,7 +5,7 @@
 
 <mapper namespace="com.gedoumi.quwabao.user.mapper.UserRentMapper">
 
-    <select id="queryUserRent" resultMap="rent">
+    <select id="selectUserRents" resultMap="rent">
         SELECT ur.id,
                ur.rent_asset,
                ur.last_dig,
@@ -20,7 +20,7 @@
         WHERE ur.user_id = #{param1}
           AND ur.rent_status = #{param2}
     </select>
-    <resultMap id="rent" type="UserRent">
+    <resultMap id="rent" type="com.gedoumi.quwabao.user.dataobj.model.UserRent">
         <id column="id" property="id"/>
         <result column="rent_asset" property="rentAsset"/>
         <result column="last_dig" property="lastDig"/>
@@ -28,34 +28,13 @@
         <result column="total_asset" property="totalAsset"/>
         <result column="user_id" property="userId"/>
         <result column="rent_type" property="rentType"/>
-        <collection property="rent" ofType="Rent">
+        <collection property="rent" ofType="com.gedoumi.quwabao.sys.dataobj.model.Rent">
             <result column="name" property="name"/>
             <result column="money" property="money"/>
         </collection>
     </resultMap>
 
-    <insert id="createUserRent" parameterType="UserRent">
-        INSERT INTO user_rent (create_time,
-                               rent_asset,
-                               last_dig,
-                               already_dig,
-                               total_asset,
-                               update_time,
-                               user_id,
-                               rent_type,
-                               rent_status)
-        VALUES (#{createTime},
-                #{rentAsset},
-                #{lastDig},
-                #{alreadyDig},
-                #{totalAsset},
-                #{updateTime},
-                #{userId},
-                #{rentType},
-                #{rentStatus})
-    </insert>
-
-    <select id="countUserRentsByIds" resultType="UserRentNumberDTO">
+    <select id="countUserRentsByIds" resultType="com.gedoumi.quwabao.user.dataobj.dto.UserRentNumberDTO">
         SELECT user_id, count(0) AS number
         FROM user_rent
         WHERE rent_status = #{param2}
@@ -64,7 +43,7 @@
         GROUP BY user_id
     </select>
 
-    <select id="queryTotalRentAsset" resultType="BigDecimal">
+    <select id="queryTotalRentAsset" resultType="java.math.BigDecimal">
         SELECT sum(rent_asset)
         FROM user_rent
         WHERE user_id IN

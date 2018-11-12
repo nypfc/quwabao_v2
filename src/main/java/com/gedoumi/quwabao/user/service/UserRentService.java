@@ -1,5 +1,6 @@
 package com.gedoumi.quwabao.user.service;
 
+import com.gedoumi.quwabao.common.enums.TransType;
 import com.gedoumi.quwabao.user.dataobj.model.UserAsset;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.UserRentStatus;
@@ -49,8 +50,8 @@ public class UserRentService {
      * @param userId 用户ID
      * @return 矿机信息集合
      */
-    public List<UserRent> getUserRent(Long userId) {
-        return userRentMapper.queryUserRent(userId, UserRentStatus.Active.getValue());
+    public List<UserRent> getUserRents(Long userId) {
+        return userRentMapper.selectUserRents(userId, UserRentStatus.Active.getValue());
     }
 
     /**
@@ -80,30 +81,23 @@ public class UserRentService {
         }
         // 查询矿机信息
         Rent rent = rentService.getRent(rentType);
-        // 查询资产对象判断余额
-        UserAsset userAsset = Optional.ofNullable(userAssetService.getUserAsset(userId)).orElseThrow(() -> {
-            log.error("手机号:{} 资产查询结果为null", mobile);
-            return new BusinessException(CodeEnum.RemainAssetError);
-        });
-        BigDecimal remainAsset = userAsset.getRemainAsset();
-        if (remainAsset.compareTo(rent.getMoney()) < 0) {
-            log.error("手机号:{} 余额:{}，租用矿机余额不足", mobile, remainAsset);
-            throw new BusinessException(CodeEnum.RemainAssetError);
-        }
+        BigDecimal rentMoney = rent.getMoney();
+        // 判断余额
+        userAssetService.remainAsset(userId, rentMoney);
         // 创建用户矿机
         UserRent userRent = new UserRent();
-        userRent.setRentAsset(rent.getMoney());
+        userRent.setRentAsset(rentMoney);
         userRent.setLastDig(BigDecimal.ZERO);
         userRent.setAlreadyDig(BigDecimal.ZERO);
         userRent.setTotalAsset(rent.getProfitMoneyExt());
         userRent.setUserId(userId);
         userRent.setRentType(rentType);
         userRent.setRentStatus(UserRentStatus.Active.getValue());
-        userRentMapper.createUserRent(userRent);
+        userRentMapper.insert(userRent);
+        // 更新用户资产（注意将rentMoney转为负数）
+        userAssetService.updateUserAsset(userId, rentMoney.negate(), BigDecimal.ZERO);
         // 创建用户资产详情
-
-        // 更新用户资产
-
+        userAssetDetailService.createUserDetailAsset(userId, rentMoney, TransType.Rent.getValue());
     }
 
     /**
@@ -117,7 +111,7 @@ public class UserRentService {
     }
 
     /**
-     * 获取指定用户以租用的矿机价格的总和
+     * 获取指定用户已租用的矿机价格的总和
      *
      * @param userIds 用户ID集合
      * @return 矿机价格总和

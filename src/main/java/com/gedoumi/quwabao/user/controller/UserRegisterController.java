@@ -5,8 +5,7 @@ import com.gedoumi.quwabao.common.validate.MobilePhone;
 import com.gedoumi.quwabao.user.dataobj.form.RegisterForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import com.gedoumi.quwabao.user.dataobj.vo.LoginTokenVO;
-import com.gedoumi.quwabao.user.service.UserCheckService;
-import com.gedoumi.quwabao.user.service.UserRegisterService;
+import com.gedoumi.quwabao.user.service.UserService;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +24,7 @@ import javax.validation.Valid;
 public class UserRegisterController {
 
     @Resource
-    private UserCheckService userCheckService;
-    @Resource
-    private UserRegisterService userRegisterService;
+    private UserService userService;
 
     /**
      * 验证手机号
@@ -37,7 +34,7 @@ public class UserRegisterController {
      */
     @GetMapping("/check/mobile/{mobile}")
     public ResponseObject checkMobilePhone(@MobilePhone @PathVariable String mobile) {
-        return new ResponseObject<>(userCheckService.checkMobilePhone(mobile));
+        return new ResponseObject<>(userService.checkMobilePhone(mobile));
     }
 
     /**
@@ -48,7 +45,7 @@ public class UserRegisterController {
      */
     @GetMapping("/check/inviteCode/{inviteCode}")
     public ResponseObject checkInviteCode(@Length(min = 8, max = 8, message = "Invite code length must be 8 characters") @PathVariable String inviteCode) {
-        return new ResponseObject<>(userCheckService.checkInviteCode(inviteCode));
+        return new ResponseObject<>(userService.checkInviteCode(inviteCode));
     }
 
     /**
@@ -59,7 +56,7 @@ public class UserRegisterController {
      */
     @GetMapping("/check/username/{username}")
     public ResponseObject checkUserName(@PathVariable String username) {
-        return new ResponseObject<>(userCheckService.checkUsername(username));
+        return new ResponseObject<>(userService.checkUsername(username));
     }
 
     /**
@@ -70,7 +67,7 @@ public class UserRegisterController {
      */
     @PostMapping("/register")
     public ResponseObject register(@RequestBody @Valid RegisterForm registerForm) {
-        User user = userRegisterService.register(registerForm);
+        User user = userService.register(registerForm);
         // 封装返回数据
         LoginTokenVO loginTokenVO = new LoginTokenVO();
         loginTokenVO.setToken(user.getToken());

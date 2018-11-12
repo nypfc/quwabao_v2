@@ -33,11 +33,11 @@ public class UserRentController {
      * @return ResponseObject
      */
     @GetMapping("/rent")
-    public ResponseObject userRentList() {
+    public ResponseObject userRents() {
         // 获取用户信息
         User user = ContextUtil.getUserFromRequest();
         // 获取用户租用矿机信息
-        List<UserRent> userRents = userRentService.getUserRent(user.getId());
+        List<UserRent> userRents = userRentService.getUserRents(user.getId());
         // 遍历集合封装返回数据
         List<UserRentVO> userRentVOList = userRents.stream().map(userRent -> {
             UserRentVO userRentVO = new UserRentVO();
@@ -59,7 +59,7 @@ public class UserRentController {
      * @return ResponseObject
      */
     @PostMapping("/rent")
-    public ResponseObject rentMiner(@RequestBody @Valid RentForm rentForm) {
+    public ResponseObject rent(@RequestBody @Valid RentForm rentForm) {
         userRentService.rent(rentForm);
         return new ResponseObject();
     }
