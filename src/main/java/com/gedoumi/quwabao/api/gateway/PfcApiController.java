@@ -50,7 +50,7 @@ public class PfcApiController {
 //            detail.setMoney(new BigDecimal(rechargeVO.getAmount()));
 //            detail.setProfit(BigDecimal.ZERO);
 //            detail.setProfitExt(BigDecimal.ZERO);
-//            detail.setTransType(TransType.NetIn.getValue());
+//            detail.setTransType(TransTypeEnum.NetIn.getValue());
 //            detail.setApiTransSeq(rechargeVO.getSeq());
 //            userAssetService.addAsset(detail);
 //

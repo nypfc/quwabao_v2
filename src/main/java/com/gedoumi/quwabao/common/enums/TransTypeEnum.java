@@ -1,7 +1,7 @@
 package com.gedoumi.quwabao.common.enums;
 
 
-public enum TransType {
+public enum TransTypeEnum {
 
     Init(0,"初始状态，无效"),
     Profit(1,"挖矿收益"),
@@ -21,7 +21,7 @@ public enum TransType {
     GuessRight(15,"竞猜取胜")
     ;
 
-    private TransType(int value, String name){
+    private TransTypeEnum(int value, String name){
         this.value = value;
         this.name = name;
     }
@@ -47,9 +47,9 @@ public enum TransType {
     }
 
 
-    public static TransType fromValue(int value){
-        TransType[] valus = TransType.values();
-        for (TransType transType : valus) {
+    public static TransTypeEnum fromValue(int value){
+        TransTypeEnum[] valus = TransTypeEnum.values();
+        for (TransTypeEnum transType : valus) {
             if(transType.getValue() == value){
                 return transType;
             }

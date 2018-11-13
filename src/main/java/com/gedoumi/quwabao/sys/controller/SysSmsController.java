@@ -44,7 +44,7 @@ public class SysSmsController {
      * @param sendSMSForm 发送短信表单
      * @return ResponseObject
      */
-    @PostMapping("/resetPwd")
+    @PostMapping("/password")
     public ResponseObject sendResetPasswordSms(@RequestBody @Valid SendSMSForm sendSMSForm) {
         sysSmsService.sendSms(SmsType.ResetPassword.getValue(), sendSMSForm.getMobile());
         return new ResponseObject();

@@ -105,7 +105,7 @@ public class User {
     private Integer userType;
 
     /**
-     * 性别
+     * 性别（目前未使用）
      */
     private Integer sex;
 

@@ -3,7 +3,7 @@ package com.gedoumi.quwabao.user.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
-import com.gedoumi.quwabao.common.enums.UserStatus;
+import com.gedoumi.quwabao.common.enums.UserStatusEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
@@ -56,7 +56,7 @@ public class LoginService {
             log.error("手机号:{}未能查询到用户", mobile);
             return new BusinessException(CodeEnum.MobileNotExist);
         });
-        if (user.getUserStatus() == UserStatus.Disable.getValue()) {
+        if (user.getUserStatus() == UserStatusEnum.DISABLE.getValue()) {
             log.error("手机号:{}已经锁定", mobile);
             throw new BusinessException(CodeEnum.UserLocked);
         }

@@ -14,6 +14,5 @@ public interface Constants {
     Integer API_SUCCESS_CODE = 0;
     String AUTH_TOKEN = "auth-token";
     String USER_PREFIX = "挖宝客";
-    Integer USER_DETAIL_VERSION = 1;
 
 }

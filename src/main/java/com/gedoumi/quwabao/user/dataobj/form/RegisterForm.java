@@ -22,27 +22,27 @@ public class RegisterForm {
     private String mobile;
 
     /**
-     * 短信验证码
-     */
-    @NotBlank
-    private String smsCode;
-
-    /**
      * 密码
      */
     @NotBlank
     private String password;
 
     /**
+     * 短信验证码
+     */
+    @NotBlank
+    private String smsCode;
+
+    /**
      * 邀请码
      */
     @NotBlank
     @Length(min = 8, max = 8, message = "邀请码必须为8位")
-    private String regInviteCode;
+    private String inviteCode;
 
     /**
      * 用户名
      */
-    private String userName;
+    private String username;
 
 }

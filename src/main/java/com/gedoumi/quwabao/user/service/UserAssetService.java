@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -47,11 +48,16 @@ public class UserAssetService {
     @Transactional(rollbackFor = Exception.class)
     public UserAsset createUserAsset(Long userId) {
         UserAsset userAsset = new UserAsset();
+        Date now = new Date();
+        userAsset.setCreateTime(now);
+        userAsset.setUpdateTime(now);
         userAsset.setProfit(BigDecimal.ZERO);
         userAsset.setRemainAsset(BigDecimal.ZERO);
         userAsset.setFrozenAsset(BigDecimal.ZERO);
         userAsset.setTotalAsset(BigDecimal.ZERO);
         userAsset.setUserId(userId);
+        userAsset.setInitBaseAsset(BigDecimal.ZERO);  // 冗余字段
+        userAsset.setInitFrozenAsset(BigDecimal.ZERO);  // 冗余字段
         userAssetMapper.insert(userAsset);
         return userAsset;
     }
@@ -90,11 +96,12 @@ public class UserAssetService {
         if (money.compareTo(BigDecimal.ZERO) == 0)
             return;
         UserAsset update = new UserAsset();
+        update.setUpdateTime(new Date());
         // 如果变更量与收益均大于0，设置收益
         if (profit.compareTo(BigDecimal.ZERO) > 0 && money.compareTo(BigDecimal.ZERO) > 0)
             update.setProfit(userAsset.getProfit().add(profit));
         update.setRemainAsset(userAsset.getRemainAsset().add(money));
-        update.setTotalAsset(userAsset.getRemainAsset().add(userAsset.getFrozenAsset()));
+        update.setTotalAsset(update.getRemainAsset().add(userAsset.getFrozenAsset()));
         // 更新并判断结果
         userAssetMapper.update(update, new UpdateWrapper<UserAsset>().lambda().eq(UserAsset::getUserId, userId));
     }

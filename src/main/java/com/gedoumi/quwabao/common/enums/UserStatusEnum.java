@@ -2,17 +2,23 @@ package com.gedoumi.quwabao.common.enums;
 
 import lombok.Getter;
 
+/**
+ * 用户状态枚举
+ *
+ * @author Minced
+ */
 @Getter
-public enum UserRentStatus {
+public enum UserStatusEnum {
 
-    Expired(0, "到期"),
-    Active(1, "激活");
+    DISABLE(0, "禁用"),
+    ENABLE(1, "可用"),
+    ;
 
     private int value;
 
     private String name;
 
-    UserRentStatus(int value, String name) {
+    UserStatusEnum(int value, String name) {
         this.value = value;
         this.name = name;
     }

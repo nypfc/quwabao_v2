@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.user.dataobj.form;
 
-import com.gedoumi.quwabao.common.validate.IntegerValue;
+import com.gedoumi.quwabao.common.validate.StringValue;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -17,9 +17,9 @@ public class RentForm {
     /**
      * 矿机类型
      */
-    @NotNull
-    @IntegerValue({0, 1, 2, 3, 4, 5})
-    private Integer rentType;
+    @NotBlank
+    @StringValue({"0", "1", "2", "3", "4", "5"})
+    private String rentType;
 
     /**
      * 用户密码

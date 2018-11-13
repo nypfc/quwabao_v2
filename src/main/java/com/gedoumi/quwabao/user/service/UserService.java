@@ -3,8 +3,8 @@ package com.gedoumi.quwabao.user.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.SmsType;
-import com.gedoumi.quwabao.common.enums.UserStatus;
-import com.gedoumi.quwabao.common.enums.UserType;
+import com.gedoumi.quwabao.common.enums.UserStatusEnum;
+import com.gedoumi.quwabao.common.enums.UserTypeEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.CodeUtils;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
@@ -198,9 +198,9 @@ public class UserService {
         // 获取参数
         String mobile = registerForm.getMobile();
         String smsCode = registerForm.getSmsCode();
-        String username = registerForm.getUserName();
+        String username = registerForm.getUsername();
         String password = registerForm.getPassword();
-        String inviteCode = registerForm.getRegInviteCode().toLowerCase();
+        String inviteCode = registerForm.getInviteCode().toLowerCase();
         // 手机号验证
         if (checkMobilePhone(mobile)) {
             log.error("手机号:{}已经被注册", mobile);
@@ -223,13 +223,14 @@ public class UserService {
         User user = new User();
         user.setMobilePhone(mobile);
         user.setPassword(MD5EncryptUtil.md5Encrypy(password, MD5EncryptUtil.md5Encrypy(mobile)));
-        user.setUserStatus(UserStatus.Enable.getValue());
+        user.setUserStatus(UserStatusEnum.ENABLE.getValue());
         user.setLastLoginIp(ContextUtil.getClientIp());
         user.setToken(UUID.randomUUID().toString());
-        user.setUserType(UserType.Level_0.getValue());
+        user.setUserType(UserTypeEnum.NORMAL.getValue());
         user.setErrorCount(0);
         user.setRegInviteCode(inviteCode);
         user.setInviteCode(CodeUtils.generateCode());
+        user.setSex(1);  // 冗余字段
         Date now = new Date();
         user.setLastLoginTime(now);
         user.setRegisterTime(now);
@@ -242,9 +243,9 @@ public class UserService {
         User update = new User();
         update.setId(user.getId());
         if (StringUtils.isEmpty(username)) {
-            update.setUsername(USER_PREFIX + new Random().nextInt(999) + user.getId());  // 用户名为空设置默认用户名
-            while (checkUsername(username))  // 如果重复继续设置用户名
-                update.setUsername(USER_PREFIX + new Random().nextInt(999) + user.getId());
+            do
+                update.setUsername(USER_PREFIX + new Random().nextInt(999) + user.getId());  // 用户名为空设置默认用户名
+            while (checkUsername(update.getUsername()));  // 如果重复继续设置用户名
         } else {
             if (checkUsername(username))
                 throw new BusinessException(CodeEnum.NameError);

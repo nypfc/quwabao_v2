@@ -2,18 +2,23 @@ package com.gedoumi.quwabao.common.enums;
 
 import lombok.Getter;
 
+/**
+ * 用户类型枚举
+ *
+ * @author Minced
+ */
 @Getter
-public enum UserType {
+public enum UserTypeEnum {
 
-    Level_0(0,"普通用户"),
-    Level_Team(1,"团队长"),
+    NORMAL(0, "普通用户"),
+    LEADER(1, "团队长"),
     ;
 
     private int value;
 
     private String name;
 
-    UserType(int value, String name){
+    UserTypeEnum(int value, String name) {
         this.value = value;
         this.name = name;
     }

@@ -1,8 +1,8 @@
 package com.gedoumi.quwabao.user.service;
 
-import com.gedoumi.quwabao.common.enums.TransType;
+import com.gedoumi.quwabao.common.enums.TransTypeEnum;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
-import com.gedoumi.quwabao.common.enums.UserRentStatus;
+import com.gedoumi.quwabao.common.enums.UserRentStatusEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
@@ -50,7 +50,7 @@ public class UserRentService {
      * @return 矿机信息集合
      */
     public List<UserRent> getUserRents(Long userId) {
-        return userRentMapper.selectUserRents(userId, UserRentStatus.Active.getValue());
+        return userRentMapper.selectUserRents(userId, UserRentStatusEnum.ACTIVE.getValue());
     }
 
     /**
@@ -60,7 +60,7 @@ public class UserRentService {
      * @return 矿机信息集合
      */
     public List<UserRentNumberDTO> getUserRentNumber(List<Long> userIds) {
-        return userRentMapper.countUserRentsByIds(userIds, UserRentStatus.Active.getValue());
+        return userRentMapper.countUserRentsByIds(userIds, UserRentStatusEnum.ACTIVE.getValue());
     }
 
     /**
@@ -86,7 +86,7 @@ public class UserRentService {
         if (cal.get(Calendar.HOUR_OF_DAY) >= 23)
             throw new BusinessException(CodeEnum.AddRentTimeError);
         // 获取参数
-        Integer rentType = rentForm.getRentType();
+        Integer rentType = Integer.parseInt(rentForm.getRentType());
         String password = rentForm.getPassword();
         // 获取用户
         User user = ContextUtil.getUserFromRequest();
@@ -105,18 +105,21 @@ public class UserRentService {
         userAssetService.remainAsset(userId, rentMoney);
         // 创建用户矿机
         UserRent userRent = new UserRent();
+        Date now = new Date();
+        userRent.setCreateTime(now);
+        userRent.setUpdateTime(now);
         userRent.setRentAsset(rentMoney);
         userRent.setLastDig(BigDecimal.ZERO);
         userRent.setAlreadyDig(BigDecimal.ZERO);
         userRent.setTotalAsset(rent.getProfitMoneyExt());
         userRent.setUserId(userId);
         userRent.setRentType(rentType);
-        userRent.setRentStatus(UserRentStatus.Active.getValue());
+        userRent.setRentStatus(UserRentStatusEnum.ACTIVE.getValue());
         userRentMapper.insert(userRent);
         // 更新用户资产（注意将rentMoney转为负数）
         userAssetService.updateUserAsset(userId, rentMoney.negate(), BigDecimal.ZERO);
         // 创建用户资产详情
-        userAssetDetailService.createUserDetailAsset(userId, rentMoney, TransType.Rent.getValue());
+        userAssetDetailService.createUserDetailAsset(userId, rentMoney, TransTypeEnum.Rent.getValue());
     }
 
 }

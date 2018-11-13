@@ -27,7 +27,7 @@ public class UserRent {
     /**
      * 创建时间
      */
-    private Date createTime = new Date();
+    private Date createTime;
 
     /**
      * 矿机价格
@@ -52,7 +52,7 @@ public class UserRent {
     /**
      * 更新时间
      */
-    private Date updateTime = new Date();
+    private Date updateTime;
 
     /**
      * 用户ID

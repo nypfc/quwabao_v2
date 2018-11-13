@@ -2,7 +2,7 @@ package com.gedoumi.quwabao.user.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
-import com.gedoumi.quwabao.common.enums.TransType;
+import com.gedoumi.quwabao.common.enums.TransTypeEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.user.dataobj.model.UserAssetDetail;
 import com.gedoumi.quwabao.user.mapper.UserAssetDetailMapper;
@@ -15,8 +15,6 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-
-import static com.gedoumi.quwabao.common.constants.Constants.USER_DETAIL_VERSION;
 
 /**
  * 用户资产详情Service
@@ -40,14 +38,14 @@ public class UserAssetDetailService {
      */
     public List<UserAssetDetail> getUserTransactionDetails(Long userId, String page, String rows) {
         List<Integer> transTypeList = Lists.newArrayList(
-                TransType.FrozenIn.getValue(),
-                TransType.FrozenOut.getValue(),
-                TransType.TeamInit.getValue(),
-                TransType.TransIn.getValue(),
-                TransType.TransOut.getValue(),
-                TransType.Rent.getValue(),
-                TransType.NetIn.getValue(),
-                TransType.NetOut.getValue());
+                TransTypeEnum.FrozenIn.getValue(),
+                TransTypeEnum.FrozenOut.getValue(),
+                TransTypeEnum.TeamInit.getValue(),
+                TransTypeEnum.TransIn.getValue(),
+                TransTypeEnum.TransOut.getValue(),
+                TransTypeEnum.Rent.getValue(),
+                TransTypeEnum.NetIn.getValue(),
+                TransTypeEnum.NetOut.getValue());
         // 分页查询
         Page<UserAssetDetail> p;
         try {
@@ -69,7 +67,7 @@ public class UserAssetDetailService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void createUserDetailAsset(Long userId, BigDecimal money, Integer type) {
-        if (TransType.Profit.getValue() == type) {
+        if (TransTypeEnum.Profit.getValue() == type) {
             log.error("创建非挖矿收益资产详情时type不能为1");
             throw new BusinessException(CodeEnum.SysError);
         }
@@ -86,7 +84,7 @@ public class UserAssetDetailService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void createUserDetailAsset(Long userId, BigDecimal money, BigDecimal profit, BigDecimal profitEx) {
-        createUserDetailAsset(userId, money, profit, profitEx, TransType.Profit.getValue());
+        createUserDetailAsset(userId, money, profit, profitEx, TransTypeEnum.Profit.getValue());
     }
 
     /**
@@ -104,18 +102,18 @@ public class UserAssetDetailService {
         detail.setUserId(userId);
         detail.setMoney(money);
         // 如果变动类型为挖矿的收益，设置收益
-        if (TransType.Profit.getValue() == type) {
+        if (TransTypeEnum.Profit.getValue() == type) {
             detail.setProfit(profit);
             detail.setProfitExt(profitEx);
+            detail.setDigDate(now);
         } else {
             detail.setProfit(BigDecimal.ZERO);
             detail.setProfitExt(BigDecimal.ZERO);
         }
         detail.setTransType(type);
-        detail.setDigDate(now);
         detail.setCreateTime(now);
         detail.setUpdateTime(now);
-        detail.setVersionType(USER_DETAIL_VERSION);
+        detail.setVersionType(0);  // 冗余字段
         userAssetDetailMapper.insert(detail);
     }
 

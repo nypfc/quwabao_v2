@@ -54,7 +54,7 @@ public class UserAssetDetail {
     private Date updateTime;
 
     /**
-     * 版本
+     * 版本（废弃字段）
      */
     private Integer versionType;
 

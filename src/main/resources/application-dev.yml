@@ -29,3 +29,4 @@ logging:  # 测试环境DEBUG日志
     com.gedoumi.quwabao.sys.mapper.SysSmsMapper: debug
     com.gedoumi.quwabao.user.mapper.UserAssetDetailMapper: debug
     com.gedoumi.quwabao.user.mapper.UserProfitMapper: debug
+    com.gedoumi.quwabao.user.mapper.UserAssetMapper: debug

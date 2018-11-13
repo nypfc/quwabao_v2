@@ -100,10 +100,13 @@ public class SysSmsService {
         // =========== 3.创建短信 ===========
         updateSmsStatus(mobile);  // 将其他短信置为失效
         SysSms sms = new SysSms();
+        Date now = new Date();
         sms.setCode(smsCode);
         sms.setSmsStatus(SmsStatus.Enable.getValue());
         sms.setSmsType(sendType);
         sms.setMobilePhone(mobile);
+        sms.setCreateTime(now);
+        sms.setUpdateTime(now);
         sysSmsMapper.insert(sms);
 
         // =========== 4.缓存短信 ===========

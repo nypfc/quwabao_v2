@@ -16,12 +16,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * @author Minced
  */
 @Documented
-@Constraint(validatedBy = {IntegerValueValidator.class})
+@Constraint(validatedBy = {StringValueValidator.class})
 @Target({FIELD, PARAMETER})
 @Retention(RUNTIME)
-public @interface IntegerValue {
+public @interface StringValue {
 
-    int[] value();
+    String[] value();
 
     String message() default "参数值不匹配";
 

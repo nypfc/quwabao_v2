@@ -1,7 +1,7 @@
 package com.gedoumi.quwabao.user.mapper;
 
 import com.gedoumi.quwabao.QuwabaoApplicationTests;
-import com.gedoumi.quwabao.common.enums.TransType;
+import com.gedoumi.quwabao.common.enums.TransTypeEnum;
 import com.gedoumi.quwabao.common.utils.JsonUtil;
 import com.gedoumi.quwabao.user.dataobj.model.UserAssetDetail;
 import com.google.common.collect.Lists;
@@ -20,14 +20,14 @@ public class UserAssetDetailMapperTest extends QuwabaoApplicationTests {
     @Test
     public void test() {
         List<Integer> transTypes = Lists.newArrayList();
-        transTypes.add(TransType.FrozenIn.getValue());
-        transTypes.add(TransType.FrozenOut.getValue());
-        transTypes.add(TransType.TeamInit.getValue());
-        transTypes.add(TransType.TransIn.getValue());
-        transTypes.add(TransType.TransOut.getValue());
-        transTypes.add(TransType.Rent.getValue());
-        transTypes.add(TransType.NetIn.getValue());
-        transTypes.add(TransType.NetOut.getValue());
+        transTypes.add(TransTypeEnum.FrozenIn.getValue());
+        transTypes.add(TransTypeEnum.FrozenOut.getValue());
+        transTypes.add(TransTypeEnum.TeamInit.getValue());
+        transTypes.add(TransTypeEnum.TransIn.getValue());
+        transTypes.add(TransTypeEnum.TransOut.getValue());
+        transTypes.add(TransTypeEnum.Rent.getValue());
+        transTypes.add(TransTypeEnum.NetIn.getValue());
+        transTypes.add(TransTypeEnum.NetOut.getValue());
         List<UserAssetDetail> userAssetDetails = userAssetDetailMapper.selectBatchIds(transTypes);
         System.out.println(JsonUtil.objectToJson(userAssetDetails));
     }
