@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 @Component
-public class UserRentServiceTest extends QuwabaoApplicationTests {
+public class UserSysRentServiceTest extends QuwabaoApplicationTests {
 
     @Resource
     private UserRentService userRentService;

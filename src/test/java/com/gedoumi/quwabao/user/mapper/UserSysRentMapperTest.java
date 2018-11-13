@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Component
-public class UserRentMapperTest extends QuwabaoApplicationTests {
+public class UserSysRentMapperTest extends QuwabaoApplicationTests {
 
     @Resource
     private UserRentMapper userRentMapper;

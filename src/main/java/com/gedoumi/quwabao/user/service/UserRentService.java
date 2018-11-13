@@ -1,14 +1,13 @@
 package com.gedoumi.quwabao.user.service;
 
 import com.gedoumi.quwabao.common.enums.TransType;
-import com.gedoumi.quwabao.user.dataobj.model.UserAsset;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.UserRentStatus;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
-import com.gedoumi.quwabao.sys.dataobj.model.Rent;
-import com.gedoumi.quwabao.sys.service.RentService;
+import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
+import com.gedoumi.quwabao.sys.service.SysRentService;
 import com.gedoumi.quwabao.user.dataobj.dto.UserRentNumberDTO;
 import com.gedoumi.quwabao.user.dataobj.form.RentForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
@@ -42,7 +41,7 @@ public class UserRentService {
     private UserAssetDetailService userAssetDetailService;
 
     @Resource
-    private RentService rentService;
+    private SysRentService sysRentService;
 
     /**
      * 获取用户租用矿机信息列表
@@ -100,7 +99,7 @@ public class UserRentService {
             throw new BusinessException(CodeEnum.PasswordError);
         }
         // 查询矿机信息
-        Rent rent = rentService.getRent(rentType);
+        SysRent rent = sysRentService.getRent(rentType);
         BigDecimal rentMoney = rent.getMoney();
         // 判断余额
         userAssetService.remainAsset(userId, rentMoney);

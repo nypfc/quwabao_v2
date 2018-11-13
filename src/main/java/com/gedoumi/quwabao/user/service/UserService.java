@@ -125,7 +125,7 @@ public class UserService {
             throw new BusinessException(CodeEnum.OrgPswdError);
         }
         // 修改密码
-        String password = MD5EncryptUtil.md5Encrypy(updatePasswordForm.getOriginalPassword(), salt);
+        String password = MD5EncryptUtil.md5Encrypy(updatePasswordForm.getPassword(), salt);
         user.setPassword(password);
         user.setUpdateTime(new Date());
         userMapper.updateById(user);
@@ -141,7 +141,7 @@ public class UserService {
     @Transactional(rollbackFor = Exception.class)
     public void updateUsername(UpdateUsernameForm updateUsernameForm) {
         // 获取参数
-        String username = updateUsernameForm.getUserName();
+        String username = updateUsernameForm.getUsername();
         // 从作用域中获取用户
         User user = ContextUtil.getUserFromRequest();
         // 判断用户名是否重复
@@ -201,7 +201,6 @@ public class UserService {
         String username = registerForm.getUserName();
         String password = registerForm.getPassword();
         String inviteCode = registerForm.getRegInviteCode().toLowerCase();
-
         // 手机号验证
         if (checkMobilePhone(mobile)) {
             log.error("手机号:{}已经被注册", mobile);
@@ -220,7 +219,6 @@ public class UserService {
             log.error("邀请码:{}对应用户不存在", inviteCode);
             throw new BusinessException(CodeEnum.InviteCodeError);
         }
-
         // 创建用户
         User user = new User();
         user.setMobilePhone(mobile);
@@ -240,7 +238,6 @@ public class UserService {
             user.setInviteCode(CodeUtils.generateCode());  // 设置邀请码，如果重复重新生成
         userMapper.insert(user);
         Long userId = user.getId();  // 创建完成的用户ID
-
         // 更新用户名
         User update = new User();
         update.setId(user.getId());
@@ -254,13 +251,10 @@ public class UserService {
             update.setUsername(username);
         }
         userMapper.updateById(update);
-
         // 更新短信
         sysSmsService.updateSmsStatus(user.getMobilePhone());
-
         // 初始化用户资产
         userAssetService.createUserAsset(userId);
-
         // 创建用户上下级关系
         Long parentId = userMapper.queryIdByInviteCode(inviteCode);
         try {
@@ -269,8 +263,7 @@ public class UserService {
             log.error("userId:{} parentId:{} 一个用户只能拥有一个上级", userId, parentId);
             throw new BusinessException(CodeEnum.BindInviteCodeError);
         }
-
-        // 更新缓存
+        // 创建缓存
         redisCache.setKeyValueData(user.getToken(), user);
         return user;
     }

@@ -28,7 +28,7 @@
         <result column="total_asset" property="totalAsset"/>
         <result column="user_id" property="userId"/>
         <result column="rent_type" property="rentType"/>
-        <collection property="rent" ofType="com.gedoumi.quwabao.sys.dataobj.model.Rent">
+        <collection property="rent" ofType="com.gedoumi.quwabao.sys.dataobj.model.SysRent">
             <result column="name" property="name"/>
             <result column="money" property="money"/>
         </collection>

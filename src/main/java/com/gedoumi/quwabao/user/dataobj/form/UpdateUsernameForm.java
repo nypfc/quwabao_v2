@@ -16,6 +16,6 @@ public class UpdateUsernameForm {
      * 用户名
      */
     @NotBlank
-    private String userName;
+    private String username;
 
 }

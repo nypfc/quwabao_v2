@@ -3,7 +3,7 @@ package com.gedoumi.quwabao.user.dataobj.model;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.gedoumi.quwabao.sys.dataobj.model.Rent;
+import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -67,7 +67,7 @@ public class UserRent {
     /**
      * 矿机
      */
-    private Rent rent;
+    private SysRent rent;
 
     /**
      * 矿机状态

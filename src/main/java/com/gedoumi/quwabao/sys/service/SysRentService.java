@@ -2,8 +2,8 @@ package com.gedoumi.quwabao.sys.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gedoumi.quwabao.common.enums.RentStatus;
-import com.gedoumi.quwabao.sys.dataobj.model.Rent;
-import com.gedoumi.quwabao.sys.mapper.RentMapper;
+import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
+import com.gedoumi.quwabao.sys.mapper.SysRentMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -15,18 +15,18 @@ import java.util.List;
  * @author Minced
  */
 @Service
-public class RentService {
+public class SysRentService {
 
     @Resource
-    private RentMapper rentMapper;
+    private SysRentMapper sysRentMapper;
 
     /**
      * 获取矿机列表
      *
      * @return 矿机集合
      */
-    public List<Rent> getRentList() {
-        return rentMapper.selectList(new LambdaQueryWrapper<Rent>().eq(Rent::getRentStatus, RentStatus.ACTIVE.getValue()));
+    public List<SysRent> getRentList() {
+        return sysRentMapper.selectList(new LambdaQueryWrapper<SysRent>().eq(SysRent::getRentStatus, RentStatus.ACTIVE.getValue()));
     }
 
     /**
@@ -35,8 +35,8 @@ public class RentService {
      * @param rentType 矿机类型
      * @return 矿机对象
      */
-    public Rent getRent(Integer rentType) {
-        return rentMapper.selectOne(new LambdaQueryWrapper<Rent>().eq(Rent::getRentCode, rentType));
+    public SysRent getRent(Integer rentType) {
+        return sysRentMapper.selectOne(new LambdaQueryWrapper<SysRent>().eq(SysRent::getRentCode, rentType));
     }
 
 }

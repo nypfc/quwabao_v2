@@ -2,6 +2,7 @@ package com.gedoumi.quwabao.user.dataobj.form;
 
 import com.gedoumi.quwabao.common.validate.MobilePhone;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 
@@ -36,12 +37,12 @@ public class RegisterForm {
      * 邀请码
      */
     @NotBlank
+    @Length(min = 8, max = 8, message = "邀请码必须为8位")
     private String regInviteCode;
 
     /**
      * 用户名
      */
-    @NotBlank
     private String userName;
 
 }

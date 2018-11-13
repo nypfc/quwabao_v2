@@ -8,7 +8,7 @@ public enum CodeEnum {
     SysError(-1, "系统错误"),
     Success(0, "请求成功"),
     Fail(1111, "请求失败"),
-    EmptyTokenOrDeviceId(6665, "令牌不能为空"),
+    EmptyToken(6665, "令牌不能为空"),
     InvalidToken(6666, "无效的令牌"),
     UnknowError(9999, "未知异常"),
     PasswordError(2222, "密码错误"),

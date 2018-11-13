@@ -1,7 +1,7 @@
 package com.gedoumi.quwabao.sys.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.gedoumi.quwabao.sys.dataobj.model.Rent;
+import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,5 +10,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @author Minecd
  */
 @Mapper
-public interface RentMapper extends BaseMapper<Rent> {
+public interface SysRentMapper extends BaseMapper<SysRent> {
 }

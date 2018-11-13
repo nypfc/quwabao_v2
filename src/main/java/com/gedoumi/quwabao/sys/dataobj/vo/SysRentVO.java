@@ -8,7 +8,7 @@ import lombok.Data;
  * @author Minced
  */
 @Data
-public class RentVO {
+public class SysRentVO {
 
     /**
      * 矿机类型

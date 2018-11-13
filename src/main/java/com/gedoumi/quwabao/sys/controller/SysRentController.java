@@ -1,9 +1,9 @@
 package com.gedoumi.quwabao.sys.controller;
 
 import com.gedoumi.quwabao.common.utils.ResponseObject;
-import com.gedoumi.quwabao.sys.dataobj.model.Rent;
-import com.gedoumi.quwabao.sys.dataobj.vo.RentVO;
-import com.gedoumi.quwabao.sys.service.RentService;
+import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
+import com.gedoumi.quwabao.sys.dataobj.vo.SysRentVO;
+import com.gedoumi.quwabao.sys.service.SysRentService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,22 +19,22 @@ import java.util.stream.Collectors;
  */
 @RequestMapping("/v2/rent")
 @RestController
-public class RentController {
+public class SysRentController {
 
     @Resource
-    private RentService rentService;
+    private SysRentService sysRentService;
 
     /**
      * 获取矿机列表
      *
      * @return ResponseObject
      */
-    @GetMapping("/list")
-    public ResponseObject minerList() {
-        List<Rent> rentList = rentService.getRentList();
+    @GetMapping
+    public ResponseObject rents() {
+        List<SysRent> rentList = sysRentService.getRentList();
         // 封装返回数据
-        List<RentVO> rentVOList = rentList.stream().map(rent -> {
-            RentVO rentVO = new RentVO();
+        List<SysRentVO> rentVOList = rentList.stream().map(rent -> {
+            SysRentVO rentVO = new SysRentVO();
             rentVO.setRentName(rent.getName());
             rentVO.setRentMoney(rent.getMoney().stripTrailingZeros().toPlainString());
             rentVO.setTotalRemain(rent.getProfitMoneyExt().stripTrailingZeros().toPlainString());

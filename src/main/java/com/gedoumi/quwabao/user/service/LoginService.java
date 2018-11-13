@@ -50,10 +50,9 @@ public class LoginService {
         String password = loginForm.getPassword();
         String salt = MD5EncryptUtil.md5Encrypy(mobile);
         String encryptedPassword = MD5EncryptUtil.md5Encrypy(password, salt);
-
         // 根据手机号获取用户并验证
-        User queryResult = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getMobilePhone, mobile));
-        User user = Optional.ofNullable(queryResult).orElseThrow(() -> {
+        User user = Optional.ofNullable(userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getMobilePhone, mobile)))
+                .orElseThrow(() -> {
             log.error("手机号:{}未能查询到用户", mobile);
             return new BusinessException(CodeEnum.MobileNotExist);
         });
@@ -74,7 +73,6 @@ public class LoginService {
             log.error("手机号:{}，密码:{}，密码不正确", mobile, password);
             throw new BusinessException(CodeEnum.PasswordError);
         }
-
         // 更新登录信息
         String token = UUID.randomUUID().toString();
         user.setToken(token);
@@ -82,10 +80,8 @@ public class LoginService {
         user.setLastLoginTime(new Date());
         user.setLastLoginIp(ContextUtil.getClientIp());
         userMapper.updateById(user);
-
         // 缓存用户（失效时间1小时）
         redisCache.setExpireKeyValueData(token, user, 1L, TimeUnit.HOURS);
-
         return user;
     }
 

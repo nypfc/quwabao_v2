@@ -1,5 +1,8 @@
 package com.gedoumi.quwabao.sys.dataobj.model;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -10,12 +13,14 @@ import java.util.Date;
  *
  * @author Minecd
  */
+@TableName("sys_rent")
 @Data
-public class Rent {
+public class SysRent {
 
     /**
      * 用户ID
      */
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**

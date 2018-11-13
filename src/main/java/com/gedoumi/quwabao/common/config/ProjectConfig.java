@@ -6,6 +6,7 @@ import com.gedoumi.quwabao.component.ApiInterceptor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -39,19 +40,14 @@ public class ProjectConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         // 令牌验证拦截器
         registry.addInterceptor(apiRequestInterceptor())
-                .addPathPatterns("/v2/**")
-                // 登录不需要拦截
-                .excludePathPatterns("/v2/login/**")
-                // 短信接口不需要拦截
-                .excludePathPatterns("/v2/sms/**")
+                .addPathPatterns("/v2/user/**")
+                .addPathPatterns("/v2/rent")
                 // 验证接口不需要拦截
                 .excludePathPatterns("/v2/user/check/**")
                 // 注册接口不需要拦截
-                .excludePathPatterns("/v2/user")
+                .excludePathPatterns("/v2/user/register")
                 // 重置密码（忘记密码）接口不需要拦截
-                .excludePathPatterns("/v2/user/password/reset")
-                // 错误接口不需要拦截
-                .excludePathPatterns("/error");
+                .excludePathPatterns("/v2/user/password/reset");
     }
 
     /**
@@ -71,7 +67,7 @@ public class ProjectConfig implements WebMvcConfigurer {
         config.setMaxAge(3600L);  // 缓存时间（单位：秒）
         source.registerCorsConfiguration("/**", config);
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
-        bean.setOrder(0);  // 跨域Filter排序，排到第一个
+        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);  // 跨域Filter排序，排到第一个
         return bean;
     }
 
