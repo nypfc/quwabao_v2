@@ -1,5 +1,6 @@
 package com.gedoumi.quwabao.schedule;
 
+import com.gedoumi.quwabao.common.enums.RentStatus;
 import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
 import com.gedoumi.quwabao.sys.service.SysRentService;
 import com.gedoumi.quwabao.user.dataobj.model.UserRent;
@@ -9,6 +10,7 @@ import com.gedoumi.quwabao.user.service.UserRentService;
 import com.gedoumi.quwabao.user.service.UserService;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -69,16 +71,16 @@ public class RunScheduleTask {
         // 获取矿机集合
         List<SysRent> sysRents = sysRentService.getRentsInType(rentTypes);
 
-//        userRents.forEach(userRent -> sysRents.forEach(sysRent -> {
-//            // 如果矿机类型不匹配跳过此次循环
-//            if (!StringUtils.equals(String.valueOf(userRent.getRentType()), sysRent.getCode()))
-//                return;
-//            BigDecimal rentAsset = userRent.getRentAsset();  // 矿机价格
-//            BigDecimal profitDay = sysRent.getProfitDay();  // 当前每日产币量
-//            BigDecimal alreadyDig = userRent.getAlreadyDig();  // 已经获得的币量
-//            BigDecimal totalAsset = userRent.getTotalAsset();  // 总币量
-//            BigDecimal remainAsset = totalAsset.subtract(alreadyDig);  // 剩余币量
-//            // 如果剩余币量不足每日的产币量，则直接结束矿机
+        userRents.forEach(userRent -> sysRents.forEach(sysRent -> {
+            // 如果矿机类型不匹配跳过此次循环
+            if (!userRent.getRentType().equals(sysRent.getRentCode()))
+                return;
+            BigDecimal rentAsset = userRent.getRentAsset();  // 矿机价格
+            BigDecimal profitDay = sysRent.getProfitDay();  // 当前每日产币量
+            BigDecimal alreadyDig = userRent.getAlreadyDig();  // 已经获得的币量
+            BigDecimal totalAsset = userRent.getTotalAsset();  // 总币量
+            BigDecimal remainAsset = totalAsset.subtract(alreadyDig);  // 剩余币量
+            // 如果剩余币量不足每日的产币量，则直接结束矿机
 //            if (remainAsset.compareTo(profitDay) < 0) {
 //                userRent.setExpireDate(now);
 //                userRent.setRentStatus(RentStatus.Expired.getValue());
@@ -112,7 +114,7 @@ public class RunScheduleTask {
 //                userAssetDetail.setVersionType(appConfig.getVersion().getValue());
 //                assetDetailDao.save(userAssetDetail);
 //            }
-//        }));
+        }));
 //        // 添加用户每日收益数据
 //        map.forEach((userId, totalProfit) -> {
 //            User user = userDao.findOne(userId);
