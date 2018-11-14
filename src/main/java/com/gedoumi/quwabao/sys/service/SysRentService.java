@@ -7,6 +7,7 @@ import com.gedoumi.quwabao.sys.mapper.SysRentMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,8 +26,18 @@ public class SysRentService {
      *
      * @return 矿机集合
      */
-    public List<SysRent> getRentList() {
+    public List<SysRent> getRents() {
         return sysRentMapper.selectList(new LambdaQueryWrapper<SysRent>().eq(SysRent::getRentStatus, RentStatus.ACTIVE.getValue()));
+    }
+
+    /**
+     * 获取指定类型的矿机列表
+     *
+     * @param types 类型集合
+     * @return 矿机集合
+     */
+    public List<SysRent> getRentsInType(Collection<Integer> types) {
+        return sysRentMapper.selectList(new LambdaQueryWrapper<SysRent>().in(SysRent::getRentCode, types));
     }
 
     /**

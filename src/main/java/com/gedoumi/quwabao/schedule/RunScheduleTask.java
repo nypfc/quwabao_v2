@@ -1,10 +1,7 @@
 package com.gedoumi.quwabao.schedule;
 
-import com.gedoumi.quwabao.common.enums.RentStatus;
 import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
-import com.gedoumi.quwabao.user.dataobj.model.UserAsset;
-import com.gedoumi.quwabao.user.dataobj.model.UserAssetDetail;
-import com.gedoumi.quwabao.user.dataobj.model.UserProfit;
+import com.gedoumi.quwabao.sys.service.SysRentService;
 import com.gedoumi.quwabao.user.dataobj.model.UserRent;
 import com.gedoumi.quwabao.user.service.UserAssetDetailService;
 import com.gedoumi.quwabao.user.service.UserAssetService;
@@ -12,7 +9,6 @@ import com.gedoumi.quwabao.user.service.UserRentService;
 import com.gedoumi.quwabao.user.service.UserService;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -23,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +31,8 @@ import java.util.stream.Collectors;
 @Service
 public class RunScheduleTask {
 
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
     @Resource
     private UserService userService;
 
@@ -44,6 +43,9 @@ public class RunScheduleTask {
     private UserAssetDetailService userAssetDetailService;
 
     @Resource
+    private SysRentService sysRentService;
+
+    @Resource
     private UserRentService userRentService;
 
     /**
@@ -51,24 +53,22 @@ public class RunScheduleTask {
      */
     @Transactional(rollbackFor = Exception.class)
     public void digTask() {
-//        // 当日日期
-//        Date now = new Date();
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//        //
-//        HashMap<Long, BigDecimal> map = Maps.newHashMap();
-//        // 查询所有正在使用中的矿机
-//        List<UserRent> userRents = userRentService.findByRentStatus(RentStatus.Active.getValue());
-//        if (CollectionUtils.isEmpty(userRents)) {
-//            log.info("没有符合条件的矿机");
-//            return;
-//        }
-//        log.info("userRents size = {} ", userRents.size());
-//        // 获取所有已租用的矿机种类集合
-//        List<String> rentTypeList = userRents.stream().map(UserRent::getRentType).collect(Collectors.toSet())
-//                .stream().map(String::valueOf).collect(Collectors.toList());
-//        // 获取矿机集合
-//        List<SysRent> sysRents = sysRentDao.findByCodeList(rentTypeList);
-//
+        // 当日日期
+        Date now = new Date();
+        //
+        HashMap<Long, BigDecimal> map = Maps.newHashMap();
+        // 查询所有正在使用中的矿机
+        List<UserRent> userRents = userRentService.getAllUserActiveRent();
+        if (CollectionUtils.isEmpty(userRents)) {
+            log.info("没有符合条件的矿机");
+            return;
+        }
+        log.info("userRents size = {} ", userRents.size());
+        // 获取所有已租用的矿机种类集合
+        Set<Integer> rentTypes = userRents.stream().map(UserRent::getRentType).collect(Collectors.toSet());
+        // 获取矿机集合
+        List<SysRent> sysRents = sysRentService.getRentsInType(rentTypes);
+
 //        userRents.forEach(userRent -> sysRents.forEach(sysRent -> {
 //            // 如果矿机类型不匹配跳过此次循环
 //            if (!StringUtils.equals(String.valueOf(userRent.getRentType()), sysRent.getCode()))

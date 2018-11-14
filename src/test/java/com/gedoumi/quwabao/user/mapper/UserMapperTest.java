@@ -2,6 +2,7 @@ package com.gedoumi.quwabao.user.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gedoumi.quwabao.QuwabaoApplicationTests;
+import com.gedoumi.quwabao.common.utils.JsonUtil;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import org.junit.Test;
 import org.springframework.stereotype.Component;

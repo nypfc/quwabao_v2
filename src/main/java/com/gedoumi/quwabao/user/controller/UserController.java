@@ -4,6 +4,8 @@ import com.gedoumi.quwabao.common.enums.UserProfitVOEnum;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.ResponseObject;
 import com.gedoumi.quwabao.common.validate.MobilePhone;
+import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
+import com.gedoumi.quwabao.sys.service.SysRentService;
 import com.gedoumi.quwabao.user.dataobj.dto.UserRentNumberDTO;
 import com.gedoumi.quwabao.user.dataobj.form.*;
 import com.gedoumi.quwabao.user.dataobj.model.*;
@@ -48,6 +50,9 @@ public class UserController {
 
     @Resource
     private UserTeamService userTeamService;
+
+    @Resource
+    private SysRentService sysRentService;
 
     @Resource
     private UserProfitService userProfitService;
@@ -188,10 +193,15 @@ public class UserController {
         User user = ContextUtil.getUserFromRequest();
         // 获取用户租用矿机信息
         List<UserRent> userRents = userRentService.getUserRents(user.getId());
+        // 获取矿机信息
+        List<SysRent> rents = sysRentService.getRents();
         // 遍历集合封装返回数据
         List<UserRentVO> userRentVOList = userRents.stream().map(userRent -> {
             UserRentVO userRentVO = new UserRentVO();
-            userRentVO.setRentName(userRent.getRent().getName());
+            // 遍历矿机，如果类型相同，设置名称
+            for (SysRent sysRent : rents)
+                if (sysRent.getRentCode().equals(userRent.getRentType()))
+                    userRentVO.setRentName(sysRent.getName());
             userRentVO.setLastDig(userRent.getLastDig().stripTrailingZeros().toPlainString());
             // 矿机剩余收益
             BigDecimal remainProfit = userRent.getTotalAsset().subtract(userRent.getAlreadyDig())
@@ -237,10 +247,9 @@ public class UserController {
             userTeamVO.setMobile(u.getMobilePhone());
             userTeamVO.setUsername(u.getUsername());
             // 遍历矿机数量集合，如果ID相同，存入矿机数量
-            for (UserRentNumberDTO number : numbers) {
+            for (UserRentNumberDTO number : numbers)
                 if (number.getUserId().equals(u.getId()))
                     userTeamVO.setRentNumber(number.getNumber());
-            }
             return userTeamVO;
         }).collect(Collectors.toList());
         return new ResponseObject<>(userTeamVOList);

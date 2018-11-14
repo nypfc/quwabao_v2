@@ -25,7 +25,7 @@ public class UserSysRentMapperTest extends QuwabaoApplicationTests {
 
     @Test
     public void queryTotalRentAsset() {
-        BigDecimal totalRentAsset = userRentMapper.queryTotalRentAsset(Lists.newArrayList(138L));
+        BigDecimal totalRentAsset = userRentMapper.selectTotalRentAsset(Lists.newArrayList(138L));
         System.out.println(totalRentAsset);
     }
 

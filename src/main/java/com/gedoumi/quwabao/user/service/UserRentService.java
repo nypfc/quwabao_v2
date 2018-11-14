@@ -55,7 +55,9 @@ public class UserRentService {
      * @return 矿机信息集合
      */
     public List<UserRent> getUserRents(Long userId) {
-        return userRentMapper.selectUserRents(userId, UserRentStatusEnum.ACTIVE.getValue());
+        return userRentMapper.selectList(new LambdaQueryWrapper<UserRent>()
+                .eq(UserRent::getUserId, userId)
+                .eq(UserRent::getRentStatus, RentStatus.ACTIVE.getValue()));
     }
 
     /**
@@ -84,7 +86,7 @@ public class UserRentService {
      * @return 矿机集合
      */
     public List<UserRent> getAllUserActiveRent() {
-        return userRentMapper.selectActiveRent(RentStatus.ACTIVE.getValue());
+        return userRentMapper.selectList(new LambdaQueryWrapper<UserRent>().eq(UserRent::getRentStatus, RentStatus.ACTIVE.getValue()));
     }
 
     /**

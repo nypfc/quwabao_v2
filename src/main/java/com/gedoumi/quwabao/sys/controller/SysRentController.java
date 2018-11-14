@@ -31,7 +31,7 @@ public class SysRentController {
      */
     @GetMapping
     public ResponseObject rents() {
-        List<SysRent> rentList = sysRentService.getRentList();
+        List<SysRent> rentList = sysRentService.getRents();
         // 封装返回数据
         List<SysRentVO> rentVOList = rentList.stream().map(rent -> {
             SysRentVO rentVO = new SysRentVO();

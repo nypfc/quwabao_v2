@@ -17,15 +17,6 @@ import java.util.List;
 public interface UserRentMapper extends BaseMapper<UserRent> {
 
     /**
-     * 查询用户租用矿机信息
-     *
-     * @param userId         用户ID
-     * @param userRentStatus 租用的矿机的状态
-     * @return 矿机信息集合
-     */
-    List<UserRent> selectUserRents(Long userId, Integer userRentStatus);
-
-    /**
      * 获取指定用户租用矿机的数量
      *
      * @param userIds        用户ID集合
@@ -41,13 +32,5 @@ public interface UserRentMapper extends BaseMapper<UserRent> {
      * @return 矿机价格总和
      */
     BigDecimal selectTotalRentAsset(List<Long> userIds);
-
-    /**
-     * 查询所有正在激活的矿机
-     *
-     * @param rentStatus 矿机状态
-     * @return 矿机集合
-     */
-    List<UserRent> selectActiveRent(Integer rentStatus);
 
 }
