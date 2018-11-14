@@ -40,6 +40,14 @@ public interface UserRentMapper extends BaseMapper<UserRent> {
      * @param userIds 用户ID集合
      * @return 矿机价格总和
      */
-    BigDecimal queryTotalRentAsset(List<Long> userIds);
+    BigDecimal selectTotalRentAsset(List<Long> userIds);
+
+    /**
+     * 查询所有正在激活的矿机
+     *
+     * @param rentStatus 矿机状态
+     * @return 矿机集合
+     */
+    List<UserRent> selectActiveRent(Integer rentStatus);
 
 }

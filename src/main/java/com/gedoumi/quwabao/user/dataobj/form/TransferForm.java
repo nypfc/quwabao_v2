@@ -3,6 +3,7 @@ package com.gedoumi.quwabao.user.dataobj.form;
 import com.gedoumi.quwabao.common.validate.MobilePhone;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -16,6 +17,7 @@ public class TransferForm {
     /**
      * 转账金额
      */
+    @Min(0)
     @NotBlank
     private String transMoney;
 

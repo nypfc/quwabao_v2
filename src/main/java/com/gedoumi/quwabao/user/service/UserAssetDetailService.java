@@ -59,7 +59,7 @@ public class UserAssetDetailService {
     }
 
     /**
-     * 创建非挖矿收益用户资产详情
+     * 创建用户资产详情
      *
      * @param userId 用户ID
      * @param money  资产变动量
@@ -67,10 +67,8 @@ public class UserAssetDetailService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void createUserDetailAsset(Long userId, BigDecimal money, Integer type) {
-        if (TransTypeEnum.Profit.getValue() == type) {
-            log.error("创建非挖矿收益资产详情时type不能为1");
-            throw new BusinessException(CodeEnum.SysError);
-        }
+        if (TransTypeEnum.Profit.getValue() == type || TransTypeEnum.TransOut.getValue() == type || TransTypeEnum.TransIn.getValue() == type)
+            return;
         createUserDetailAsset(userId, money, BigDecimal.ZERO, BigDecimal.ZERO, type);
     }
 

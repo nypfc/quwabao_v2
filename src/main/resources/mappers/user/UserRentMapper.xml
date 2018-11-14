@@ -43,11 +43,37 @@
         GROUP BY user_id
     </select>
 
-    <select id="queryTotalRentAsset" resultType="java.math.BigDecimal">
+    <select id="selectTotalRentAsset" resultType="java.math.BigDecimal">
         SELECT sum(rent_asset)
         FROM user_rent
         WHERE user_id IN
         <foreach collection="list" item="item" open="(" separator="," close=")">#{item}</foreach>
     </select>
+
+    <select id="selectActiveRent" resultMap="rent2">
+        SELECT ur.id,
+               ur.rent_asset,
+               ur.last_dig,
+               ur.already_dig,
+               ur.total_asset,
+               ur.user_id,
+               ur.rent_type,
+               sr.profit_day
+        FROM user_rent ur
+                 LEFT JOIN sys_rent sr ON sr.rent_code = ur.rent_type
+        WHERE ur.rent_status = #{param1}
+    </select>
+    <resultMap id="rent2" type="com.gedoumi.quwabao.user.dataobj.model.UserRent">
+        <id column="id" property="id"/>
+        <result column="rent_asset" property="rentAsset"/>
+        <result column="last_dig" property="lastDig"/>
+        <result column="already_dig" property="alreadyDig"/>
+        <result column="total_asset" property="totalAsset"/>
+        <result column="user_id" property="userId"/>
+        <result column="rent_type" property="rentType"/>
+        <collection property="rent" ofType="com.gedoumi.quwabao.sys.dataobj.model.SysRent">
+            <result column="profit_day" property="profitDay"/>
+        </collection>
+    </resultMap>
 
 </mapper>

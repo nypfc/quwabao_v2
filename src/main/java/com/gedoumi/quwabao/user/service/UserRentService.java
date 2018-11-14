@@ -1,7 +1,9 @@
 package com.gedoumi.quwabao.user.service;
 
-import com.gedoumi.quwabao.common.enums.TransTypeEnum;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
+import com.gedoumi.quwabao.common.enums.RentStatus;
+import com.gedoumi.quwabao.common.enums.TransTypeEnum;
 import com.gedoumi.quwabao.common.enums.UserRentStatusEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
@@ -20,7 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
 
 /**
  * 用户矿机Service
@@ -70,7 +75,16 @@ public class UserRentService {
      * @return 矿机价格总和
      */
     public BigDecimal getTotalRentAsset(List<Long> userIds) {
-        return userRentMapper.queryTotalRentAsset(userIds);
+        return userRentMapper.selectTotalRentAsset(userIds);
+    }
+
+    /**
+     * 获取所有用户正在激活的矿机列表
+     *
+     * @return 矿机集合
+     */
+    public List<UserRent> getAllUserActiveRent() {
+        return userRentMapper.selectActiveRent(RentStatus.ACTIVE.getValue());
     }
 
     /**

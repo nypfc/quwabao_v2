@@ -2,7 +2,9 @@ package com.gedoumi.quwabao.user.controller;
 
 import com.gedoumi.quwabao.common.utils.ResponseObject;
 import com.gedoumi.quwabao.user.dataobj.form.TransferForm;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -12,6 +14,7 @@ import javax.validation.Valid;
  *
  * @author Minced
  */
+@RequestMapping("/trans")
 @RestController
 public class UserTransacationController {
 
@@ -21,8 +24,8 @@ public class UserTransacationController {
      * @param transferForm 转账表单
      * @return ResponseObject
      */
+    @PostMapping("/transfer")
     public ResponseObject transfer(@RequestBody @Valid TransferForm transferForm) {
-
         return new ResponseObject();
     }
 
