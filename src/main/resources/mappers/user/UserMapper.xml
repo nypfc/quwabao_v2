@@ -5,10 +5,249 @@
 
 <mapper namespace="com.gedoumi.quwabao.user.mapper.UserMapper">
 
-    <select id="queryIdByInviteCode" resultType="java.lang.Long">
-        SELECT id
-        FROM user
-        WHERE invite_code = #{param1}
+    <sql id="Base_Column_List">
+        id, error_count, error_time, last_login_ip, last_login_time, mobile_phone, password,
+        real_name, register_time, update_time, user_status, username, invite_code, token,
+        deviceId, reg_invite_code, user_type, sex, eth_address, validate_status, id_card
+    </sql>
+
+    <select id="selectByMobile" resultType="com.gedoumi.quwabao.user.dataobj.model.User">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where mobile_phone = #{param1}
     </select>
+
+    <select id="selectByToken" resultType="com.gedoumi.quwabao.user.dataobj.model.User">
+        select
+        <include refid="Base_Column_List"/>
+        from user
+        where token = #{param1}
+    </select>
+
+    <select id="selectCountMobile" resultType="java.lang.Integer">
+        select count(0)
+        from user
+        where mobile_phone = #{param1}
+    </select>
+
+    <select id="selectCountUsername" resultType="java.lang.Integer">
+        select count(0)
+        from user
+        where username = #{param1}
+    </select>
+
+    <select id="selectCountInviteCode" resultType="java.lang.Integer">
+        select count(0)
+        from user
+        where invite_code = #{param1}
+    </select>
+
+    <select id="selectIdByInviteCode" resultType="java.lang.Long">
+        select id
+        from user
+        where invite_code = #{param1}
+    </select>
+
+    <insert id="insertSelective" parameterType="User">
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="errorCount != null">
+                error_count,
+            </if>
+            <if test="errorTime != null">
+                error_time,
+            </if>
+            <if test="lastLoginIp != null">
+                last_login_ip,
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time,
+            </if>
+            <if test="mobilePhone != null">
+                mobile_phone,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="realName != null">
+                real_name,
+            </if>
+            <if test="registerTime != null">
+                register_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="userStatus != null">
+                user_status,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="inviteCode != null">
+                invite_code,
+            </if>
+            <if test="token != null">
+                token,
+            </if>
+            <if test="deviceid != null">
+                deviceId,
+            </if>
+            <if test="regInviteCode != null">
+                reg_invite_code,
+            </if>
+            <if test="userType != null">
+                user_type,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="ethAddress != null">
+                eth_address,
+            </if>
+            <if test="validateStatus != null">
+                validate_status,
+            </if>
+            <if test="idCard != null">
+                id_card,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="errorCount != null">
+                #{errorCount,jdbcType=SMALLINT},
+            </if>
+            <if test="errorTime != null">
+                #{errorTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastLoginIp != null">
+                #{lastLoginIp,jdbcType=VARCHAR},
+            </if>
+            <if test="lastLoginTime != null">
+                #{lastLoginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="mobilePhone != null">
+                #{mobilePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="realName != null">
+                #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="registerTime != null">
+                #{registerTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userStatus != null">
+                #{userStatus,jdbcType=INTEGER},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="inviteCode != null">
+                #{inviteCode,jdbcType=VARCHAR},
+            </if>
+            <if test="token != null">
+                #{token,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceid != null">
+                #{deviceid,jdbcType=VARCHAR},
+            </if>
+            <if test="regInviteCode != null">
+                #{regInviteCode,jdbcType=VARCHAR},
+            </if>
+            <if test="userType != null">
+                #{userType,jdbcType=INTEGER},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="ethAddress != null">
+                #{ethAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="validateStatus != null">
+                #{validateStatus,jdbcType=INTEGER},
+            </if>
+            <if test="idCard != null">
+                #{idCard,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="User">
+        update user
+        <set>
+            <if test="errorCount != null">
+                error_count = #{errorCount,jdbcType=SMALLINT},
+            </if>
+            <if test="errorTime != null">
+                error_time = #{errorTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastLoginIp != null">
+                last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="mobilePhone != null">
+                mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="realName != null">
+                real_name = #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="registerTime != null">
+                register_time = #{registerTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userStatus != null">
+                user_status = #{userStatus,jdbcType=INTEGER},
+            </if>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="inviteCode != null">
+                invite_code = #{inviteCode,jdbcType=VARCHAR},
+            </if>
+            <if test="token != null">
+                token = #{token,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceid != null">
+                deviceId = #{deviceid,jdbcType=VARCHAR},
+            </if>
+            <if test="regInviteCode != null">
+                reg_invite_code = #{regInviteCode,jdbcType=VARCHAR},
+            </if>
+            <if test="userType != null">
+                user_type = #{userType,jdbcType=INTEGER},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="ethAddress != null">
+                eth_address = #{ethAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="validateStatus != null">
+                validate_status = #{validateStatus,jdbcType=INTEGER},
+            </if>
+            <if test="idCard != null">
+                id_card = #{idCard,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 
 </mapper>

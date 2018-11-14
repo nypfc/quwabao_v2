@@ -1,7 +1,5 @@
 package com.gedoumi.quwabao.user.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.user.dataobj.model.UserAsset;
@@ -35,8 +33,7 @@ public class UserAssetService {
      */
     public UserAsset getUserAsset(Long userId) {
         // 未查询到资产创建资产
-        return Optional.ofNullable(userAssetMapper.selectOne(new LambdaQueryWrapper<UserAsset>().eq(UserAsset::getUserId, userId)))
-                .orElseGet(() -> createUserAsset(userId));
+        return Optional.ofNullable(userAssetMapper.selectByUserId(userId)).orElseGet(() -> createUserAsset(userId));
     }
 
     /**
@@ -58,7 +55,7 @@ public class UserAssetService {
         userAsset.setUserId(userId);
         userAsset.setInitBaseAsset(BigDecimal.ZERO);  // 冗余字段
         userAsset.setInitFrozenAsset(BigDecimal.ZERO);  // 冗余字段
-        userAssetMapper.insert(userAsset);
+        userAssetMapper.insertSelective(userAsset);
         return userAsset;
     }
 
@@ -70,11 +67,10 @@ public class UserAssetService {
      */
     public void remainAsset(Long userId, BigDecimal money) {
         // 查询用户资产
-        UserAsset userAsset = Optional.ofNullable(userAssetMapper.selectOne(new LambdaQueryWrapper<UserAsset>().eq(UserAsset::getUserId, userId)))
-                .orElseThrow(() -> {
-                    log.error("用户:{}资产不存在", userId);
-                    return new BusinessException(CodeEnum.RemainAssetError);
-                });
+        UserAsset userAsset = Optional.ofNullable(userAssetMapper.selectByUserId(userId)).orElseThrow(() -> {
+            log.error("用户:{}资产不存在", userId);
+            return new BusinessException(CodeEnum.RemainAssetError);
+        });
         // 余额判断
         if (userAsset.getRemainAsset().compareTo(money) < 0) {
             log.error("用户:{}余额不足", userId);
@@ -91,7 +87,7 @@ public class UserAssetService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void updateUserAsset(Long userId, BigDecimal money, BigDecimal profit) {
-        UserAsset userAsset = userAssetMapper.selectOne(new LambdaQueryWrapper<UserAsset>().eq(UserAsset::getUserId, userId));
+        UserAsset userAsset = userAssetMapper.selectByUserId(userId);
         // 变更量为0直接返回
         if (money.compareTo(BigDecimal.ZERO) == 0)
             return;
@@ -102,8 +98,8 @@ public class UserAssetService {
             update.setProfit(userAsset.getProfit().add(profit));
         update.setRemainAsset(userAsset.getRemainAsset().add(money));
         update.setTotalAsset(update.getRemainAsset().add(userAsset.getFrozenAsset()));
-        // 更新并判断结果
-        userAssetMapper.update(update, new UpdateWrapper<UserAsset>().lambda().eq(UserAsset::getUserId, userId));
+        // 更新
+        userAssetMapper.updateByPrimaryKeySelective(update);
     }
 
 }

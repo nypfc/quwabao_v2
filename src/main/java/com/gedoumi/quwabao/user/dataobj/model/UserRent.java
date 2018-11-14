@@ -1,11 +1,7 @@
 package com.gedoumi.quwabao.user.dataobj.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
 import lombok.Data;
+import org.apache.ibatis.type.Alias;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -15,14 +11,13 @@ import java.util.Date;
  *
  * @author Minced
  */
-@TableName("user_rent")
+@Alias("UserRent")
 @Data
 public class UserRent {
 
     /**
      * ID
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -64,12 +59,6 @@ public class UserRent {
      * 矿机类型
      */
     private Integer rentType;
-
-    /**
-     * 矿机
-     */
-    @TableField(exist = false)
-    private SysRent rent;
 
     /**
      * 矿机状态

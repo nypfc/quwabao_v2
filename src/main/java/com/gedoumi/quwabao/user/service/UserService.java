@@ -1,6 +1,5 @@
 package com.gedoumi.quwabao.user.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.SmsType;
 import com.gedoumi.quwabao.common.enums.UserStatusEnum;
@@ -64,7 +63,7 @@ public class UserService {
      * @return 用户对象
      */
     public User getByToken(String token) {
-        return userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getToken, token));
+        return userMapper.selectByToken(token);
     }
 
     /**
@@ -90,7 +89,7 @@ public class UserService {
         sysSmsService.updateSmsStatus(mobile);  // 短信置为失效
         redisCache.deleteKeyValueData(key);  // 删除缓存
         // 重置密码
-        User user = Optional.ofNullable(userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getMobilePhone, mobile))).orElseThrow(() -> {
+        User user = Optional.ofNullable(userMapper.selectByMobile(mobile)).orElseThrow(() -> {
             log.error("手机号:{}未能查询到用户", mobile);
             return new BusinessException(CodeEnum.MobileNotExist);
         });
@@ -102,7 +101,7 @@ public class UserService {
         Date now = new Date();
         user.setUpdateTime(now);
         user.setLastLoginTime(now);
-        userMapper.updateById(user);
+        userMapper.updateByPrimaryKeySelective(user);
         // 更新缓存
         redisCache.setKeyValueData(token, user);
         return user;
@@ -128,7 +127,7 @@ public class UserService {
         String password = MD5EncryptUtil.md5Encrypy(updatePasswordForm.getPassword(), salt);
         user.setPassword(password);
         user.setUpdateTime(new Date());
-        userMapper.updateById(user);
+        userMapper.updateByPrimaryKeySelective(user);
         // 更新缓存
         redisCache.setKeyValueData(user.getToken(), user);
     }
@@ -145,14 +144,14 @@ public class UserService {
         // 从作用域中获取用户
         User user = ContextUtil.getUserFromRequest();
         // 判断用户名是否重复
-        Integer count = userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getUsername, username));
+        Integer count = userMapper.selectCountUsername(username);
         if (count > 0) {
             log.error("用户名:{}重复", username);
             throw new BusinessException(CodeEnum.NameError);
         }
         // 更新用户名
         user.setUsername(username);
-        userMapper.updateById(user);
+        userMapper.updateByPrimaryKeySelective(user);
         // 更新缓存
         redisCache.setKeyValueData(user.getToken(), user);
     }
@@ -164,7 +163,7 @@ public class UserService {
      * @return Boolean
      */
     public Boolean checkMobilePhone(String mobile) {
-        return userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getMobilePhone, mobile)) != 0;
+        return userMapper.selectCountMobile(mobile) != 0;
     }
 
     /**
@@ -174,7 +173,7 @@ public class UserService {
      * @return Boolean
      */
     public Boolean checkInviteCode(String inviteCode) {
-        return userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getInviteCode, inviteCode)) != 0;
+        return userMapper.selectCountInviteCode(inviteCode) != 0;
     }
 
     /**
@@ -184,7 +183,7 @@ public class UserService {
      * @return Boolean
      */
     public Boolean checkUsername(String username) {
-        return userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getUsername, username)) != 0;
+        return userMapper.selectCountUsername(username) != 0;
     }
 
     /**
@@ -237,7 +236,7 @@ public class UserService {
         user.setUpdateTime(now);
         while (checkInviteCode(user.getInviteCode()))
             user.setInviteCode(CodeUtils.generateCode());  // 设置邀请码，如果重复重新生成
-        userMapper.insert(user);
+        userMapper.insertSelective(user);
         Long userId = user.getId();  // 创建完成的用户ID
         // 更新用户名
         User update = new User();
@@ -251,13 +250,13 @@ public class UserService {
                 throw new BusinessException(CodeEnum.NameError);
             update.setUsername(username);
         }
-        userMapper.updateById(update);
+        userMapper.updateByPrimaryKeySelective(update);
         // 更新短信
         sysSmsService.updateSmsStatus(user.getMobilePhone());
         // 初始化用户资产
         userAssetService.createUserAsset(userId);
         // 创建用户上下级关系
-        Long parentId = userMapper.queryIdByInviteCode(inviteCode);
+        Long parentId = userMapper.selectIdByInviteCode(inviteCode);
         try {
             userTreeService.createUserTree(userId, parentId);
         } catch (DuplicateKeyException ex) {

@@ -41,7 +41,7 @@ public class UserTreeService {
         UserTree userTree = new UserTree();
         userTree.setChildId(userId);
         userTree.setParentId(parentId);
-        userTreeMapper.insert(userTree);
+        userTreeMapper.insertSelective(userTree);
     }
 
 }

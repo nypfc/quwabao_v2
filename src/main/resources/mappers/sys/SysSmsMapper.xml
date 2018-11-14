@@ -5,6 +5,10 @@
 
 <mapper namespace="com.gedoumi.quwabao.sys.mapper.SysSmsMapper">
 
+    <sql id="Base_Column_List">
+        id, code, create_time, mobile_phone, sms_status, sms_type, update_time
+    </sql>
+
     <select id="smsCurrentDayCount" resultType="java.lang.Integer">
         SELECT count(0)
         FROM sys_sms
@@ -19,6 +23,81 @@
             update_time = #{param4}
         WHERE mobile_phone = #{param1}
           AND sms_status = #{param2}
+    </update>
+
+    <insert id="insertSelective" parameterType="SysSms">
+        insert into sys_sms
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="code != null">
+                code,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="mobilePhone != null">
+                mobile_phone,
+            </if>
+            <if test="smsStatus != null">
+                sms_status,
+            </if>
+            <if test="smsType != null">
+                sms_type,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="code != null">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="mobilePhone != null">
+                #{mobilePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="smsStatus != null">
+                #{smsStatus,jdbcType=INTEGER},
+            </if>
+            <if test="smsType != null">
+                #{smsType,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="SysSms">
+        update sys_sms
+        <set>
+            <if test="code != null">
+                code = #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="mobilePhone != null">
+                mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="smsStatus != null">
+                sms_status = #{smsStatus,jdbcType=INTEGER},
+            </if>
+            <if test="smsType != null">
+                sms_type = #{smsType,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
     </update>
 
 </mapper>

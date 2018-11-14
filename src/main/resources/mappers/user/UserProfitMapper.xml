@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gedoumi.quwabao.user.mapper.UserProfitMapper">
+
+    <sql id="Base_Column_List">
+        id, user_id, static_profit, dynamic_profit, club_profit, total_profit, date, create_time
+    </sql>
+
+    <select id="selectByUserId" resultType="UserProfit">
+        select
+        <include refid="Base_Column_List"/>
+        from user_profit
+        where user_id = #{param1}
+        order by create_time desc
+    </select>
+
+    <insert id="insertSelective" parameterType="UserProfit">
+        insert into user_profit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="staticProfit != null">
+                static_profit,
+            </if>
+            <if test="dynamicProfit != null">
+                dynamic_profit,
+            </if>
+            <if test="clubProfit != null">
+                club_profit,
+            </if>
+            <if test="totalProfit != null">
+                total_profit,
+            </if>
+            <if test="date != null">
+                date,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="staticProfit != null">
+                #{staticProfit,jdbcType=DECIMAL},
+            </if>
+            <if test="dynamicProfit != null">
+                #{dynamicProfit,jdbcType=DECIMAL},
+            </if>
+            <if test="clubProfit != null">
+                #{clubProfit,jdbcType=DECIMAL},
+            </if>
+            <if test="totalProfit != null">
+                #{totalProfit,jdbcType=DECIMAL},
+            </if>
+            <if test="date != null">
+                #{date,jdbcType=DATE},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="UserProfit">
+        update user_profit
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="staticProfit != null">
+                static_profit = #{staticProfit,jdbcType=DECIMAL},
+            </if>
+            <if test="dynamicProfit != null">
+                dynamic_profit = #{dynamicProfit,jdbcType=DECIMAL},
+            </if>
+            <if test="clubProfit != null">
+                club_profit = #{clubProfit,jdbcType=DECIMAL},
+            </if>
+            <if test="totalProfit != null">
+                total_profit = #{totalProfit,jdbcType=DECIMAL},
+            </if>
+            <if test="date != null">
+                date = #{date,jdbcType=DATE},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

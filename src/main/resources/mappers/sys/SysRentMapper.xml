@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gedoumi.quwabao.sys.mapper.SysRentMapper">
+
+    <sql id="Base_Column_List">
+        id, create_time, days, dig_max, dig_min, money, name, profit_day, profit_money, profit_money_ext,
+        rate, update_time, max_number, rent_status, rent_code, rent_number
+    </sql>
+
+    <select id="selectActiveRents" resultType="SysRent">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_rent
+        where rent_status = #{param1}
+    </select>
+
+    <select id="selectInTypes" resultType="SysRent">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_rent
+        where rent_code in
+        <foreach collection="param1" item="item" open="(" separator="," close=")">#{item}</foreach>
+    </select>
+
+    <select id="selectByType" resultType="SysRent">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_rent
+        where rent_code = #{param1}
+    </select>
+
+    <insert id="insertSelective" parameterType="SysRent">
+        insert into sys_rent
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="days != null">
+                days,
+            </if>
+            <if test="digMax != null">
+                dig_max,
+            </if>
+            <if test="digMin != null">
+                dig_min,
+            </if>
+            <if test="money != null">
+                money,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="profitDay != null">
+                profit_day,
+            </if>
+            <if test="profitMoney != null">
+                profit_money,
+            </if>
+            <if test="profitMoneyExt != null">
+                profit_money_ext,
+            </if>
+            <if test="rate != null">
+                rate,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="maxNumber != null">
+                max_number,
+            </if>
+            <if test="rentStatus != null">
+                rent_status,
+            </if>
+            <if test="rentCode != null">
+                rent_code,
+            </if>
+            <if test="rentNumber != null">
+                rent_number,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="days != null">
+                #{days,jdbcType=INTEGER},
+            </if>
+            <if test="digMax != null">
+                #{digMax,jdbcType=INTEGER},
+            </if>
+            <if test="digMin != null">
+                #{digMin,jdbcType=INTEGER},
+            </if>
+            <if test="money != null">
+                #{money,jdbcType=DECIMAL},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="profitDay != null">
+                #{profitDay,jdbcType=DECIMAL},
+            </if>
+            <if test="profitMoney != null">
+                #{profitMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="profitMoneyExt != null">
+                #{profitMoneyExt,jdbcType=DECIMAL},
+            </if>
+            <if test="rate != null">
+                #{rate,jdbcType=DECIMAL},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="maxNumber != null">
+                #{maxNumber,jdbcType=INTEGER},
+            </if>
+            <if test="rentStatus != null">
+                #{rentStatus,jdbcType=INTEGER},
+            </if>
+            <if test="rentCode != null">
+                #{rentCode,jdbcType=BIGINT},
+            </if>
+            <if test="rentNumber != null">
+                #{rentNumber,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="SysRent">
+        update sys_rent
+        <set>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="days != null">
+                days = #{days,jdbcType=INTEGER},
+            </if>
+            <if test="digMax != null">
+                dig_max = #{digMax,jdbcType=INTEGER},
+            </if>
+            <if test="digMin != null">
+                dig_min = #{digMin,jdbcType=INTEGER},
+            </if>
+            <if test="money != null">
+                money = #{money,jdbcType=DECIMAL},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="profitDay != null">
+                profit_day = #{profitDay,jdbcType=DECIMAL},
+            </if>
+            <if test="profitMoney != null">
+                profit_money = #{profitMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="profitMoneyExt != null">
+                profit_money_ext = #{profitMoneyExt,jdbcType=DECIMAL},
+            </if>
+            <if test="rate != null">
+                rate = #{rate,jdbcType=DECIMAL},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="maxNumber != null">
+                max_number = #{maxNumber,jdbcType=INTEGER},
+            </if>
+            <if test="rentStatus != null">
+                rent_status = #{rentStatus,jdbcType=INTEGER},
+            </if>
+            <if test="rentCode != null">
+                rent_code = #{rentCode,jdbcType=BIGINT},
+            </if>
+            <if test="rentNumber != null">
+                rent_number = #{rentNumber,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

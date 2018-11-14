@@ -1,7 +1,5 @@
 package com.gedoumi.quwabao.user.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.UserStatusEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
@@ -51,8 +49,7 @@ public class LoginService {
         String salt = MD5EncryptUtil.md5Encrypy(mobile);
         String encryptedPassword = MD5EncryptUtil.md5Encrypy(password, salt);
         // 根据手机号获取用户并验证
-        User user = Optional.ofNullable(userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getMobilePhone, mobile)))
-                .orElseThrow(() -> {
+        User user = Optional.ofNullable(userMapper.selectByMobile(mobile)).orElseThrow(() -> {
             log.error("手机号:{}未能查询到用户", mobile);
             return new BusinessException(CodeEnum.MobileNotExist);
         });
@@ -69,7 +66,7 @@ public class LoginService {
             update.setId(user.getId());
             update.setErrorCount(user.getErrorCount() + 1);
             update.setErrorTime(new Date());
-            userMapper.updateById(update);
+            userMapper.updateByPrimaryKeySelective(update);
             log.error("手机号:{}，密码:{}，密码不正确", mobile, password);
             throw new BusinessException(CodeEnum.PasswordError);
         }
@@ -79,7 +76,7 @@ public class LoginService {
         user.setErrorCount(0);  // 错误次数重置
         user.setLastLoginTime(new Date());
         user.setLastLoginIp(ContextUtil.getClientIp());
-        userMapper.updateById(user);
+        userMapper.updateByPrimaryKeySelective(user);
         // 缓存用户（失效时间1小时）
         redisCache.setExpireKeyValueData(token, user, 1L, TimeUnit.HOURS);
         return user;
@@ -94,10 +91,11 @@ public class LoginService {
         // 如果token和用户存在，更新updateTime字段，Token置空，删除缓存
         Optional.ofNullable(token).ifPresent(t -> Optional.ofNullable((User) redisCache.getKeyValueData(token)).ifPresent(user -> {
             log.info("手机号:{}退出登录", user.getMobilePhone());
-            userMapper.update(user, new UpdateWrapper<User>().lambda()
-                    .set(User::getToken, null)
-                    .set(User::getUpdateTime, new Date())
-                    .eq(User::getId, user.getId()));
+            User update = new User();
+            update.setId(user.getId());
+            update.setToken(user.getToken());
+            update.setUpdateTime(new Date());
+            userMapper.updateByPrimaryKeySelective(update);
             redisCache.deleteKeyValueData(token);
         }));
     }

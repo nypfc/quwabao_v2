@@ -5,13 +5,156 @@
 
 <mapper namespace="com.gedoumi.quwabao.user.mapper.UserAssetDetailMapper">
 
-    <select id="selectTransInIds" resultType="com.gedoumi.quwabao.user.dataobj.model.UserAssetDetail">
-        SELECT create_time, money, trans_type
-        FROM user_asset_detail
-        WHERE user_id = #{userId}
-        AND trans_type IN
+    <sql id="Base_Column_List">
+        id, create_time, money, profit, profit_ext, trans_type, update_time, version_type,
+        user_id, rent_id, dig_date, reward_user_id, api_trans_seq, fee
+    </sql>
+
+    <select id="selectTransInIds" resultType="UserAssetDetail">
+        select create_time, money, trans_type
+        from user_asset_detail
+        where user_id = #{userId}
+        and trans_type in
         <foreach collection="transType" index="index" item="item" open="(" separator="," close=")">#{item}</foreach>
-        ORDER BY create_time DESC
+        order by create_time desc
     </select>
+
+    <insert id="insertSelective" parameterType="UserAssetDetail">
+        insert into user_asset_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="money != null">
+                money,
+            </if>
+            <if test="profit != null">
+                profit,
+            </if>
+            <if test="profitExt != null">
+                profit_ext,
+            </if>
+            <if test="transType != null">
+                trans_type,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="versionType != null">
+                version_type,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="rentId != null">
+                rent_id,
+            </if>
+            <if test="digDate != null">
+                dig_date,
+            </if>
+            <if test="rewardUserId != null">
+                reward_user_id,
+            </if>
+            <if test="apiTransSeq != null">
+                api_trans_seq,
+            </if>
+            <if test="fee != null">
+                fee,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="money != null">
+                #{money,jdbcType=DECIMAL},
+            </if>
+            <if test="profit != null">
+                #{profit,jdbcType=DECIMAL},
+            </if>
+            <if test="profitExt != null">
+                #{profitExt,jdbcType=DECIMAL},
+            </if>
+            <if test="transType != null">
+                #{transType,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="versionType != null">
+                #{versionType,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="rentId != null">
+                #{rentId,jdbcType=BIGINT},
+            </if>
+            <if test="digDate != null">
+                #{digDate,jdbcType=DATE},
+            </if>
+            <if test="rewardUserId != null">
+                #{rewardUserId,jdbcType=BIGINT},
+            </if>
+            <if test="apiTransSeq != null">
+                #{apiTransSeq,jdbcType=VARCHAR},
+            </if>
+            <if test="fee != null">
+                #{fee,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="UserAssetDetail">
+        update user_asset_detail
+        <set>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="money != null">
+                money = #{money,jdbcType=DECIMAL},
+            </if>
+            <if test="profit != null">
+                profit = #{profit,jdbcType=DECIMAL},
+            </if>
+            <if test="profitExt != null">
+                profit_ext = #{profitExt,jdbcType=DECIMAL},
+            </if>
+            <if test="transType != null">
+                trans_type = #{transType,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="versionType != null">
+                version_type = #{versionType,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="rentId != null">
+                rent_id = #{rentId,jdbcType=BIGINT},
+            </if>
+            <if test="digDate != null">
+                dig_date = #{digDate,jdbcType=DATE},
+            </if>
+            <if test="rewardUserId != null">
+                reward_user_id = #{rewardUserId,jdbcType=BIGINT},
+            </if>
+            <if test="apiTransSeq != null">
+                api_trans_seq = #{apiTransSeq,jdbcType=VARCHAR},
+            </if>
+            <if test="fee != null">
+                fee = #{fee,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 
 </mapper>

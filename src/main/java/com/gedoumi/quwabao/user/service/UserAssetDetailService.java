@@ -1,11 +1,12 @@
 package com.gedoumi.quwabao.user.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.TransTypeEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.user.dataobj.model.UserAssetDetail;
 import com.gedoumi.quwabao.user.mapper.UserAssetDetailMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,15 +48,14 @@ public class UserAssetDetailService {
                 TransTypeEnum.NetIn.getValue(),
                 TransTypeEnum.NetOut.getValue());
         // 分页查询
-        Page<UserAssetDetail> p;
         try {
-            p = new Page<>(Integer.parseInt(page), Integer.parseInt(rows));
+            PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(rows));
         } catch (NumberFormatException ex) {
             log.error("分页参数不能格式化为int类型");
             throw new BusinessException(CodeEnum.ParamError);
         }
-        userAssetDetailMapper.selectTransInIds(p, userId, transTypeList);
-        return p.getRecords();
+        PageInfo<UserAssetDetail> p = new PageInfo<>(userAssetDetailMapper.selectTransInIds(userId, transTypeList));
+        return p.getList();
     }
 
     /**
@@ -112,7 +112,7 @@ public class UserAssetDetailService {
         detail.setCreateTime(now);
         detail.setUpdateTime(now);
         detail.setVersionType(0);  // 冗余字段
-        userAssetDetailMapper.insert(detail);
+        userAssetDetailMapper.insertSelective(detail);
     }
 
 }

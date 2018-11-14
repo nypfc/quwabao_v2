@@ -5,11 +5,98 @@
 
 <mapper namespace="com.gedoumi.quwabao.user.mapper.UserTeamExtMapper">
 
-    <select id="queryUserIdsByParentId" resultType="java.lang.Long">
+    <sql id="Base_Column_List">
+        id, user_id, team_level, team_total_static_profit, team_total_rent, create_time,
+        update_time
+    </sql>
+
+    <select id="selectByUserId" resultType="UserTeamExt">
+        select
+        <include refid="Base_Column_List"/>
+        from user_team_ext
+        where user_id = #{param1}
+    </select>
+
+    <select id="selectUserIdsByParentId" resultType="java.lang.Long">
         SELECT child_id
         FROM user_tree
         WHERE parent_id IN
         <foreach collection="list" item="item" open="(" separator="," close=")">#{item}</foreach>
     </select>
+
+    <insert id="insertSelective" parameterType="UserTeamExt">
+        insert into user_team_ext
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="teamLevel != null">
+                team_level,
+            </if>
+            <if test="teamTotalStaticProfit != null">
+                team_total_static_profit,
+            </if>
+            <if test="teamTotalRent != null">
+                team_total_rent,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="teamLevel != null">
+                #{teamLevel,jdbcType=TINYINT},
+            </if>
+            <if test="teamTotalStaticProfit != null">
+                #{teamTotalStaticProfit,jdbcType=DECIMAL},
+            </if>
+            <if test="teamTotalRent != null">
+                #{teamTotalRent,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="UserTeamExt">
+        update user_team_ext
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="teamLevel != null">
+                team_level = #{teamLevel,jdbcType=TINYINT},
+            </if>
+            <if test="teamTotalStaticProfit != null">
+                team_total_static_profit = #{teamTotalStaticProfit,jdbcType=DECIMAL},
+            </if>
+            <if test="teamTotalRent != null">
+                team_total_rent = #{teamTotalRent,jdbcType=DECIMAL},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 
 </mapper>

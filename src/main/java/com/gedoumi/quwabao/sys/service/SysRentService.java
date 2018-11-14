@@ -1,6 +1,5 @@
 package com.gedoumi.quwabao.sys.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gedoumi.quwabao.common.enums.RentStatus;
 import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
 import com.gedoumi.quwabao.sys.mapper.SysRentMapper;
@@ -27,7 +26,7 @@ public class SysRentService {
      * @return 矿机集合
      */
     public List<SysRent> getRents() {
-        return sysRentMapper.selectList(new LambdaQueryWrapper<SysRent>().eq(SysRent::getRentStatus, RentStatus.ACTIVE.getValue()));
+        return sysRentMapper.selectActiveRents(RentStatus.ACTIVE.getValue());
     }
 
     /**
@@ -37,7 +36,7 @@ public class SysRentService {
      * @return 矿机集合
      */
     public List<SysRent> getRentsInType(Collection<Integer> types) {
-        return sysRentMapper.selectList(new LambdaQueryWrapper<SysRent>().in(SysRent::getRentCode, types));
+        return sysRentMapper.selectInTypes(types);
     }
 
     /**
@@ -47,7 +46,7 @@ public class SysRentService {
      * @return 矿机对象
      */
     public SysRent getRent(Integer rentType) {
-        return sysRentMapper.selectOne(new LambdaQueryWrapper<SysRent>().eq(SysRent::getRentCode, rentType));
+        return sysRentMapper.selectByType(rentType);
     }
 
 }

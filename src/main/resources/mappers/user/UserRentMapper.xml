@@ -5,20 +5,177 @@
 
 <mapper namespace="com.gedoumi.quwabao.user.mapper.UserRentMapper">
 
+    <sql id="Base_Column_List">
+        id, create_time, days, expire_date, rent_asset, last_dig, already_dig, total_asset,
+        update_time, user_id, rent_type, dig_number, first_rent_type, rent_status
+    </sql>
+
+    <select id="selectByUserId" resultType="UserRent">
+        select
+        <include refid="Base_Column_List"/>
+        from user_rent
+        where user_id = #{param1} and rent_status = #{param2}
+    </select>
+
     <select id="countUserRentsByIds" resultType="com.gedoumi.quwabao.user.dataobj.dto.UserRentNumberDTO">
-        SELECT user_id, count(0) AS number
-        FROM user_rent
-        WHERE rent_status = #{param2}
-        AND user_id IN
+        select user_id, count(0) as number
+        from user_rent
+        where rent_status = #{param2}
+        and user_id in
         <foreach collection="param1" item="item" open="(" separator="," close=")">#{item}</foreach>
-        GROUP BY user_id
+        group by user_id
     </select>
 
     <select id="selectTotalRentAsset" resultType="java.math.BigDecimal">
-        SELECT sum(rent_asset)
-        FROM user_rent
-        WHERE user_id IN
+        select sum(rent_asset)
+        from user_rent
+        where user_id in
         <foreach collection="list" item="item" open="(" separator="," close=")">#{item}</foreach>
     </select>
+
+    <select id="selectAllActiveRents" resultType="UserRent">
+        select
+        <include refid="Base_Column_List"/>
+        from user_rent
+        where rent_status = #{param1}
+    </select>
+
+    <insert id="insertSelective" parameterType="UserRent">
+        insert into user_rent
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="days != null">
+                days,
+            </if>
+            <if test="expireDate != null">
+                expire_date,
+            </if>
+            <if test="rentAsset != null">
+                rent_asset,
+            </if>
+            <if test="lastDig != null">
+                last_dig,
+            </if>
+            <if test="alreadyDig != null">
+                already_dig,
+            </if>
+            <if test="totalAsset != null">
+                total_asset,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="rentType != null">
+                rent_type,
+            </if>
+            <if test="digNumber != null">
+                dig_number,
+            </if>
+            <if test="firstRentType != null">
+                first_rent_type,
+            </if>
+            <if test="rentStatus != null">
+                rent_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="days != null">
+                #{days,jdbcType=INTEGER},
+            </if>
+            <if test="expireDate != null">
+                #{expireDate,jdbcType=DATE},
+            </if>
+            <if test="rentAsset != null">
+                #{rentAsset,jdbcType=DECIMAL},
+            </if>
+            <if test="lastDig != null">
+                #{lastDig,jdbcType=DECIMAL},
+            </if>
+            <if test="alreadyDig != null">
+                #{alreadyDig,jdbcType=DECIMAL},
+            </if>
+            <if test="totalAsset != null">
+                #{totalAsset,jdbcType=DECIMAL},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="rentType != null">
+                #{rentType,jdbcType=INTEGER},
+            </if>
+            <if test="digNumber != null">
+                #{digNumber,jdbcType=INTEGER},
+            </if>
+            <if test="firstRentType != null">
+                #{firstRentType,jdbcType=INTEGER},
+            </if>
+            <if test="rentStatus != null">
+                #{rentStatus,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="UserRent">
+        update user_rent
+        <set>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="days != null">
+                days = #{days,jdbcType=INTEGER},
+            </if>
+            <if test="expireDate != null">
+                expire_date = #{expireDate,jdbcType=DATE},
+            </if>
+            <if test="rentAsset != null">
+                rent_asset = #{rentAsset,jdbcType=DECIMAL},
+            </if>
+            <if test="lastDig != null">
+                last_dig = #{lastDig,jdbcType=DECIMAL},
+            </if>
+            <if test="alreadyDig != null">
+                already_dig = #{alreadyDig,jdbcType=DECIMAL},
+            </if>
+            <if test="totalAsset != null">
+                total_asset = #{totalAsset,jdbcType=DECIMAL},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="rentType != null">
+                rent_type = #{rentType,jdbcType=INTEGER},
+            </if>
+            <if test="digNumber != null">
+                dig_number = #{digNumber,jdbcType=INTEGER},
+            </if>
+            <if test="firstRentType != null">
+                first_rent_type = #{firstRentType,jdbcType=INTEGER},
+            </if>
+            <if test="rentStatus != null">
+                rent_status = #{rentStatus,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 
 </mapper>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gedoumi.quwabao.user.mapper.UserAssetMapper">
+
+    <sql id="Base_Column_List">
+        id, create_time, frozen_asset, profit, remain_asset, total_asset, update_time, user_id,
+        init_frozen_asset, init_base_asset
+    </sql>
+
+    <select id="selectByUserId" resultType="UserAsset">
+        select
+        <include refid="Base_Column_List"/>
+        from user_asset
+        where user_id = #{param1}
+    </select>
+
+    <insert id="insertSelective" parameterType="UserAsset">
+        insert into user_asset
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="frozenAsset != null">
+                frozen_asset,
+            </if>
+            <if test="profit != null">
+                profit,
+            </if>
+            <if test="remainAsset != null">
+                remain_asset,
+            </if>
+            <if test="totalAsset != null">
+                total_asset,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="initFrozenAsset != null">
+                init_frozen_asset,
+            </if>
+            <if test="initBaseAsset != null">
+                init_base_asset,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="frozenAsset != null">
+                #{frozenAsset,jdbcType=DECIMAL},
+            </if>
+            <if test="profit != null">
+                #{profit,jdbcType=DECIMAL},
+            </if>
+            <if test="remainAsset != null">
+                #{remainAsset,jdbcType=DECIMAL},
+            </if>
+            <if test="totalAsset != null">
+                #{totalAsset,jdbcType=DECIMAL},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="initFrozenAsset != null">
+                #{initFrozenAsset,jdbcType=DECIMAL},
+            </if>
+            <if test="initBaseAsset != null">
+                #{initBaseAsset,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="UserAsset">
+        update user_asset
+        <set>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="frozenAsset != null">
+                frozen_asset = #{frozenAsset,jdbcType=DECIMAL},
+            </if>
+            <if test="profit != null">
+                profit = #{profit,jdbcType=DECIMAL},
+            </if>
+            <if test="remainAsset != null">
+                remain_asset = #{remainAsset,jdbcType=DECIMAL},
+            </if>
+            <if test="totalAsset != null">
+                total_asset = #{totalAsset,jdbcType=DECIMAL},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="initFrozenAsset != null">
+                init_frozen_asset = #{initFrozenAsset,jdbcType=DECIMAL},
+            </if>
+            <if test="initBaseAsset != null">
+                init_base_asset = #{initBaseAsset,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

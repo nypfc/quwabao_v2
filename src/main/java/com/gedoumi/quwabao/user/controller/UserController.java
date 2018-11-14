@@ -49,7 +49,7 @@ public class UserController {
     private UserRentService userRentService;
 
     @Resource
-    private UserTeamService userTeamService;
+    private UserTeamExtService userTeamExtService;
 
     @Resource
     private SysRentService sysRentService;
@@ -72,7 +72,7 @@ public class UserController {
         // 获取用户资产信息
         UserAsset userAsset = userAssetService.getUserAsset(user.getId());
         // 获取用户团队信息
-        UserTeamExt userTeamExt = userTeamService.getTeamTotalRentMoney(user.getId());
+        UserTeamExt userTeamExt = userTeamExtService.getTeamTotalRentMoney(user.getId());
         // 封装返回信息
         UserInfoVO userInfoVO = new UserInfoVO();
         userInfoVO.setUsername(user.getUsername());

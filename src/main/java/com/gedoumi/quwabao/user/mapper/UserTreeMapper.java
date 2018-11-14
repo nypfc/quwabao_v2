@@ -1,6 +1,5 @@
 package com.gedoumi.quwabao.user.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import com.gedoumi.quwabao.user.dataobj.model.UserTree;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,7 +12,7 @@ import java.util.List;
  * @author Minced
  */
 @Mapper
-public interface UserTreeMapper extends BaseMapper<UserTree> {
+public interface UserTreeMapper {
 
     /**
      * 根据上级用户ID查询下级用户集合
@@ -22,5 +21,13 @@ public interface UserTreeMapper extends BaseMapper<UserTree> {
      * @return 用户集合
      */
     List<User> selectByParentId(Long parentId);
+
+    /**
+     * 创建用户关系
+     *
+     * @param userTree 用户关系对象
+     * @return 数据库受影响行数
+     */
+    Integer insertSelective(UserTree userTree);
 
 }

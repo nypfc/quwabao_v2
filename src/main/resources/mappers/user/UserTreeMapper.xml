@@ -5,11 +5,41 @@
 
 <mapper namespace="com.gedoumi.quwabao.user.mapper.UserTreeMapper">
 
+    <sql id="Base_Column_List">
+        id, child_id, parent_id
+    </sql>
+
     <select id="selectByParentId" resultType="com.gedoumi.quwabao.user.dataobj.model.User">
         SELECT u.id, u.mobile_phone, u.username
         FROM user_tree ut
                  LEFT JOIN user u ON u.id = ut.child_id
         WHERE ut.parent_id = #{param1}
     </select>
+
+    <insert id="insertSelective" parameterType="UserTree">
+        insert into user_tree
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="childId != null">
+                child_id,
+            </if>
+            <if test="parentId != null">
+                parent_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="childId != null">
+                #{childId,jdbcType=BIGINT},
+            </if>
+            <if test="parentId != null">
+                #{parentId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
 
 </mapper>

@@ -1,6 +1,5 @@
 package com.gedoumi.quwabao.user.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.RentStatus;
 import com.gedoumi.quwabao.common.enums.TransTypeEnum;
@@ -55,9 +54,7 @@ public class UserRentService {
      * @return 矿机信息集合
      */
     public List<UserRent> getUserRents(Long userId) {
-        return userRentMapper.selectList(new LambdaQueryWrapper<UserRent>()
-                .eq(UserRent::getUserId, userId)
-                .eq(UserRent::getRentStatus, RentStatus.ACTIVE.getValue()));
+        return userRentMapper.selectByUserId(userId, UserRentStatusEnum.ACTIVE.getValue());
     }
 
     /**
@@ -86,7 +83,7 @@ public class UserRentService {
      * @return 矿机集合
      */
     public List<UserRent> getAllUserActiveRent() {
-        return userRentMapper.selectList(new LambdaQueryWrapper<UserRent>().eq(UserRent::getRentStatus, RentStatus.ACTIVE.getValue()));
+        return userRentMapper.selectAllActiveRents(RentStatus.ACTIVE.getValue());
     }
 
     /**
@@ -131,7 +128,7 @@ public class UserRentService {
         userRent.setUserId(userId);
         userRent.setRentType(rentType);
         userRent.setRentStatus(UserRentStatusEnum.ACTIVE.getValue());
-        userRentMapper.insert(userRent);
+        userRentMapper.insertSelective(userRent);
         // 更新用户资产（注意将rentMoney转为负数）
         userAssetService.updateUserAsset(userId, rentMoney.negate(), BigDecimal.ZERO);
         // 创建用户资产详情

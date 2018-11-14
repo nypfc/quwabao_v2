@@ -1,9 +1,7 @@
 package com.gedoumi.quwabao.sys.dataobj.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import org.apache.ibatis.type.Alias;
 
 import java.util.Date;
 
@@ -12,14 +10,13 @@ import java.util.Date;
  *
  * @author Minced
  */
-@TableName("sys_sms")
+@Alias("SysSms")
 @Data
 public class SysSms {
 
     /**
      * ID
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**

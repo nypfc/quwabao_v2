@@ -1,6 +1,5 @@
 package com.gedoumi.quwabao.sys.service;
 
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.gedoumi.quwabao.common.config.properties.SMSProperties;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.SmsStatus;
@@ -107,7 +106,7 @@ public class SysSmsService {
         sms.setMobilePhone(mobile);
         sms.setCreateTime(now);
         sms.setUpdateTime(now);
-        sysSmsMapper.insert(sms);
+        sysSmsMapper.insertSelective(sms);
 
         // =========== 4.缓存短信 ===========
         String key = "sms:" + mobile;

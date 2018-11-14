@@ -1,23 +1,20 @@
 package com.gedoumi.quwabao.user.dataobj.model;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import org.apache.ibatis.type.Alias;
 
 /**
  * 用户--关联表
  *
  * @author Minced
  */
-@TableName("user_tree")
+@Alias("UserTree")
 @Data
 public class UserTree {
 
     /**
      * ID
      */
-    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
@@ -29,4 +26,5 @@ public class UserTree {
      * 父用户ID
      */
     private Long parentId;
+
 }
