@@ -14,9 +14,9 @@ import javax.validation.Valid;
  *
  * @author Minced
  */
-@RequestMapping("/trans")
+@RequestMapping("/v2/trans")
 @RestController
-public class UserTransacationController {
+public class TransacationController {
 
     /**
      * APP内用户转账

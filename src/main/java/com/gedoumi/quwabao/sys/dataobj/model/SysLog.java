@@ -1,13 +1,14 @@
 package com.gedoumi.quwabao.sys.dataobj.model;
 
-
 import lombok.Data;
+import org.apache.ibatis.type.Alias;
 
 import java.util.Date;
 
 /**
  * 网关充值记录
  */
+@Alias("SysLog")
 @Data
 public class SysLog {
 
