@@ -24,7 +24,7 @@
         <foreach collection="list" item="item" open="(" separator="," close=")">#{item}</foreach>
     </select>
 
-    <insert id="insertSelective" parameterType="UserTeamExt">
+    <insert id="insert" parameterType="UserTeamExt">
         insert into user_team_ext
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -74,7 +74,7 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKeySelective" parameterType="UserTeamExt">
+    <update id="updateById" parameterType="UserTeamExt">
         update user_team_ext
         <set>
             <if test="userId != null">

@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.sys.service;
 
-import com.gedoumi.quwabao.common.enums.RentStatus;
+import com.gedoumi.quwabao.common.enums.RentStatusEnum;
 import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
 import com.gedoumi.quwabao.sys.mapper.SysRentMapper;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class SysRentService {
      * @return 矿机集合
      */
     public List<SysRent> getRents() {
-        return sysRentMapper.selectActiveRents(RentStatus.ACTIVE.getValue());
+        return sysRentMapper.selectActiveRents(RentStatusEnum.ACTIVE.getValue());
     }
 
     /**

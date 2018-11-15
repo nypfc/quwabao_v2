@@ -16,7 +16,7 @@
         WHERE ut.parent_id = #{param1}
     </select>
 
-    <insert id="insertSelective" parameterType="UserTree">
+    <insert id="insert" parameterType="UserTree">
         insert into user_tree
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">

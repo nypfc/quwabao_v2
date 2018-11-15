@@ -102,7 +102,7 @@ public class UserService {
         Date now = new Date();
         user.setUpdateTime(now);
         user.setLastLoginTime(now);
-        userMapper.updateByPrimaryKeySelective(user);
+        userMapper.updateById(user);
         // 更新缓存
         redisCache.setKeyValueData(token, user);
         return user;
@@ -130,7 +130,7 @@ public class UserService {
         String updatePassword = MD5EncryptUtil.md5Encrypy(updatePasswordForm.getPassword(), salt);
         user.setPassword(updatePassword);
         user.setUpdateTime(new Date());
-        userMapper.updateByPrimaryKeySelective(user);
+        userMapper.updateById(user);
         // 更新缓存
         redisCache.setKeyValueData(user.getToken(), user);
     }
@@ -154,7 +154,7 @@ public class UserService {
         }
         // 更新用户名
         user.setUsername(username);
-        userMapper.updateByPrimaryKeySelective(user);
+        userMapper.updateById(user);
         // 更新缓存
         redisCache.setKeyValueData(user.getToken(), user);
     }
@@ -239,7 +239,7 @@ public class UserService {
         user.setUpdateTime(now);
         while (checkInviteCode(user.getInviteCode()))
             user.setInviteCode(CodeUtils.generateCode());  // 设置邀请码，如果重复重新生成
-        userMapper.insertSelective(user);
+        userMapper.insert(user);
         Long userId = user.getId();  // 创建完成的用户ID
         // 更新用户名
         User update = new User();
@@ -253,7 +253,7 @@ public class UserService {
                 throw new BusinessException(CodeEnum.NameError);
             update.setUsername(username);
         }
-        userMapper.updateByPrimaryKeySelective(update);
+        userMapper.updateById(update);
         // 更新短信
         sysSmsService.updateSmsStatus(user.getMobilePhone());
         // 初始化用户资产

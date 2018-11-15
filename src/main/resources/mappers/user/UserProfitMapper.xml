@@ -16,7 +16,7 @@
         order by create_time desc
     </select>
 
-    <insert id="insertSelective" parameterType="UserProfit">
+    <insert id="insert" parameterType="UserProfit">
         insert into user_profit
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -72,7 +72,7 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKeySelective" parameterType="UserProfit">
+    <update id="updateById" parameterType="UserProfit">
         update user_profit
         <set>
             <if test="userId != null">

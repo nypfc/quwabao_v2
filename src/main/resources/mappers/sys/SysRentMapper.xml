@@ -22,7 +22,7 @@
         <include refid="Base_Column_List"/>
         from sys_rent
         where rent_code in
-        <foreach collection="param1" item="item" open="(" separator="," close=")">#{item}</foreach>
+        <foreach collection="collection" item="item" open="(" separator="," close=")">#{item}</foreach>
     </select>
 
     <select id="selectByType" resultType="SysRent">
@@ -32,7 +32,7 @@
         where rent_code = #{param1}
     </select>
 
-    <insert id="insertSelective" parameterType="SysRent">
+    <insert id="insert" parameterType="SysRent">
         insert into sys_rent
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -136,7 +136,7 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKeySelective" parameterType="SysRent">
+    <update id="updateById" parameterType="SysRent">
         update sys_rent
         <set>
             <if test="createTime != null">

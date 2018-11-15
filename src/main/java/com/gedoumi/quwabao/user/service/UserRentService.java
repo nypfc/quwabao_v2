@@ -1,7 +1,7 @@
 package com.gedoumi.quwabao.user.service;
 
 import com.gedoumi.quwabao.common.enums.CodeEnum;
-import com.gedoumi.quwabao.common.enums.RentStatus;
+import com.gedoumi.quwabao.common.enums.RentStatusEnum;
 import com.gedoumi.quwabao.common.enums.TransTypeEnum;
 import com.gedoumi.quwabao.common.enums.UserRentStatusEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
@@ -12,6 +12,7 @@ import com.gedoumi.quwabao.sys.service.SysRentService;
 import com.gedoumi.quwabao.user.dataobj.dto.UserRentNumberDTO;
 import com.gedoumi.quwabao.user.dataobj.form.RentForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
+import com.gedoumi.quwabao.user.dataobj.model.UserAssetDetail;
 import com.gedoumi.quwabao.user.dataobj.model.UserRent;
 import com.gedoumi.quwabao.user.mapper.UserRentMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -83,7 +84,7 @@ public class UserRentService {
      * @return 矿机集合
      */
     public List<UserRent> getAllUserActiveRent() {
-        return userRentMapper.selectAllActiveRents(RentStatus.ACTIVE.getValue());
+        return userRentMapper.selectAllActiveRents(RentStatusEnum.ACTIVE.getValue());
     }
 
     /**
@@ -128,11 +129,30 @@ public class UserRentService {
         userRent.setUserId(userId);
         userRent.setRentType(rentType);
         userRent.setRentStatus(UserRentStatusEnum.ACTIVE.getValue());
-        userRentMapper.insertSelective(userRent);
+        userRentMapper.insert(userRent);
         // 更新用户资产（注意将rentMoney转为负数）
         userAssetService.updateUserAsset(userId, rentMoney.negate(), BigDecimal.ZERO);
         // 创建用户资产详情
-        userAssetDetailService.createUserDetailAsset(userId, rentMoney, TransTypeEnum.Rent.getValue());
+        UserAssetDetail detail = new UserAssetDetail();
+        detail.setUserId(userId);
+        detail.setMoney(rentMoney);
+        detail.setProfit(BigDecimal.ZERO);  // 初始化资产字段
+        detail.setProfitExt(BigDecimal.ZERO);  // 初始化资产字段
+        detail.setRentId(userRent.getId());
+        detail.setCreateTime(now);
+        detail.setUpdateTime(now);
+        detail.setTransType(TransTypeEnum.Rent.getValue());
+        detail.setVersionType(0);  // 冗余字段
+        userAssetDetailService.insertUserDetailAsset(detail);
+    }
+
+    /**
+     * 批量更新用户矿机
+     *
+     * @param userRents 用户矿机集合
+     */
+    public void updateBatch(List<UserRent> userRents) {
+        userRentMapper.updateBatch(userRents);
     }
 
 }

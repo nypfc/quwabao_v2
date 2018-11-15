@@ -25,7 +25,7 @@
           AND sms_status = #{param2}
     </update>
 
-    <insert id="insertSelective" parameterType="SysSms">
+    <insert id="insert" parameterType="SysSms">
         insert into sys_sms
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -75,7 +75,7 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKeySelective" parameterType="SysSms">
+    <update id="updateById" parameterType="SysSms">
         update sys_sms
         <set>
             <if test="code != null">

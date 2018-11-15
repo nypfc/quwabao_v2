@@ -40,7 +40,31 @@
         where rent_status = #{param1}
     </select>
 
-    <insert id="insertSelective" parameterType="UserRent">
+    <update id="updateBatch" parameterType="list">
+        <foreach collection="list" item="userRent" separator=";">
+            update user_rent
+            <set>
+                <if test="userRent.expireDate != null">
+                    expire_date = #{userRent.expireDate},
+                </if>
+                <if test="userRent.lastDig != null">
+                    last_dig = #{userRent.lastDig},
+                </if>
+                <if test="userRent.alreadyDig != null">
+                    already_dig = #{userRent.alreadyDig},
+                </if>
+                <if test="userRent.updateTime != null">
+                    update_time = #{userRent.updateTime},
+                </if>
+                <if test="userRent.rentStatus != null">
+                    rent_status = #{userRent.rentStatus},
+                </if>
+            </set>
+            where id = #{userRent.id}
+        </foreach>
+    </update>
+
+    <insert id="insert" parameterType="UserRent" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         insert into user_rent
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -132,7 +156,7 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKeySelective" parameterType="UserRent">
+    <update id="updateById" parameterType="UserRent">
         update user_rent
         <set>
             <if test="createTime != null">

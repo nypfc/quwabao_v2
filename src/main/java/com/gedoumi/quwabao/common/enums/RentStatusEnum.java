@@ -8,7 +8,7 @@ import lombok.Getter;
  * @author Minced
  */
 @Getter
-public enum RentStatus {
+public enum RentStatusEnum {
 
     STOP(0, "停止租用"),
     ACTIVE(1, "正常"),
@@ -18,7 +18,7 @@ public enum RentStatus {
 
     private String description;
 
-    RentStatus(Integer value, String description) {
+    RentStatusEnum(Integer value, String description) {
         this.value = value;
         this.description = description;
     }

@@ -44,7 +44,7 @@ public interface SysRentMapper {
      * @param sysRent 矿机对象
      * @return 数据库受影响行数
      */
-    Integer insertSelective(SysRent sysRent);
+    Integer insert(SysRent sysRent);
 
     /**
      * 根据ID更新矿机
@@ -52,6 +52,6 @@ public interface SysRentMapper {
      * @param sysRent 矿机对象
      * @return 数据库受影响行数
      */
-    Integer updateByPrimaryKeySelective(SysRent sysRent);
+    Integer updateById(SysRent sysRent);
 
 }

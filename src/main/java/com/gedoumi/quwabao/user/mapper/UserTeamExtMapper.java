@@ -35,7 +35,7 @@ public interface UserTeamExtMapper {
      * @param userTeamExt 用户团队对象
      * @return 数据库受影响行数
      */
-    Integer insertSelective(UserTeamExt userTeamExt);
+    Integer insert(UserTeamExt userTeamExt);
 
     /**
      * 根据ID用户团队
@@ -43,6 +43,6 @@ public interface UserTeamExtMapper {
      * @param userTeamExt 用户团队对象
      * @return 数据库受影响行数
      */
-    Integer updateByPrimaryKeySelective(UserTeamExt userTeamExt);
+    Integer updateById(UserTeamExt userTeamExt);
 
 }

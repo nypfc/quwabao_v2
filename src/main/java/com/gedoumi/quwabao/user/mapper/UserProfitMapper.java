@@ -27,7 +27,7 @@ public interface UserProfitMapper {
      * @param userProfit 用户收益对象
      * @return 数据库受影响行数
      */
-    Integer insertSelective(UserProfit userProfit);
+    Integer insert(UserProfit userProfit);
 
     /**
      * 根据ID更新用户收益
@@ -35,6 +35,6 @@ public interface UserProfitMapper {
      * @param userProfit 用户收益对象
      * @return 数据库受影响行数
      */
-    Integer updateByPrimaryKeySelective(UserProfit userProfit);
+    Integer updateById(UserProfit userProfit);
 
 }

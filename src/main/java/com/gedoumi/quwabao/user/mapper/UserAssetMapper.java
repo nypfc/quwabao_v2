@@ -25,14 +25,14 @@ public interface UserAssetMapper {
      * @param userAsset 用户资产对象
      * @return 数据库受影响行数
      */
-    Integer insertSelective(UserAsset userAsset);
+    Integer insert(UserAsset userAsset);
 
     /**
-     * 根据ID更新用户资产
+     * 根据用户ID更新用户资产
      *
      * @param userAsset 用户资产对象
      * @return 数据库受影响行数
      */
-    Integer updateByPrimaryKeySelective(UserAsset userAsset);
+    Integer updateByUserId(UserAsset userAsset);
 
 }

@@ -65,7 +65,7 @@ public class LoginService {
             update.setId(user.getId());
             update.setErrorCount(user.getErrorCount() + 1);
             update.setErrorTime(new Date());
-            userMapper.updateByPrimaryKeySelective(update);
+            userMapper.updateById(update);
             log.error("手机号:{}，密码:{}，密码不正确", mobile, password);
             throw new BusinessException(CodeEnum.PasswordError);
         }
@@ -75,7 +75,7 @@ public class LoginService {
         user.setErrorCount(0);  // 错误次数重置
         user.setLastLoginTime(new Date());
         user.setLastLoginIp(ContextUtil.getClientIp());
-        userMapper.updateByPrimaryKeySelective(user);
+        userMapper.updateById(user);
         // 缓存用户
         redisCache.setKeyValueData(token, user);
         return user;
@@ -95,7 +95,7 @@ public class LoginService {
                 update.setId(user.getId());
                 update.setToken(user.getToken());
                 update.setUpdateTime(new Date());
-                userMapper.updateByPrimaryKeySelective(update);
+                userMapper.updateById(update);
                 redisCache.deleteKeyValueData(token);
             });
         }

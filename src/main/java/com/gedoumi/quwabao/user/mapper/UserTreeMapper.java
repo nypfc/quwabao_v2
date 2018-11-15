@@ -28,6 +28,6 @@ public interface UserTreeMapper {
      * @param userTree 用户关系对象
      * @return 数据库受影响行数
      */
-    Integer insertSelective(UserTree userTree);
+    Integer insert(UserTree userTree);
 
 }

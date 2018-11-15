@@ -28,7 +28,15 @@ public interface UserAssetDetailMapper {
      * @param userAssetDetail 用户资产详情
      * @return 数据库受影响行数
      */
-    Integer insertSelective(UserAssetDetail userAssetDetail);
+    Integer insert(UserAssetDetail userAssetDetail);
+
+    /**
+     * 批量创建用户资产详情
+     *
+     * @param details 用户资产详情集合
+     * @return 数据库受影响行数
+     */
+    Integer insertBatch(List<UserAssetDetail> details);
 
     /**
      * 根据ID更新用户资产详情
@@ -36,6 +44,6 @@ public interface UserAssetDetailMapper {
      * @param userAssetDetail 用户资产详情
      * @return 数据库受影响行数
      */
-    Integer updateByPrimaryKeySelective(UserAssetDetail userAssetDetail);
+    Integer updateById(UserAssetDetail userAssetDetail);
 
 }

@@ -50,12 +50,20 @@ public interface UserRentMapper {
     List<UserRent> selectAllActiveRents(Integer rentStatus);
 
     /**
+     * 批量更新用户矿机
+     *
+     * @param userRents 用户矿机集合
+     * @return 数据库受影响行数
+     */
+    Integer updateBatch(List<UserRent> userRents);
+
+    /**
      * 创建用户矿机
      *
      * @param userRent 用户矿机对象
      * @return 数据库受影响行数
      */
-    Integer insertSelective(UserRent userRent);
+    Integer insert(UserRent userRent);
 
     /**
      * 根据ID更新用户矿机
@@ -63,6 +71,6 @@ public interface UserRentMapper {
      * @param userRent 用户矿机对象
      * @return 数据库受影响行数
      */
-    Integer updateByPrimaryKeySelective(UserRent userRent);
+    Integer updateById(UserRent userRent);
 
 }

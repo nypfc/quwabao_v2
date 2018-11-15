@@ -19,7 +19,7 @@
         order by create_time desc
     </select>
 
-    <insert id="insertSelective" parameterType="UserAssetDetail">
+    <insert id="insert" parameterType="UserAssetDetail">
         insert into user_asset_detail
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -111,7 +111,101 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKeySelective" parameterType="UserAssetDetail">
+    <insert id="insertBatch" parameterType="list">
+        <foreach collection="list" item="detail" separator=";">
+            insert into user_asset_detail
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="detail.id != null">
+                    id,
+                </if>
+                <if test="detail.createTime != null">
+                    create_time,
+                </if>
+                <if test="detail.money != null">
+                    money,
+                </if>
+                <if test="detail.profit != null">
+                    profit,
+                </if>
+                <if test="detail.profitExt != null">
+                    profit_ext,
+                </if>
+                <if test="detail.transType != null">
+                    trans_type,
+                </if>
+                <if test="detail.updateTime != null">
+                    update_time,
+                </if>
+                <if test="detail.versionType != null">
+                    version_type,
+                </if>
+                <if test="detail.userId != null">
+                    user_id,
+                </if>
+                <if test="detail.rentId != null">
+                    rent_id,
+                </if>
+                <if test="detail.digDate != null">
+                    dig_date,
+                </if>
+                <if test="detail.rewardUserId != null">
+                    reward_user_id,
+                </if>
+                <if test="detail.apiTransSeq != null">
+                    api_trans_seq,
+                </if>
+                <if test="detail.fee != null">
+                    fee,
+                </if>
+            </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="detail.id != null">
+                    #{detail.id,jdbcType=BIGINT},
+                </if>
+                <if test="detail.createTime != null">
+                    #{detail.createTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="detail.money != null">
+                    #{detail.money,jdbcType=DECIMAL},
+                </if>
+                <if test="detail.profit != null">
+                    #{detail.profit,jdbcType=DECIMAL},
+                </if>
+                <if test="detail.profitExt != null">
+                    #{detail.profitExt,jdbcType=DECIMAL},
+                </if>
+                <if test="detail.transType != null">
+                    #{detail.transType,jdbcType=INTEGER},
+                </if>
+                <if test="detail.updateTime != null">
+                    #{detail.updateTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="detail.versionType != null">
+                    #{detail.versionType,jdbcType=INTEGER},
+                </if>
+                <if test="detail.userId != null">
+                    #{detail.userId,jdbcType=BIGINT},
+                </if>
+                <if test="detail.rentId != null">
+                    #{detail.rentId,jdbcType=BIGINT},
+                </if>
+                <if test="detail.digDate != null">
+                    #{detail.digDate,jdbcType=DATE},
+                </if>
+                <if test="detail.rewardUserId != null">
+                    #{detail.rewardUserId,jdbcType=BIGINT},
+                </if>
+                <if test="detail.apiTransSeq != null">
+                    #{detail.apiTransSeq,jdbcType=VARCHAR},
+                </if>
+                <if test="detail.fee != null">
+                    #{detail.fee,jdbcType=DECIMAL},
+                </if>
+            </trim>
+        </foreach>
+    </insert>
+
+    <update id="updateById" parameterType="UserAssetDetail">
         update user_asset_detail
         <set>
             <if test="createTime != null">

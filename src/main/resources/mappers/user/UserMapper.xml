@@ -49,7 +49,7 @@
         where invite_code = #{param1}
     </select>
 
-    <insert id="insertSelective" parameterType="User">
+    <insert id="insert" parameterType="User">
         insert into user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -183,7 +183,7 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKeySelective" parameterType="User">
+    <update id="updateById" parameterType="User">
         update user
         <set>
             <if test="errorCount != null">

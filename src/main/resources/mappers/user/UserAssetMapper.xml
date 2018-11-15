@@ -17,7 +17,7 @@
         where user_id = #{param1}
     </select>
 
-    <insert id="insertSelective" parameterType="UserAsset">
+    <insert id="insert" parameterType="UserAsset">
         insert into user_asset
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -84,7 +84,8 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="UserAsset">
+
+    <update id="updateByUserId" parameterType="UserAsset">
         update user_asset
         <set>
             <if test="createTime != null">
@@ -105,9 +106,6 @@
             <if test="updateTime != null">
                 update_time = #{updateTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="userId != null">
-                user_id = #{userId,jdbcType=BIGINT},
-            </if>
             <if test="initFrozenAsset != null">
                 init_frozen_asset = #{initFrozenAsset,jdbcType=DECIMAL},
             </if>
@@ -115,7 +113,7 @@
                 init_base_asset = #{initBaseAsset,jdbcType=DECIMAL},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        where user_id = #{userId,jdbcType=BIGINT}
     </update>
 
 </mapper>

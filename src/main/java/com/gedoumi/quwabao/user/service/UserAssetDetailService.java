@@ -10,11 +10,9 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,58 +59,19 @@ public class UserAssetDetailService {
     /**
      * 创建用户资产详情
      *
-     * @param userId 用户ID
-     * @param money  资产变动量
-     * @param type   资产类型
+     * @param detail 用户资产详情
      */
-    @Transactional(rollbackFor = Exception.class)
-    public void createUserDetailAsset(Long userId, BigDecimal money, Integer type) {
-        if (TransTypeEnum.Profit.getValue() == type || TransTypeEnum.TransOut.getValue() == type || TransTypeEnum.TransIn.getValue() == type)
-            return;
-        createUserDetailAsset(userId, money, BigDecimal.ZERO, BigDecimal.ZERO, type);
+    public void insertUserDetailAsset(UserAssetDetail detail) {
+        userAssetDetailMapper.insert(detail);
     }
 
     /**
-     * 创建挖矿收益的用户资产详情
+     * 批量创建用户资产详情
      *
-     * @param userId   用户ID
-     * @param money    资产变动量
-     * @param profit   不带本金收益（挖矿专用）
-     * @param profitEx 带本金的收益（挖矿专用）
+     * @param details 用户资产详情集合
      */
-    @Transactional(rollbackFor = Exception.class)
-    public void createUserDetailAsset(Long userId, BigDecimal money, BigDecimal profit, BigDecimal profitEx) {
-        createUserDetailAsset(userId, money, profit, profitEx, TransTypeEnum.Profit.getValue());
-    }
-
-    /**
-     * 创建用户资产详情
-     *
-     * @param userId   用户ID
-     * @param money    资产变动量
-     * @param profit   不带本金收益（挖矿专用）
-     * @param profitEx 带本金的收益（挖矿专用）
-     * @param type     资产类型
-     */
-    private void createUserDetailAsset(Long userId, BigDecimal money, BigDecimal profit, BigDecimal profitEx, Integer type) {
-        UserAssetDetail detail = new UserAssetDetail();
-        Date now = new Date();
-        detail.setUserId(userId);
-        detail.setMoney(money);
-        // 如果变动类型为挖矿的收益，设置收益
-        if (TransTypeEnum.Profit.getValue() == type) {
-            detail.setProfit(profit);
-            detail.setProfitExt(profitEx);
-            detail.setDigDate(now);
-        } else {
-            detail.setProfit(BigDecimal.ZERO);
-            detail.setProfitExt(BigDecimal.ZERO);
-        }
-        detail.setTransType(type);
-        detail.setCreateTime(now);
-        detail.setUpdateTime(now);
-        detail.setVersionType(0);  // 冗余字段
-        userAssetDetailMapper.insertSelective(detail);
+    public void insertBatch(List<UserAssetDetail> details) {
+        userAssetDetailMapper.insertBatch(details);
     }
 
 }

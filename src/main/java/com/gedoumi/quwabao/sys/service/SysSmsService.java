@@ -106,7 +106,7 @@ public class SysSmsService {
         sms.setMobilePhone(mobile);
         sms.setCreateTime(now);
         sms.setUpdateTime(now);
-        sysSmsMapper.insertSelective(sms);
+        sysSmsMapper.insert(sms);
 
         // =========== 4.缓存短信 ===========
         String key = "sms:" + mobile;

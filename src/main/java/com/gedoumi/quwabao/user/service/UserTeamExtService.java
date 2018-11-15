@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.Optional;
 
 
@@ -28,15 +29,26 @@ public class UserTeamExtService {
      * @return 团队业绩
      */
     public UserTeamExt getTeamTotalRentMoney(Long userId) {
-        return Optional.ofNullable(userTeamExtMapper.selectByUserId(userId)).orElseGet(() -> {
-            UserTeamExt userTeamExt = new UserTeamExt();
-            userTeamExt.setUserId(userId);
-            userTeamExt.setTeamLevel(TeamLevel.LEVEL_0.getValue());
-            userTeamExt.setTeamTotalStaticProfit(BigDecimal.ZERO);
-            userTeamExt.setTeamTotalRent(BigDecimal.ZERO);
-            userTeamExtMapper.insertSelective(userTeamExt);
-            return userTeamExt;
-        });
+        return Optional.ofNullable(userTeamExtMapper.selectByUserId(userId)).orElseGet(() -> insertUserTeamExt(userId));
+    }
+
+    /**
+     * 初始化用户团队信息
+     *
+     * @param userId 用户ID
+     * @return 用户团队信息对象
+     */
+    public UserTeamExt insertUserTeamExt(Long userId) {
+        Date now = new Date();
+        UserTeamExt userTeamExt = new UserTeamExt();
+        userTeamExt.setUserId(userId);
+        userTeamExt.setTeamLevel(TeamLevel.LEVEL_0.getValue());
+        userTeamExt.setTeamTotalStaticProfit(BigDecimal.ZERO);
+        userTeamExt.setTeamTotalRent(BigDecimal.ZERO);
+        userTeamExt.setCreateTime(now);
+        userTeamExt.setUpdateTime(now);
+        userTeamExtMapper.insert(userTeamExt);
+        return userTeamExt;
     }
 
 }

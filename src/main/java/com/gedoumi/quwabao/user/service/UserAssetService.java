@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -55,7 +56,7 @@ public class UserAssetService {
         userAsset.setUserId(userId);
         userAsset.setInitBaseAsset(BigDecimal.ZERO);  // 冗余字段
         userAsset.setInitFrozenAsset(BigDecimal.ZERO);  // 冗余字段
-        userAssetMapper.insertSelective(userAsset);
+        userAssetMapper.insert(userAsset);
         return userAsset;
     }
 
@@ -92,6 +93,7 @@ public class UserAssetService {
         if (money.compareTo(BigDecimal.ZERO) == 0)
             return;
         UserAsset update = new UserAsset();
+        update.setUserId(userId);
         update.setUpdateTime(new Date());
         // 如果变更量与收益均大于0，设置收益
         if (profit.compareTo(BigDecimal.ZERO) > 0 && money.compareTo(BigDecimal.ZERO) > 0)
@@ -99,7 +101,16 @@ public class UserAssetService {
         update.setRemainAsset(userAsset.getRemainAsset().add(money));
         update.setTotalAsset(update.getRemainAsset().add(userAsset.getFrozenAsset()));
         // 更新
-        userAssetMapper.updateByPrimaryKeySelective(update);
+        userAssetMapper.updateByUserId(update);
+    }
+
+    /**
+     * 批量更新用户资产
+     *
+     * @param userAssets 用户资产集合
+     */
+    public void updateBatch(List<UserAsset> userAssets) {
+
     }
 
 }

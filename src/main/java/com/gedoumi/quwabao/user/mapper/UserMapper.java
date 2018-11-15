@@ -65,7 +65,7 @@ public interface UserMapper {
      * @param user 用户对象
      * @return 数据库受影响行数
      */
-    Integer insertSelective(User user);
+    Integer insert(User user);
 
     /**
      * 根据主键更新用户
@@ -73,6 +73,6 @@ public interface UserMapper {
      * @param user 用户对象
      * @return 数据库受影响行数
      */
-    Integer updateByPrimaryKeySelective(User user);
+    Integer updateById(User user);
 
 }

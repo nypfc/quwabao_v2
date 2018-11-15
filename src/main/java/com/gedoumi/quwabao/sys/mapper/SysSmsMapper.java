@@ -39,7 +39,7 @@ public interface SysSmsMapper {
      * @param sysSms 短信对象
      * @return 数据库受影响行数
      */
-    Integer insertSelective(SysSms sysSms);
+    Integer insert(SysSms sysSms);
 
     /**
      * 根据ID更新短息
@@ -47,6 +47,6 @@ public interface SysSmsMapper {
      * @param sysSms 短信对象
      * @return 数据库受影响行数
      */
-    Integer updateByPrimaryKeySelective(SysSms sysSms);
+    Integer updateById(SysSms sysSms);
 
 }

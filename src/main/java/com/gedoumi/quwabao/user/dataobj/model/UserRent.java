@@ -26,6 +26,16 @@ public class UserRent {
     private Date createTime;
 
     /**
+     * （冗余字段）
+     */
+    private Integer days;
+
+    /**
+     * 结束时间
+     */
+    private Date expireDate;
+
+    /**
      * 矿机价格
      */
     private BigDecimal rentAsset;
@@ -59,6 +69,16 @@ public class UserRent {
      * 矿机类型
      */
     private Integer rentType;
+
+    /**
+     * （冗余字段）
+     */
+    private Integer digNumber;
+
+    /**
+     * （冗余字段）
+     */
+    private Integer firstRentType;
 
     /**
      * 矿机状态
