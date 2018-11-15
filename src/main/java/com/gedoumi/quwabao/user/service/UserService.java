@@ -95,6 +95,7 @@ public class UserService {
         });
         String token = UUID.randomUUID().toString();
         String encrypedPassword = MD5EncryptUtil.md5Encrypy(password, MD5EncryptUtil.md5Encrypy(mobile));  // 密码加密
+        user.setErrorCount(0);  // 错误次数重置
         user.setPassword(encrypedPassword);
         user.setToken(token);
         user.setLastLoginIp(ContextUtil.getClientIp());
@@ -116,16 +117,18 @@ public class UserService {
     public void updatePassword(UpdatePasswordForm updatePasswordForm) {
         // 从作用域中获取用户
         User user = ContextUtil.getUserFromRequest();
+        String mobile = user.getMobilePhone();
+        String password = user.getPassword();
         // 对比原密码是否正确
         String salt = MD5EncryptUtil.md5Encrypy(user.getMobilePhone());
         String originalPassword = MD5EncryptUtil.md5Encrypy(updatePasswordForm.getOriginalPassword(), salt);
-        if (!StringUtils.equals(user.getPassword(), originalPassword)) {
-            log.error("手机号:{}修改密码，原密码:{}与参数原密码:{}不相同", user.getMobilePhone(), user.getPassword(), originalPassword);
+        if (!StringUtils.equals(password, originalPassword)) {
+            log.error("手机号:{}修改密码，原密码:{}与参数原密码:{}不相同", mobile, password, originalPassword);
             throw new BusinessException(CodeEnum.OrgPswdError);
         }
         // 修改密码
-        String password = MD5EncryptUtil.md5Encrypy(updatePasswordForm.getPassword(), salt);
-        user.setPassword(password);
+        String updatePassword = MD5EncryptUtil.md5Encrypy(updatePasswordForm.getPassword(), salt);
+        user.setPassword(updatePassword);
         user.setUpdateTime(new Date());
         userMapper.updateByPrimaryKeySelective(user);
         // 更新缓存

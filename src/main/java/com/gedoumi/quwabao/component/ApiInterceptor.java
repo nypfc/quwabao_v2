@@ -40,7 +40,7 @@ public class ApiInterceptor implements HandlerInterceptor {
         // 判断令牌有效性
         if (StringUtils.isEmpty(authToken))
             throw new BusinessException(CodeEnum.EmptyToken);
-        // 如果未能从缓存中获取到用户，则从数据库中获取用户
+        // 从缓存中获取用户
         User user = Optional.ofNullable((User) redisCache.getKeyValueData(authToken))
                 .orElseGet(() -> Optional.ofNullable(userService.getByToken(authToken)).orElseThrow(() -> {
                     log.error("token:{}未查询到用户", authToken);

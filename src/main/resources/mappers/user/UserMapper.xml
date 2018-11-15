@@ -11,14 +11,14 @@
         deviceId, reg_invite_code, user_type, sex, eth_address, validate_status, id_card
     </sql>
 
-    <select id="selectByMobile" resultType="com.gedoumi.quwabao.user.dataobj.model.User">
+    <select id="selectByMobile" resultType="User">
         select
         <include refid="Base_Column_List"/>
         from user
         where mobile_phone = #{param1}
     </select>
 
-    <select id="selectByToken" resultType="com.gedoumi.quwabao.user.dataobj.model.User">
+    <select id="selectByToken" resultType="User">
         select
         <include refid="Base_Column_List"/>
         from user

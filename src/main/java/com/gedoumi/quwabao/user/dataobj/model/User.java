@@ -87,7 +87,7 @@ public class User {
     /**
      * 设备ID
      */
-    private String deviceId;
+    private String deviceid;
 
     /**
      * 邀请人的邀请码

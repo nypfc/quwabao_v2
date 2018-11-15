@@ -18,7 +18,6 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 登录Service
@@ -77,8 +76,8 @@ public class LoginService {
         user.setLastLoginTime(new Date());
         user.setLastLoginIp(ContextUtil.getClientIp());
         userMapper.updateByPrimaryKeySelective(user);
-        // 缓存用户（失效时间1小时）
-        redisCache.setExpireKeyValueData(token, user, 1L, TimeUnit.HOURS);
+        // 缓存用户
+        redisCache.setKeyValueData(token, user);
         return user;
     }
 
@@ -89,15 +88,17 @@ public class LoginService {
      */
     public void logout(String token) {
         // 如果token和用户存在，更新updateTime字段，Token置空，删除缓存
-        Optional.ofNullable(token).ifPresent(t -> Optional.ofNullable((User) redisCache.getKeyValueData(token)).ifPresent(user -> {
-            log.info("手机号:{}退出登录", user.getMobilePhone());
-            User update = new User();
-            update.setId(user.getId());
-            update.setToken(user.getToken());
-            update.setUpdateTime(new Date());
-            userMapper.updateByPrimaryKeySelective(update);
-            redisCache.deleteKeyValueData(token);
-        }));
+        if (StringUtils.isNotEmpty(token)) {
+            Optional.ofNullable((User) redisCache.getKeyValueData(token)).ifPresent(user -> {
+                log.info("手机号:{}退出登录", user.getMobilePhone());
+                User update = new User();
+                update.setId(user.getId());
+                update.setToken(user.getToken());
+                update.setUpdateTime(new Date());
+                userMapper.updateByPrimaryKeySelective(update);
+                redisCache.deleteKeyValueData(token);
+            });
+        }
     }
 
 }

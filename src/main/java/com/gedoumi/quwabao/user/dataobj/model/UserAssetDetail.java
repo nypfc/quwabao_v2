@@ -81,7 +81,7 @@ public class UserAssetDetail {
     private String apiTransSeq;
 
     /**
-     *
+     * 手续费
      */
     private BigDecimal fee;
 

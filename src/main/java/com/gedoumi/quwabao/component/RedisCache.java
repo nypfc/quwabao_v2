@@ -1,9 +1,9 @@
 package com.gedoumi.quwabao.component;
 
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -14,8 +14,14 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedisCache {
 
-    @Resource
     private RedisTemplate<String, Object> redisTemplate;
+
+    private ValueOperations<String, Object> valueOperations;
+
+    public RedisCache(RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+        this.valueOperations = redisTemplate.opsForValue();
+    }
 
     /**
      * 获取Key-Value
@@ -24,7 +30,7 @@ public class RedisCache {
      * @return data
      */
     public Object getKeyValueData(String key) {
-        return redisTemplate.opsForValue().get(key);
+        return this.valueOperations.get(key);
     }
 
     /**
@@ -34,7 +40,7 @@ public class RedisCache {
      * @param value 数据
      */
     public void setKeyValueData(String key, Object value) {
-        redisTemplate.opsForValue().set(key, value);
+        this.valueOperations.set(key, value);
     }
 
     /**
@@ -46,7 +52,7 @@ public class RedisCache {
      * @param timeUnit 时间单位
      */
     public void setExpireKeyValueData(String key, Object value, Long time, TimeUnit timeUnit) {
-        redisTemplate.opsForValue().set(key, value, time, timeUnit);
+        this.valueOperations.set(key, value, time, timeUnit);
     }
 
     /**
@@ -55,7 +61,7 @@ public class RedisCache {
      * @param key 键
      */
     public void deleteKeyValueData(String key) {
-        redisTemplate.delete(key);
+        this.redisTemplate.delete(key);
     }
 
 }

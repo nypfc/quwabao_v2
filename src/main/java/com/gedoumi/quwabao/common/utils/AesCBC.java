@@ -24,20 +24,11 @@ public class AesCBC {
      * 加密用的Key 可以用26个字母和数字组成
      * 此处使用AES-128-CBC加密模式，key需要为16位。
      */
-    private static String sKey = "J5Ecs7kv9f37WGppWfUcLhuijyUfVdt+SJOgwSmnml4=";
-    private static AesCBC instance = null;
     private static final String PRIVATE_KEY_PATH2 = "privateKey";
-    static int BLOCK_SIZE = 32;
-    static Charset CHARSET = Charset.forName("utf-8");
+    private static Charset CHARSET = Charset.forName("utf-8");
 
     //private static
     private AesCBC() {
-    }
-
-    public static AesCBC getInstance() {
-        if (instance == null)
-            instance = new AesCBC();
-        return instance;
     }
 
     // 加密
@@ -65,23 +56,22 @@ public class AesCBC {
      * @param count 需要进行填充补位操作的明文字节个数
      * @return 补齐用的字节数组
      */
-    static byte[] pKCS7Encode(int count) {
+    private static byte[] pKCS7Encode(int count) {
         // 计算需要填充的位数
+        int BLOCK_SIZE = 32;
         int amountToPad = BLOCK_SIZE - (count % BLOCK_SIZE);
         if (amountToPad == 0) {
             amountToPad = BLOCK_SIZE;
         }
         // 获得补位所用的字符
         char padChr = chr(amountToPad);
-        String tmp = new String();
+        StringBuilder tmp = new StringBuilder();
         for (int index = 0; index < amountToPad; index++) {
-
-            tmp += padChr;
+            tmp.append(padChr);
         }
         System.out.println(tmp);
-        return tmp.getBytes(CHARSET);
+        return tmp.toString().getBytes(CHARSET);
     }
-
 
     /**
      * 将数字转化成ASCII码对应的字符，用于对明文进行补码
@@ -89,7 +79,7 @@ public class AesCBC {
      * @param a 需要转化的数字
      * @return 转化得到的字符
      */
-    static char chr(int a) {
+    private static char chr(int a) {
         byte target = (byte) (a & 0xFF);
         return (char) target;
     }
