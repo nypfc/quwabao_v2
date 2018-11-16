@@ -9,11 +9,17 @@
         id, child_id, parent_id
     </sql>
 
-    <select id="selectByParentId" resultType="com.gedoumi.quwabao.user.dataobj.model.User">
-        SELECT u.id, u.mobile_phone, u.username
-        FROM user_tree ut
-                 LEFT JOIN user u ON u.id = ut.child_id
-        WHERE ut.parent_id = #{param1}
+    <select id="selectByParentId" resultType="User">
+        select u.id, u.mobile_phone, u.username
+        from user_tree ut
+                 left join user u on u.id = ut.child_id
+        where ut.parent_id = #{param1}
+    </select>
+
+    <select id="selectByChildId" resultType="UserTree">
+        select id, child_id, parent_id
+        from user_tree
+        where child_id = #{param1}
     </select>
 
     <insert id="insert" parameterType="UserTree">

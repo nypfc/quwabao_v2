@@ -33,11 +33,11 @@
         <foreach collection="list" item="item" open="(" separator="," close=")">#{item}</foreach>
     </select>
 
-    <select id="selectAllActiveRents" resultType="UserRent">
-        select
-        <include refid="Base_Column_List"/>
-        from user_rent
-        where rent_status = #{param1}
+    <select id="selectAllActiveRents" resultType="UserRentDTO">
+        select ur.id, ur.rent_asset, sr.profit_day, ur.already_dig, ur.total_asset, ur.user_id
+        from user_rent ur
+                 left join sys_rent sr on sr.rent_code = ur.rent_type
+        where ur.rent_status = #{param1};
     </select>
 
     <update id="updateBatch" parameterType="list">

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -59,9 +60,27 @@ public class UserAssetDetailService {
     /**
      * 创建用户资产详情
      *
-     * @param detail 用户资产详情
+     * @param userId    用户ID
+     * @param money     金额
+     * @param rentId    矿机ID
+     * @param profit    带本金收益
+     * @param profitExt 不带本金的收益
+     * @param transType 交易类型
+     * @return 用户资产详情对象
      */
-    public void insertUserDetailAsset(UserAssetDetail detail) {
+    public void insertUserDetailAsset(Long userId, BigDecimal money, Long rentId, BigDecimal profit, BigDecimal profitExt, Integer transType) {
+        UserAssetDetail detail = new UserAssetDetail();
+        Date now = new Date();
+        detail.setUserId(userId);
+        detail.setMoney(money);
+        detail.setRentId(rentId);
+        detail.setProfit(profit);  // 带本金的收益
+        detail.setProfitExt(profitExt);   // 不带本金的收益
+        detail.setTransType(transType);
+        detail.setDigDate(now);
+        detail.setCreateTime(now);
+        detail.setUpdateTime(now);
+        detail.setVersionType(0);  // 冗余字段
         userAssetDetailMapper.insert(detail);
     }
 

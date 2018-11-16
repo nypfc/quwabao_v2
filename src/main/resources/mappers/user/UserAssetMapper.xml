@@ -116,4 +116,37 @@
         where user_id = #{userId,jdbcType=BIGINT}
     </update>
 
+    <update id="updateBatch" parameterType="list">
+        <foreach collection="list" item="userAsset" separator=";">
+            update user_asset
+            <set>
+                <if test="userAsset.createTime != null">
+                    create_time = #{userAsset.createTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="userAsset.frozenAsset != null">
+                    frozen_asset = #{userAsset.frozenAsset,jdbcType=DECIMAL},
+                </if>
+                <if test="userAsset.profit != null">
+                    profit = #{userAsset.profit,jdbcType=DECIMAL},
+                </if>
+                <if test="userAsset.remainAsset != null">
+                    remain_asset = #{userAsset.remainAsset,jdbcType=DECIMAL},
+                </if>
+                <if test="userAsset.totalAsset != null">
+                    total_asset = #{userAsset.totalAsset,jdbcType=DECIMAL},
+                </if>
+                <if test="userAsset.updateTime != null">
+                    update_time = #{userAsset.updateTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="userAsset.initFrozenAsset != null">
+                    init_frozen_asset = #{userAsset.initFrozenAsset,jdbcType=DECIMAL},
+                </if>
+                <if test="userAsset.initBaseAsset != null">
+                    init_base_asset = #{userAsset.initBaseAsset,jdbcType=DECIMAL},
+                </if>
+            </set>
+            where user_id = #{userAsset.userId,jdbcType=BIGINT}
+        </foreach>
+    </update>
+
 </mapper>

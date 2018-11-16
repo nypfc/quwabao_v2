@@ -3,6 +3,8 @@ package com.gedoumi.quwabao.user.mapper;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 用户Mapper
  *

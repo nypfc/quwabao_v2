@@ -110,7 +110,7 @@ public class UserAssetService {
      * @param userAssets 用户资产集合
      */
     public void updateBatch(List<UserAsset> userAssets) {
-
+        userAssetMapper.updateBatch(userAssets);
     }
 
 }

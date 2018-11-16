@@ -9,10 +9,10 @@ import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
 import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
 import com.gedoumi.quwabao.sys.service.SysRentService;
+import com.gedoumi.quwabao.user.dataobj.dto.UserRentDTO;
 import com.gedoumi.quwabao.user.dataobj.dto.UserRentNumberDTO;
 import com.gedoumi.quwabao.user.dataobj.form.RentForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
-import com.gedoumi.quwabao.user.dataobj.model.UserAssetDetail;
 import com.gedoumi.quwabao.user.dataobj.model.UserRent;
 import com.gedoumi.quwabao.user.mapper.UserRentMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -83,7 +83,7 @@ public class UserRentService {
      *
      * @return 矿机集合
      */
-    public List<UserRent> getAllUserActiveRent() {
+    public List<UserRentDTO> getAllUserActiveRent() {
         return userRentMapper.selectAllActiveRents(RentStatusEnum.ACTIVE.getValue());
     }
 
@@ -133,17 +133,8 @@ public class UserRentService {
         // 更新用户资产（注意将rentMoney转为负数）
         userAssetService.updateUserAsset(userId, rentMoney.negate(), BigDecimal.ZERO);
         // 创建用户资产详情
-        UserAssetDetail detail = new UserAssetDetail();
-        detail.setUserId(userId);
-        detail.setMoney(rentMoney);
-        detail.setProfit(BigDecimal.ZERO);  // 初始化资产字段
-        detail.setProfitExt(BigDecimal.ZERO);  // 初始化资产字段
-        detail.setRentId(userRent.getId());
-        detail.setCreateTime(now);
-        detail.setUpdateTime(now);
-        detail.setTransType(TransTypeEnum.Rent.getValue());
-        detail.setVersionType(0);  // 冗余字段
-        userAssetDetailService.insertUserDetailAsset(detail);
+        userAssetDetailService.insertUserDetailAsset(userId, rentMoney, userRent.getId(),
+                BigDecimal.ZERO, BigDecimal.ZERO, TransTypeEnum.Rent.getValue());
     }
 
     /**

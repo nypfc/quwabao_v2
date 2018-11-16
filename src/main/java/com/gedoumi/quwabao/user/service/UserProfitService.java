@@ -44,4 +44,34 @@ public class UserProfitService {
         return p.getList();
     }
 
+    /**
+     * 获取当日静态收益列表
+     *
+     * @param date 日期
+     * @return 用户收益集合
+     */
+    public List<UserProfit> getCurrentDayUserProfit(String date) {
+        return userProfitMapper.selectByDate(date);
+    }
+
+    /**
+     * 批量添加用户收益
+     *
+     * @param userProfits 用户收益集合
+     * @return 数据库受影响行数
+     */
+    public void insertBatch(List<UserProfit> userProfits) {
+        userProfitMapper.insertBatch(userProfits);
+    }
+
+    /**
+     * 批量更新用户收益
+     *
+     * @param userProfits 用户收益集合
+     * @return 数据库受影响行数
+     */
+    public void updateBatch(List<UserProfit> userProfits) {
+        userProfitMapper.updateBatch(userProfits);
+    }
+
 }

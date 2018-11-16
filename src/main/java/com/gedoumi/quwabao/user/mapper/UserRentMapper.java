@@ -1,5 +1,6 @@
 package com.gedoumi.quwabao.user.mapper;
 
+import com.gedoumi.quwabao.user.dataobj.dto.UserRentDTO;
 import com.gedoumi.quwabao.user.dataobj.dto.UserRentNumberDTO;
 import com.gedoumi.quwabao.user.dataobj.model.UserRent;
 import org.apache.ibatis.annotations.Mapper;
@@ -47,7 +48,7 @@ public interface UserRentMapper {
      * @param rentStatus 用户矿机状态
      * @return 用户矿机集合
      */
-    List<UserRent> selectAllActiveRents(Integer rentStatus);
+    List<UserRentDTO> selectAllActiveRents(Integer rentStatus);
 
     /**
      * 批量更新用户矿机

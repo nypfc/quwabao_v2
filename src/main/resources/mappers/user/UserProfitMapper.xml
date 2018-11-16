@@ -16,6 +16,13 @@
         order by create_time desc
     </select>
 
+    <select id="selectByDate" resultType="UserProfit">
+        select
+        <include refid="Base_Column_List"/>
+        from user_profit
+        where date = #{param1}
+    </select>
+
     <insert id="insert" parameterType="UserProfit">
         insert into user_profit
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -72,6 +79,64 @@
         </trim>
     </insert>
 
+    <insert id="insertBatch" parameterType="list">
+        <foreach collection="list" item="userProfit" separator=";">
+            insert into user_profit
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="userProfit.id != null">
+                    id,
+                </if>
+                <if test="userProfit.userId != null">
+                    user_id,
+                </if>
+                <if test="userProfit.staticProfit != null">
+                    static_profit,
+                </if>
+                <if test="userProfit.dynamicProfit != null">
+                    dynamic_profit,
+                </if>
+                <if test="userProfit.clubProfit != null">
+                    club_profit,
+                </if>
+                <if test="userProfit.totalProfit != null">
+                    total_profit,
+                </if>
+                <if test="userProfit.date != null">
+                    date,
+                </if>
+                <if test="userProfit.createTime != null">
+                    create_time,
+                </if>
+            </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="userProfit.id != null">
+                    #{userProfit.id,jdbcType=BIGINT},
+                </if>
+                <if test="userProfit.userId != null">
+                    #{userProfit.userId,jdbcType=BIGINT},
+                </if>
+                <if test="userProfit.staticProfit != null">
+                    #{userProfit.staticProfit,jdbcType=DECIMAL},
+                </if>
+                <if test="userProfit.dynamicProfit != null">
+                    #{userProfit.dynamicProfit,jdbcType=DECIMAL},
+                </if>
+                <if test="userProfit.clubProfit != null">
+                    #{userProfit.clubProfit,jdbcType=DECIMAL},
+                </if>
+                <if test="userProfit.totalProfit != null">
+                    #{userProfit.totalProfit,jdbcType=DECIMAL},
+                </if>
+                <if test="userProfit.date != null">
+                    #{userProfit.date,jdbcType=DATE},
+                </if>
+                <if test="userProfit.createTime != null">
+                    #{userProfit.createTime,jdbcType=TIMESTAMP},
+                </if>
+            </trim>
+        </foreach>
+    </insert>
+
     <update id="updateById" parameterType="UserProfit">
         update user_profit
         <set>
@@ -98,6 +163,36 @@
             </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateBatch" parameterType="list">
+        <foreach collection="list" item="userProfit" separator=";">
+            update user_profit
+            <set>
+                <if test="userProfit.userId != null">
+                    user_id = #{userProfit.userId,jdbcType=BIGINT},
+                </if>
+                <if test="userProfit.staticProfit != null">
+                    static_profit = #{userProfit.staticProfit,jdbcType=DECIMAL},
+                </if>
+                <if test="userProfit.dynamicProfit != null">
+                    dynamic_profit = #{userProfit.dynamicProfit,jdbcType=DECIMAL},
+                </if>
+                <if test="userProfit.clubProfit != null">
+                    club_profit = #{userProfit.clubProfit,jdbcType=DECIMAL},
+                </if>
+                <if test="userProfit.totalProfit != null">
+                    total_profit = #{userProfit.totalProfit,jdbcType=DECIMAL},
+                </if>
+                <if test="userProfit.date != null">
+                    date = #{userProfit.date,jdbcType=DATE},
+                </if>
+                <if test="userProfit.createTime != null">
+                    create_time = #{userProfit.createTime,jdbcType=TIMESTAMP},
+                </if>
+            </set>
+            where user_id = #{userProfit.userId,jdbcType=BIGINT}
+        </foreach>
     </update>
 
 </mapper>

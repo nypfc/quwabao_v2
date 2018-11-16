@@ -12,7 +12,7 @@
 
         <!--数据库链接地址账号密码-->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://127.0.0.1:3306/pfc_v2?characterEncoding=utf-8&amp;useSSL=false"
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/pfc?characterEncoding=utf-8&amp;useSSL=false"
                         userId="root"
                         password="root">
         </jdbcConnection>
@@ -43,7 +43,7 @@
         </javaClientGenerator>
 
         <!--生成对应表及类名-->
-        <table tableName="sys_sms" domainObjectName="SysSms" enableCountByExample="false" enableUpdateByExample="false"
+        <table tableName="sys_config" domainObjectName="SysConfig" enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
     </context>
 </generatorConfiguration>
