@@ -35,9 +35,6 @@ import static com.gedoumi.quwabao.common.constants.Constants.DATE_FORMAT;
 public class RunScheduleTask {
 
     @Resource
-    private UserService userService;
-
-    @Resource
     private UserAssetService userAssetService;
 
     @Resource
@@ -208,11 +205,11 @@ public class RunScheduleTask {
             updateUserProfits.add(createUserProfit(userId, null, dynamicProfit, null, null));
         });
         // 批量更新用户资产
-//        userAssetService.updateBatch(updateUserAssets);
-//        // 批量添加用户收益
-//        userProfitService.updateBatch(updateUserProfits);
-//        // 批量添加用户资产详情
-//        userAssetDetailService.insertBatch(updateUserAssetDetails);
+        userAssetService.updateBatch(updateUserAssets);
+        // 批量添加用户收益
+        userProfitService.updateBatch(updateUserProfits);
+        // 批量添加用户资产详情
+        userAssetDetailService.insertBatch(updateUserAssetDetails);
     }
 
     /**

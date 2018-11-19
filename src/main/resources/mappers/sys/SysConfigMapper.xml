@@ -9,7 +9,7 @@
         id, app_version, download_url, static_profit, dynamic_profit
     </sql>
 
-    <select id="selectById" parameterType="java.lang.Long" resultType="SysConfig">
+    <select id="selectById" resultType="SysConfig">
         select
         <include refid="Base_Column_List"/>
         from sys_config
