@@ -43,7 +43,7 @@
         </javaClientGenerator>
 
         <!--生成对应表及类名-->
-        <table tableName="sys_config" domainObjectName="SysConfig" enableCountByExample="false" enableUpdateByExample="false"
+        <table tableName="user_team_rent" domainObjectName="UserTeamRent" enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
     </context>
 </generatorConfiguration>

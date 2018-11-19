@@ -62,6 +62,14 @@ public interface UserMapper {
     Long selectIdByInviteCode(String inviteCode);
 
     /**
+     * 查询所有团队长的用户ID
+     *
+     * @param userType 用户类型
+     * @return 用户ID集合
+     */
+    List<Long> selectTeamLeaderIds(Integer userType);
+
+    /**
      * 创建用户
      *
      * @param user 用户对象

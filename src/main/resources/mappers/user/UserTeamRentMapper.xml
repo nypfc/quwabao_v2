@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gedoumi.quwabao.user.mapper.UserTeamRentMapper">
+
+    <sql id="Base_Column_List">
+        id, create_time, create_date, team_total_rent, user_id
+    </sql>
+
+    <insert id="insert" parameterType="UserTeamRent">
+        insert into user_team_rent
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="teamTotalRent != null">
+                team_total_rent,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="teamTotalRent != null">
+                #{teamTotalRent,jdbcType=DECIMAL},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

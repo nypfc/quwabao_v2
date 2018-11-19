@@ -106,7 +106,7 @@
             <trim prefix="values (" suffix=")" suffixOverrides=",">
                 #{userProfit.userId,jdbcType=BIGINT},
                 #{userProfit.staticProfit,jdbcType=DECIMAL},
-                #{userProfit.staticProfit,jdbcType=DECIMAL},  # 添加收益时静态收益 = 总收益
+                #{userProfit.totalProfit,jdbcType=DECIMAL},
                 #{userProfit.date,jdbcType=DATE},
                 #{userProfit.createTime,jdbcType=TIMESTAMP},
             </trim>
@@ -154,7 +154,7 @@
                 <if test="userProfit.clubProfit != null">
                     club_profit = #{userProfit.clubProfit,jdbcType=DECIMAL},
                 </if>
-                total_profit = static_profit + dynamic_profit + club_profit,
+                total_profit = #{userProfit.totalProfit,jdbcType=DECIMAL},
             </set>
             where user_id = #{userProfit.userId,jdbcType=BIGINT}
         </foreach>

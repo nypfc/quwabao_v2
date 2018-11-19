@@ -49,6 +49,12 @@
         where invite_code = #{param1}
     </select>
 
+    <select id="selectTeamLeaderIds" resultType="java.lang.Long">
+        select id
+        from `user`
+        where user_type = #{param1}
+    </select>
+
     <insert id="insert" parameterType="User">
         insert into user
         <trim prefix="(" suffix=")" suffixOverrides=",">
