@@ -23,6 +23,20 @@
         where date = #{param1}
     </select>
 
+    <select id="selectByuserIdAndDate" resultType="UserProfitDTO">
+        select up.user_id,
+               up.static_profit,
+               up.dynamic_profit,
+               up.club_profit,
+               up.total_profit,
+               sum(ur.rent_asset) as total_rent_asset
+        from user_profit up
+                 left join user_rent ur on ur.user_id = up.user_id
+        where up.user_id = #{param1}
+          and up.date = #{param2}
+          and ur.rent_status = #{param3};
+    </select>
+
     <insert id="insert" parameterType="UserProfit">
         insert into user_profit
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -83,56 +97,18 @@
         <foreach collection="list" item="userProfit" separator=";">
             insert into user_profit
             <trim prefix="(" suffix=")" suffixOverrides=",">
-                <if test="userProfit.id != null">
-                    id,
-                </if>
-                <if test="userProfit.userId != null">
-                    user_id,
-                </if>
-                <if test="userProfit.staticProfit != null">
-                    static_profit,
-                </if>
-                <if test="userProfit.dynamicProfit != null">
-                    dynamic_profit,
-                </if>
-                <if test="userProfit.clubProfit != null">
-                    club_profit,
-                </if>
-                <if test="userProfit.totalProfit != null">
-                    total_profit,
-                </if>
-                <if test="userProfit.date != null">
-                    date,
-                </if>
-                <if test="userProfit.createTime != null">
-                    create_time,
-                </if>
+                user_id,
+                static_profit,
+                total_profit,
+                date,
+                create_time,
             </trim>
             <trim prefix="values (" suffix=")" suffixOverrides=",">
-                <if test="userProfit.id != null">
-                    #{userProfit.id,jdbcType=BIGINT},
-                </if>
-                <if test="userProfit.userId != null">
-                    #{userProfit.userId,jdbcType=BIGINT},
-                </if>
-                <if test="userProfit.staticProfit != null">
-                    #{userProfit.staticProfit,jdbcType=DECIMAL},
-                </if>
-                <if test="userProfit.dynamicProfit != null">
-                    #{userProfit.dynamicProfit,jdbcType=DECIMAL},
-                </if>
-                <if test="userProfit.clubProfit != null">
-                    #{userProfit.clubProfit,jdbcType=DECIMAL},
-                </if>
-                <if test="userProfit.totalProfit != null">
-                    #{userProfit.totalProfit,jdbcType=DECIMAL},
-                </if>
-                <if test="userProfit.date != null">
-                    #{userProfit.date,jdbcType=DATE},
-                </if>
-                <if test="userProfit.createTime != null">
-                    #{userProfit.createTime,jdbcType=TIMESTAMP},
-                </if>
+                #{userProfit.userId,jdbcType=BIGINT},
+                #{userProfit.staticProfit,jdbcType=DECIMAL},
+                #{userProfit.staticProfit,jdbcType=DECIMAL},  # 添加收益时静态收益 = 总收益
+                #{userProfit.date,jdbcType=DATE},
+                #{userProfit.createTime,jdbcType=TIMESTAMP},
             </trim>
         </foreach>
     </insert>
@@ -165,13 +141,10 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateBatch" parameterType="list">
+    <update id="updateBatchByUserId" parameterType="list">
         <foreach collection="list" item="userProfit" separator=";">
             update user_profit
             <set>
-                <if test="userProfit.userId != null">
-                    user_id = #{userProfit.userId,jdbcType=BIGINT},
-                </if>
                 <if test="userProfit.staticProfit != null">
                     static_profit = #{userProfit.staticProfit,jdbcType=DECIMAL},
                 </if>
@@ -181,15 +154,7 @@
                 <if test="userProfit.clubProfit != null">
                     club_profit = #{userProfit.clubProfit,jdbcType=DECIMAL},
                 </if>
-                <if test="userProfit.totalProfit != null">
-                    total_profit = #{userProfit.totalProfit,jdbcType=DECIMAL},
-                </if>
-                <if test="userProfit.date != null">
-                    date = #{userProfit.date,jdbcType=DATE},
-                </if>
-                <if test="userProfit.createTime != null">
-                    create_time = #{userProfit.createTime,jdbcType=TIMESTAMP},
-                </if>
+                total_profit = static_profit + dynamic_profit + club_profit,
             </set>
             where user_id = #{userProfit.userId,jdbcType=BIGINT}
         </foreach>

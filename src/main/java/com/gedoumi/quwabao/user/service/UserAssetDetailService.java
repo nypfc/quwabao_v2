@@ -10,6 +10,7 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -89,6 +90,7 @@ public class UserAssetDetailService {
      *
      * @param details 用户资产详情集合
      */
+    @Transactional(rollbackFor = Exception.class)
     public void insertBatch(List<UserAssetDetail> details) {
         userAssetDetailMapper.insertBatch(details);
     }

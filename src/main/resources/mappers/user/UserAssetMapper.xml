@@ -85,65 +85,30 @@
         </trim>
     </insert>
 
-    <update id="updateByUserId" parameterType="UserAsset">
+    <update id="updateByUserId">
         update user_asset
         <set>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
+            <if test="param4 == true">
+                profit = profit + #{param2},
+                remain_asset = remain_asset + #{param2},
             </if>
-            <if test="frozenAsset != null">
-                frozen_asset = #{frozenAsset,jdbcType=DECIMAL},
+            <if test="param4 == false">
+                remain_asset = remain_asset + #{param2},
             </if>
-            <if test="profit != null">
-                profit = #{profit,jdbcType=DECIMAL},
-            </if>
-            <if test="remainAsset != null">
-                remain_asset = #{remainAsset,jdbcType=DECIMAL},
-            </if>
-            <if test="totalAsset != null">
-                total_asset = #{totalAsset,jdbcType=DECIMAL},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="initFrozenAsset != null">
-                init_frozen_asset = #{initFrozenAsset,jdbcType=DECIMAL},
-            </if>
-            <if test="initBaseAsset != null">
-                init_base_asset = #{initBaseAsset,jdbcType=DECIMAL},
-            </if>
+            total_asset = remain_asset + frozen_asset,
+            update_time = #{param3}
         </set>
-        where user_id = #{userId,jdbcType=BIGINT}
+        where user_id = #{param1}
     </update>
 
-    <update id="updateBatch" parameterType="list">
+    <update id="updateBatchByUserId" parameterType="list">
         <foreach collection="list" item="userAsset" separator=";">
             update user_asset
             <set>
-                <if test="userAsset.createTime != null">
-                    create_time = #{userAsset.createTime,jdbcType=TIMESTAMP},
-                </if>
-                <if test="userAsset.frozenAsset != null">
-                    frozen_asset = #{userAsset.frozenAsset,jdbcType=DECIMAL},
-                </if>
-                <if test="userAsset.profit != null">
-                    profit = #{userAsset.profit,jdbcType=DECIMAL},
-                </if>
-                <if test="userAsset.remainAsset != null">
-                    remain_asset = #{userAsset.remainAsset,jdbcType=DECIMAL},
-                </if>
-                <if test="userAsset.totalAsset != null">
-                    total_asset = #{userAsset.totalAsset,jdbcType=DECIMAL},
-                </if>
-                <if test="userAsset.updateTime != null">
-                    update_time = #{userAsset.updateTime,jdbcType=TIMESTAMP},
-                </if>
-                <if test="userAsset.initFrozenAsset != null">
-                    init_frozen_asset = #{userAsset.initFrozenAsset,jdbcType=DECIMAL},
-                </if>
-                <if test="userAsset.initBaseAsset != null">
-                    init_base_asset = #{userAsset.initBaseAsset,jdbcType=DECIMAL},
-                </if>
+                profit = profit + #{userAsset.profit,jdbcType=DECIMAL},
+                remain_asset = remain_asset + #{userAsset.profit,jdbcType=DECIMAL},
+                total_asset = remain_asset + frozen_asset,
+                update_time = #{userAsset.updateTime,jdbcType=TIMESTAMP}
             </set>
             where user_id = #{userAsset.userId,jdbcType=BIGINT}
         </foreach>

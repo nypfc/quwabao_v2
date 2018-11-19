@@ -19,10 +19,12 @@ public class RunScheduleTaskTest extends QuwabaoApplicationTests {
 
     @Test
     public void rewardTask() {
+        runScheduleTask.rewardTask();
     }
 
     @Test
     public void clubRewardTask() {
+        runScheduleTask.clubRewardTask();
     }
 
 }

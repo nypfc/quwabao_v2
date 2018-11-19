@@ -31,6 +31,16 @@ public interface UserProfitMapper {
     List<UserProfit> selectByDate(String date);
 
     /**
+     * 查询当日指定用户的收益
+     *
+     * @param userId     用户ID
+     * @param date       日期
+     * @param rentStatus 矿机状态
+     * @return 用户收益DTO对象
+     */
+    UserProfitDTO selectByuserIdAndDate(Long userId, String date, Integer rentStatus);
+
+    /**
      * 创建用户收益
      *
      * @param userProfit 用户收益对象
@@ -55,11 +65,11 @@ public interface UserProfitMapper {
     Integer updateById(UserProfit userProfit);
 
     /**
-     * 批量更新用户收益
+     * 根据用户ID批量更新用户收益
      *
      * @param userProfits 用户收益集合
      * @return 数据库受影响行数
      */
-    Integer updateBatch(List<UserProfit> userProfits);
+    Integer updateBatchByUserId(List<UserProfit> userProfits);
 
 }

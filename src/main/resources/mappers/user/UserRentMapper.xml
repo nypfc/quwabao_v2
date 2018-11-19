@@ -26,7 +26,14 @@
         group by user_id
     </select>
 
-    <select id="selectTotalRentAsset" resultType="java.math.BigDecimal">
+    <select id="selectTotalRentById" resultType="java.math.BigDecimal">
+        select sum(rent_asset)
+        from user_rent
+        where rent_status = #{param2}
+          and user_id = #{param1}
+    </select>
+
+    <select id="selectTotalRentByIds" resultType="java.math.BigDecimal">
         select sum(rent_asset)
         from user_rent
         where user_id in

@@ -2,7 +2,7 @@
 spring:
   datasource:
     druid:  # druid连接池配置
-      url: jdbc:mysql://127.0.0.1:3306/pfc?characterEncoding=utf-8&useSSL=false&allowMultiQueries=true  # 数据库URL
+      url: jdbc:mysql://127.0.0.1:3306/pfc?characterEncoding=utf-8&useSSL=false&allowMultiQueries=true&rewriteBatchedStatements=true  # 数据库URL
       username: root  # 数据库用户名
       password: root  # 数据库密码
       driverClassName: com.mysql.jdbc.Driver  # 数据库驱动类
@@ -23,7 +23,7 @@ spring:
         max-wait: 1000
         max-active: 20
 
-logging:  # 测试环境DEBUG日志
-  level:
-    com.gedoumi.quwabao.user.mapper: debug
-    com.gedoumi.quwabao.sys.mapper: debug
+#logging:  # 测试环境DEBUG日志
+#  level:
+#    com.gedoumi.quwabao.user.mapper: debug
+#    com.gedoumi.quwabao.sys.mapper: debug

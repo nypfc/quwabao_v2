@@ -35,12 +35,22 @@ public interface UserRentMapper {
     List<UserRentNumberDTO> countUserRentsByIds(List<Long> userIds, Integer userRentStatus);
 
     /**
-     * 查询指定用户的租用矿机价格的总和
+     * 查询用户租用矿机价格的总和
      *
-     * @param userIds 用户ID集合
+     * @param userId     用户ID
+     * @param rentStatus 矿机状态
      * @return 矿机价格总和
      */
-    BigDecimal selectTotalRentAsset(List<Long> userIds);
+    BigDecimal selectTotalRentById(Long userId, Integer rentStatus);
+
+    /**
+     * 查询指定用户的租用矿机价格的总和
+     *
+     * @param userIds    用户ID集合
+     * @param rentStatus 矿机状态
+     * @return 矿机价格总和
+     */
+    BigDecimal selectTotalRentByIds(List<Long> userIds, Integer rentStatus);
 
     /**
      * 查询所有激活的矿机

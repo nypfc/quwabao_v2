@@ -4,8 +4,13 @@ import com.gedoumi.quwabao.common.enums.RentStatusEnum;
 import com.gedoumi.quwabao.common.enums.TransTypeEnum;
 import com.gedoumi.quwabao.sys.dataobj.model.SysConfig;
 import com.gedoumi.quwabao.sys.service.SysConfigService;
+import com.gedoumi.quwabao.user.dataobj.dto.UserAssetDTO;
+import com.gedoumi.quwabao.user.dataobj.dto.UserProfitDTO;
 import com.gedoumi.quwabao.user.dataobj.dto.UserRentDTO;
-import com.gedoumi.quwabao.user.dataobj.model.*;
+import com.gedoumi.quwabao.user.dataobj.model.UserAssetDetail;
+import com.gedoumi.quwabao.user.dataobj.model.UserProfit;
+import com.gedoumi.quwabao.user.dataobj.model.UserRent;
+import com.gedoumi.quwabao.user.dataobj.model.UserTree;
 import com.gedoumi.quwabao.user.service.*;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -16,11 +21,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import static com.gedoumi.quwabao.common.constants.Constants.DATE_FORMAT;
 
@@ -32,6 +33,9 @@ import static com.gedoumi.quwabao.common.constants.Constants.DATE_FORMAT;
 @Slf4j
 @Service
 public class RunScheduleTask {
+
+    @Resource
+    private UserService userService;
 
     @Resource
     private UserAssetService userAssetService;
@@ -67,10 +71,10 @@ public class RunScheduleTask {
         Date now = new Date();
         // 批量更新的集合
         ArrayList<UserRent> updateUserRents = Lists.newArrayList();
-        ArrayList<UserAssetDetail> updateUserAssetDetails = Lists.newArrayList();
+        ArrayList<UserAssetDetail> insertUserAssetDetails = Lists.newArrayList();
         HashMap<Long, BigDecimal> map = Maps.newHashMap();
-        ArrayList<UserAsset> updateUserAssets = Lists.newArrayList();
-        ArrayList<UserProfit> updateUserProfits = Lists.newArrayList();
+        ArrayList<UserAssetDTO> updateUserAssets = Lists.newArrayList();
+        ArrayList<UserProfit> insertUserProfits = Lists.newArrayList();
         // 遍历用户矿机集合
         rentDTOS.forEach(rentDTO -> {
             BigDecimal rentAsset = rentDTO.getRentAsset();  // 矿机价格
@@ -105,31 +109,24 @@ public class RunScheduleTask {
                 BigDecimal profit = totalAsset.subtract(rentAsset).divide(totalDay, 5, BigDecimal.ROUND_DOWN);  // 计算带本金的收益
                 UserAssetDetail detail = createUserAssetDetail(rentDTO.getUserId(), profitDay, rentDTO.getId(),
                         profit, profitDay, TransTypeEnum.Profit.getValue(), null, now);
-                updateUserAssetDetails.add(detail);
+                insertUserAssetDetails.add(detail);
             }
         });
         // 遍历用户总收益
         map.forEach((userId, totalProfit) -> {
             // 向用户资产集合中增加数据
-            UserAsset userAsset = createUserAsset(userId, totalProfit, now);
-            updateUserAssets.add(userAsset);
+            updateUserAssets.add(createUserAsset(userId, totalProfit, now));
             // 向用户收益集合中增加数据
-            UserProfit userProfit = new UserProfit();
-            userProfit.setUserId(userId);
-            userProfit.setStaticProfit(totalProfit);
-            userProfit.setTotalProfit(totalProfit);
-            userProfit.setCreateTime(now);
-            userProfit.setDate(now);
-            updateUserProfits.add(userProfit);
+            insertUserProfits.add(createUserProfit(userId, totalProfit, null, null, now));
         });
         // 批量更新矿机
         userRentService.updateBatch(updateUserRents);
         // 批量更新用户资产
         userAssetService.updateBatch(updateUserAssets);
         // 批量添加用户收益
-        userProfitService.insertBatch(updateUserProfits);
+        userProfitService.insertBatch(insertUserProfits);
         // 批量添加用户资产详情
-        userAssetDetailService.insertBatch(updateUserAssetDetails);
+        userAssetDetailService.insertBatch(insertUserAssetDetails);
     }
 
     /**
@@ -139,13 +136,17 @@ public class RunScheduleTask {
     public void rewardTask() {
         // 当前日期
         Date now = new Date();
-        // 用户资产详情集合
-        ArrayList<UserAssetDetail> assetDetails = Lists.newArrayList();
+        // 批量更新的集合
+        ArrayList<UserAssetDetail> updateUserAssetDetails = Lists.newArrayList();
+        HashMap<Long, BigDecimal> map = Maps.newHashMap();
+        ArrayList<UserAssetDTO> updateUserAssets = Lists.newArrayList();
+        ArrayList<UserProfit> updateUserProfits = Lists.newArrayList();
         // 获取系统配置
         SysConfig sysConfig = sysConfigService.getSysConfig();
         // 遍历用户
-        List<UserProfit> userProfits = userProfitService.getCurrentDayUserProfit(DATE_FORMAT.format(now));
+        List<UserProfit> userProfits = userProfitService.getCurrentDayUserProfits(DATE_FORMAT.format(now));
         userProfits.forEach(up -> {
+            StringBuilder sb = new StringBuilder();
             // 当前用户ID
             Long userId = up.getUserId();
             // 获取当前用户的整个链条
@@ -172,64 +173,46 @@ public class RunScheduleTask {
                     // 动态收益 = 当前用户静态收益 * 0.2（0.2位可变值）* 0.5 (i - 1)次方（0.5为可变值）
                     BigDecimal count = sysConfig.getDynamicProfit().pow(i - 1).setScale(5, BigDecimal.ROUND_DOWN);
                     BigDecimal dynamicReward = staticReward.multiply(count).setScale(5, BigDecimal.ROUND_DOWN);
-
-                    // 获取当前级别用户的当天静态收益，未获取到说明当天没有矿机收益，不给予奖励
-                    UserProfit userProfit = userProfits.stream().filter(up_ -> up_.getUserId().equals(parentId)).collect(Collectors.toList()).get(0);
-                    if (userProfit != null) {
-//                        // 获取收益数据
-//                        BigDecimal staticProfit = userProfit.getStaticProfit() == null ? BigDecimal.ZERO : userProfit.getStaticProfit();
-//                        BigDecimal dynamicProfit = userProfit.getDynamicProfit() == null ? BigDecimal.ZERO : userProfit.getDynamicProfit();
-//                        BigDecimal clubProfit = userProfit.getClubProfit() == null ? BigDecimal.ZERO : userProfit.getClubProfit();
-//                        BigDecimal totalProfit = staticProfit.add(dynamicProfit).add(clubProfit);
-//                        // 获取用户激活的矿机的总价格
-//                        BigDecimal totalRentMoney = userRentDao.totalUserRentMoney(userProfit.getUserId(), RentStatusEnum.ACTIVE.getValue()).orElse(BigDecimal.ZERO);
-//                        // 如果总收益超过矿机价格，说明已经达到当日收益上限，不累加动态收益
-//                        if (totalRentMoney.compareTo(totalProfit) > 0) {
-//                            // 收益累加
-//                            BigDecimal newTotalProfit = totalProfit.add(dynamicReward);
-//                            BigDecimal newDynamicProfit = dynamicProfit.add(dynamicReward);
-//                            if (newTotalProfit.compareTo(totalRentMoney) >= 0) {
-//                                // 如果超过收益则将动态收益置为：矿机总价格 - 静态 - 俱乐部
-//                                // 将总收益置为矿机总价格
-//                                userProfit.setUserId(parentId);
-//                                userProfit.setDynamicProfit(totalRentMoney.subtract(clubProfit).subtract(staticProfit).setScale(5, BigDecimal.ROUND_DOWN));
-//                                userProfit.setTotalProfit(totalRentMoney);
-//                                userProfitDao.save(userProfit);
-//                                // 用户总收益累加，只累加超过的部分
-//                                UserAsset userAsset = assetDao.findByUser(userProfit.getUser());
-//                                BigDecimal addProfit = totalRentMoney.subtract(userAsset.getProfit()).setScale(5, BigDecimal.ROUND_DOWN);
-//                                userAsset.setProfit(userAsset.getProfit().add(addProfit));
-//                                userAsset.setRemainAsset(userAsset.getRemainAsset().add(addProfit));
-//                                userAsset.setTotalAsset(userAsset.getRemainAsset().add(userAsset.getFrozenAsset()));  // 余额 + frozenAsset = totalAsset
-//                                assetDao.save(userAsset);
-//                            } else {
-//                                // 未超过总收益直接计算
-//                                userProfit.setUserId(parentId);
-//                                userProfit.setDynamicProfit(newDynamicProfit);
-//                                userProfit.setTotalProfit(newDynamicProfit.add(staticProfit).add(clubProfit));
-//                                userProfitDao.save(userProfit);
-//                                // 用户总收益累加
-//                                UserAsset userAsset = assetDao.findByUser(userProfit.getUser());
-//                                userAsset.setProfit(userAsset.getProfit().add(dynamicReward));
-//                                userAsset.setRemainAsset(userAsset.getRemainAsset().add(dynamicReward));
-//                                userAsset.setTotalAsset(userAsset.getRemainAsset().add(userAsset.getFrozenAsset()));  // 余额 + frozenAsset = totalAsset
-//                                assetDao.save(userAsset);
-//                            }
-//                        }
-//                        // 资产详情按正常收益储存，用于数据记录
-//                        // 如果为0，不添加数据
-//                        // 向添加用户资产详情集合中增加数据
-//                        if (dynamicReward.compareTo(BigDecimal.ZERO) != 0) {
-//                            UserAssetDetail userAssetDetail = createUserAssetDetail(parentId, dynamicReward, null, BigDecimal.ZERO, BigDecimal.ZERO,
-//                                    TransTypeEnum.Reward.getValue(), userId, now);
-//                            assetDetails.add(userAssetDetail);
-//                        }
+                    sb.append(parentId).append(":").append(dynamicReward).append(" -> ");
+                    // 累加用户的动态收益
+                    map.put(parentId, map.getOrDefault(parentId, BigDecimal.ZERO).add(dynamicReward));
+                    // 资产详情按正常收益储存，用于数据记录
+                    // 如果为收益0，不添加数据
+                    if (dynamicReward.compareTo(BigDecimal.ZERO) != 0) {
+                        UserAssetDetail userAssetDetail = createUserAssetDetail(parentId, dynamicReward, null, BigDecimal.ZERO, BigDecimal.ZERO,
+                                TransTypeEnum.Reward.getValue(), userId, now);
+                        updateUserAssetDetails.add(userAssetDetail);
                     }
+                } else {
+                    sb.append(list.get(i)).append(":").append("0.00000").append(" -> ");
                 }
             }
+            log.info(sb.toString());
         });
-        // 批量添加资产详情数据
-        userAssetDetailService.insertBatch(assetDetails);
+        // 遍历总收益集合
+        map.forEach((userId, totalProfit) -> {
+            UserProfitDTO dto = Optional.ofNullable(userProfitService.getCurrentDayUserProfit(userId, DATE_FORMAT.format(now)))
+                    .orElse(new UserProfitDTO());
+            // 获取收益数据
+            BigDecimal staticProfit = dto.getStaticProfit() == null ? BigDecimal.ZERO : dto.getStaticProfit();
+            BigDecimal totalRentAsset = dto.getTotalRentAsset() == null ? BigDecimal.ZERO : dto.getTotalRentAsset();
+            // 计算新的静态收益
+            BigDecimal dynamicProfit = totalProfit;
+            BigDecimal total = staticProfit.add(dynamicProfit);
+            // 如果总收益大于已激活的矿机价格，则将动态收益多余的部分减去
+            if (total.compareTo(totalRentAsset) > 0)
+                dynamicProfit = total.subtract(totalRentAsset).setScale(5, BigDecimal.ROUND_DOWN);
+            // 向用户资产集合中增加数据
+            updateUserAssets.add(createUserAsset(userId, dynamicProfit, now));
+            // 向用户收益集合中增加数据
+            updateUserProfits.add(createUserProfit(userId, null, dynamicProfit, null, null));
+        });
+        // 批量更新用户资产
+//        userAssetService.updateBatch(updateUserAssets);
+//        // 批量添加用户收益
+//        userProfitService.updateBatch(updateUserProfits);
+//        // 批量添加用户资产详情
+//        userAssetDetailService.insertBatch(updateUserAssetDetails);
     }
 
     /**
@@ -424,20 +407,43 @@ public class RunScheduleTask {
 //    }
 
     /**
-     * 创建用户资产
+     * 创建用户资产DTO
+     * 用于更新用户资产
      *
      * @param userId      用户ID
      * @param totalProfit 总收益
      * @param date        日期
-     * @return 用户资产对象
+     * @return 用户资产DTO
      */
-    private UserAsset createUserAsset(Long userId, BigDecimal totalProfit, Date date) {
-        UserAsset userAsset = userAssetService.getUserAsset(userId);
-        userAsset.setProfit(userAsset.getProfit().add(totalProfit));
-        userAsset.setRemainAsset(userAsset.getRemainAsset().add(totalProfit));
-        userAsset.setTotalAsset(userAsset.getRemainAsset().add(userAsset.getFrozenAsset()));  // 余额 + frozenAsset = totalAsset
+    private UserAssetDTO createUserAsset(Long userId, BigDecimal totalProfit, Date date) {
+        UserAssetDTO userAsset = new UserAssetDTO();
+        userAsset.setUserId(userId);  // 更新条件为用户ID
+        userAsset.setProfit(totalProfit);
         userAsset.setUpdateTime(date);
         return userAsset;
+    }
+
+    /**
+     * 创建用户收益
+     *
+     * @param userId        用户ID
+     * @param staticProfit  静态收益
+     * @param dynamicProfit 动态收益
+     * @param clubProfit    俱乐部收益
+     * @param date          日期
+     * @return 用户收益对象
+     */
+    private UserProfit createUserProfit(Long userId, BigDecimal staticProfit, BigDecimal dynamicProfit, BigDecimal clubProfit, Date date) {
+        UserProfit userProfit = new UserProfit();
+        userProfit.setUserId(userId);
+        userProfit.setStaticProfit(staticProfit);
+        userProfit.setDynamicProfit(dynamicProfit);
+        userProfit.setClubProfit(clubProfit);
+        if (date != null) {
+            userProfit.setDate(date);
+            userProfit.setCreateTime(date);
+        }
+        return userProfit;
     }
 
     /**

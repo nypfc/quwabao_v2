@@ -20,8 +20,28 @@ public class UserProfitDTO {
     private Long userId;
 
     /**
-     * 当日静态收益
+     * 静态收益
      */
-    private BigDecimal currentDayStaticProfit;
+    private BigDecimal staticProfit;
+
+    /**
+     * 动态收益
+     */
+    private BigDecimal dynamicProfit;
+
+    /**
+     * 俱乐部收益
+     */
+    private BigDecimal clubProfit;
+
+    /**
+     * 总收益
+     */
+    private BigDecimal totalProfit;
+
+    /**
+     * 当日已激活的总矿机价格
+     */
+    private BigDecimal totalRentAsset;
 
 }

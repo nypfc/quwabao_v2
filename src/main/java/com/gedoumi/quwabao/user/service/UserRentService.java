@@ -71,11 +71,15 @@ public class UserRentService {
     /**
      * 获取指定用户已租用的矿机价格的总和
      *
-     * @param userIds 用户ID集合
+     * @param userIds    用户ID集合
+     * @param rentStatus 矿机状态
      * @return 矿机价格总和
      */
-    public BigDecimal getTotalRentAsset(List<Long> userIds) {
-        return userRentMapper.selectTotalRentAsset(userIds);
+    public BigDecimal getTotalRent(List<Long> userIds, Integer rentStatus) {
+        if (userIds.size() == 1)
+            return userRentMapper.selectTotalRentById(userIds.get(0), rentStatus);
+        else
+            return userRentMapper.selectTotalRentByIds(userIds, rentStatus);
     }
 
     /**
@@ -131,7 +135,7 @@ public class UserRentService {
         userRent.setRentStatus(UserRentStatusEnum.ACTIVE.getValue());
         userRentMapper.insert(userRent);
         // 更新用户资产（注意将rentMoney转为负数）
-        userAssetService.updateUserAsset(userId, rentMoney.negate(), BigDecimal.ZERO);
+        userAssetService.updateUserAsset(userId, rentMoney.negate(), false);
         // 创建用户资产详情
         userAssetDetailService.insertUserDetailAsset(userId, rentMoney, userRent.getId(),
                 BigDecimal.ZERO, BigDecimal.ZERO, TransTypeEnum.Rent.getValue());

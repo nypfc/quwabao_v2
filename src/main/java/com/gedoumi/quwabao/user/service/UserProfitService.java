@@ -1,13 +1,16 @@
 package com.gedoumi.quwabao.user.service;
 
 import com.gedoumi.quwabao.common.enums.CodeEnum;
+import com.gedoumi.quwabao.common.enums.RentStatusEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
+import com.gedoumi.quwabao.user.dataobj.dto.UserProfitDTO;
 import com.gedoumi.quwabao.user.dataobj.model.UserProfit;
 import com.gedoumi.quwabao.user.mapper.UserProfitMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -50,8 +53,19 @@ public class UserProfitService {
      * @param date 日期
      * @return 用户收益集合
      */
-    public List<UserProfit> getCurrentDayUserProfit(String date) {
+    public List<UserProfit> getCurrentDayUserProfits(String date) {
         return userProfitMapper.selectByDate(date);
+    }
+
+    /**
+     * 获取当日指定用户的收益
+     *
+     * @param userId 用户ID
+     * @param date   日期
+     * @return 用户收益DTO对象
+     */
+    public UserProfitDTO getCurrentDayUserProfit(Long userId, String date) {
+        return userProfitMapper.selectByuserIdAndDate(userId, date, RentStatusEnum.ACTIVE.getValue());
     }
 
     /**
@@ -70,8 +84,9 @@ public class UserProfitService {
      * @param userProfits 用户收益集合
      * @return 数据库受影响行数
      */
+    @Transactional(rollbackFor = Exception.class)
     public void updateBatch(List<UserProfit> userProfits) {
-        userProfitMapper.updateBatch(userProfits);
+        userProfitMapper.updateBatchByUserId(userProfits);
     }
 
 }

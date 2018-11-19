@@ -2,6 +2,7 @@ package com.gedoumi.quwabao.user.service;
 
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
+import com.gedoumi.quwabao.user.dataobj.dto.UserAssetDTO;
 import com.gedoumi.quwabao.user.dataobj.model.UserAsset;
 import com.gedoumi.quwabao.user.mapper.UserAssetMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -82,35 +83,23 @@ public class UserAssetService {
     /**
      * 更新用户资产
      *
-     * @param userId 用户ID
-     * @param money  资产变更量
-     * @param profit 收益量
+     * @param userId   用户ID
+     * @param money    资产变更量
+     * @param isProfit 是否是收益
      */
     @Transactional(rollbackFor = Exception.class)
-    public void updateUserAsset(Long userId, BigDecimal money, BigDecimal profit) {
-        UserAsset userAsset = userAssetMapper.selectByUserId(userId);
-        // 变更量为0直接返回
-        if (money.compareTo(BigDecimal.ZERO) == 0)
-            return;
-        UserAsset update = new UserAsset();
-        update.setUserId(userId);
-        update.setUpdateTime(new Date());
-        // 如果变更量与收益均大于0，设置收益
-        if (profit.compareTo(BigDecimal.ZERO) > 0 && money.compareTo(BigDecimal.ZERO) > 0)
-            update.setProfit(userAsset.getProfit().add(profit));
-        update.setRemainAsset(userAsset.getRemainAsset().add(money));
-        update.setTotalAsset(update.getRemainAsset().add(userAsset.getFrozenAsset()));
-        // 更新
-        userAssetMapper.updateByUserId(update);
+    public void updateUserAsset(Long userId, BigDecimal money, Boolean isProfit) {
+        userAssetMapper.updateByUserId(userId, money, new Date(), isProfit);
     }
 
     /**
      * 批量更新用户资产
      *
-     * @param userAssets 用户资产集合
+     * @param dtos 用户资产DTO集合
      */
-    public void updateBatch(List<UserAsset> userAssets) {
-        userAssetMapper.updateBatch(userAssets);
+    @Transactional(rollbackFor = Exception.class)
+    public void updateBatch(List<UserAssetDTO> dtos) {
+        userAssetMapper.updateBatchByUserId(dtos);
     }
 
 }
