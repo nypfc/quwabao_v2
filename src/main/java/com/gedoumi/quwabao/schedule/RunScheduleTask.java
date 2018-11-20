@@ -2,6 +2,7 @@ package com.gedoumi.quwabao.schedule;
 
 import com.gedoumi.quwabao.common.enums.RentStatusEnum;
 import com.gedoumi.quwabao.common.enums.TransTypeEnum;
+import com.gedoumi.quwabao.schedule.dataobj.dto.TeamLevelDTO;
 import com.gedoumi.quwabao.sys.dataobj.model.SysConfig;
 import com.gedoumi.quwabao.sys.service.SysConfigService;
 import com.gedoumi.quwabao.user.dataobj.dto.UserAssetDTO;
@@ -51,6 +52,9 @@ public class RunScheduleTask {
 
     @Resource
     private UserTreeService userTreeService;
+
+    @Resource
+    private UserTeamRentService userTeamRentService;
 
     @Resource
     private SysConfigService sysConfigService;
@@ -117,7 +121,7 @@ public class RunScheduleTask {
             // 向用户资产集合中增加数据
             updateUserAssets.add(createUserAsset(userId, totalProfit, now));
             // 向用户收益集合中增加数据
-            insertUserProfits.add(createUserProfit(userId, totalProfit, null, null, now));
+            insertUserProfits.add(createUserProfit(userId, totalProfit, null, null, totalProfit, now));
         });
         // 批量更新矿机
         userRentService.updateBatch(updateUserRents);
@@ -190,29 +194,30 @@ public class RunScheduleTask {
             log.info(sb.toString());
         });
         // 遍历总收益集合
-        map.forEach((userId, totalProfit) -> {
+        map.forEach((userId, totalDynamicProfit) -> {
             UserProfitDTO dto = Optional.ofNullable(userProfitService.getCurrentDayUserProfit(userId, DATE_FORMAT.format(now)))
                     .orElse(new UserProfitDTO());
             // 获取收益数据
             BigDecimal staticProfit = dto.getStaticProfit() == null ? BigDecimal.ZERO : dto.getStaticProfit();
             BigDecimal totalRentAsset = dto.getTotalRentAsset() == null ? BigDecimal.ZERO : dto.getTotalRentAsset();
-            // 计算新的静态收益
-            BigDecimal dynamicProfit = totalProfit;
-            BigDecimal total = staticProfit.add(dynamicProfit);
+            // 计算新的总收益
+            BigDecimal totalProfit = staticProfit.add(totalDynamicProfit);
             // 如果总收益大于已激活的矿机价格，则将动态收益多余的部分减去
-            if (total.compareTo(totalRentAsset) > 0)
-                dynamicProfit = total.subtract(totalRentAsset).setScale(5, BigDecimal.ROUND_DOWN);
+            if (totalProfit.compareTo(totalRentAsset) > 0) {
+                totalProfit = totalRentAsset;
+                totalDynamicProfit = totalProfit.subtract(totalRentAsset).setScale(5, BigDecimal.ROUND_DOWN);
+            }
             // 向用户资产集合中增加数据
-            updateUserAssets.add(createUserAsset(userId, dynamicProfit, now));
+            updateUserAssets.add(createUserAsset(userId, totalDynamicProfit, now));
             // 向用户收益集合中增加数据
-            updateUserProfits.add(createUserProfit(userId, null, dynamicProfit, null, null));
+            updateUserProfits.add(createUserProfit(userId, staticProfit, totalDynamicProfit, null, totalProfit, null));
         });
         // 批量更新用户资产
-//        userAssetService.updateBatch(updateUserAssets);
-//        // 批量添加用户收益
-//        userProfitService.updateBatch(updateUserProfits);
-//        // 批量添加用户资产详情
-//        userAssetDetailService.insertBatch(updateUserAssetDetails);
+        userAssetService.updateBatch(updateUserAssets);
+        // 批量添加用户收益
+        userProfitService.updateBatch(updateUserProfits);
+        // 批量添加用户资产详情
+        userAssetDetailService.insertBatch(updateUserAssetDetails);
     }
 
     /**
@@ -220,10 +225,10 @@ public class RunScheduleTask {
      */
     @Transactional(rollbackFor = Exception.class)
     public void clubRewardTask() {
-//        // 当前日期
-//        Date now = new Date();
-//        // 遍历当日收益，递归用户树
-//        userDao.findByUserType(UserType.Level_Team.getValue()).forEach(user -> teamReward(user, now));
+        // 当前日期
+        Date now = new Date();
+        // 遍历当日收益，递归用户树
+        userService.getTeamLeaderIds().forEach(userId -> teamReward(userId, now));
 //        // 获取所有皇家俱乐部的用户
 //        List<Long> userIds = userTeamExtDao.findByTeamLevel(TeamLevel.LEVEL_4.getValue()).stream().map(userTeamExt -> userTeamExt.getUser().getId()).collect(Collectors.toList());
 //        int count = userIds.size();
@@ -245,14 +250,14 @@ public class RunScheduleTask {
 //        }
     }
 
-//    /**
-//     * 递归计算团队收益
-//     *
-//     * @param user 用户
-//     * @param date 日期
-//     * @return DTO
-//     */
-//    private TeamLevelDTO teamReward(User user, Date date) {
+    /**
+     * 递归计算团队收益
+     *
+     * @param userId 用户ID
+     * @param date   日期
+     * @return 用户团队等级DTO
+     */
+    private TeamLevelDTO teamReward(Long userId, Date date) {
 //        List<User> childUsers = userTreeDao.findByParent(user).stream().map(UserTree::getChild).collect(Collectors.toList());
 //        // 传递团队信息的集合
 //        List<TeamLevelDTO> dtos = Lists.newArrayList();
@@ -282,6 +287,10 @@ public class RunScheduleTask {
 //            teamLevelDTO.setTotalStaticProfit(userProfitDao.findStaticProfit(this.sdf.format(date), user.getId()).orElse(BigDecimal.ZERO));
 //            // 查询用户总矿机价格
 //            teamLevelDTO.setTotalRentAsset(userRentDao.findTotalRentAsset(user.getId()).orElse(BigDecimal.ZERO));
+//            // 记录每日用户团队收益
+//            UserTeamRent teamRent = new UserTeamRent();
+//            teamRent.setUser(user);
+//            userTeamRentService.insert(teamRent);
 //            // 日志记录
 //            log.info("userMobile:{}; bottom user", user.getMobilePhone());
 //            return teamLevelDTO;
@@ -296,6 +305,10 @@ public class RunScheduleTask {
 //                // 累加团队业绩
 //                totalRentAsset = totalRentAsset.add(dto.getTotalRentAsset());
 //            }
+//            // 记录每日用户团队收益
+//            UserTeamRent teamRent = new UserTeamRent();
+//            teamRent.setUser(user);
+//            userTeamRentService.insert(teamRent);
 //            // 查询用户的团队信息，没有则创建一个
 //            UserTeamExt userTeamExt = userTeamExtDao.findByUserId(user.getId()).orElseGet(UserTeamExt::new);
 //            userTeamExt.setUser(user);
@@ -404,7 +417,8 @@ public class RunScheduleTask {
 //            teamLevelDTO.setTotalRentAsset(totalRentAsset.add(rentAsset_));
 //            return teamLevelDTO;
 //        }
-//    }
+        return null;
+    }
 
     /**
      * 创建用户资产DTO
@@ -430,15 +444,17 @@ public class RunScheduleTask {
      * @param staticProfit  静态收益
      * @param dynamicProfit 动态收益
      * @param clubProfit    俱乐部收益
+     * @param totalProfit   总收益
      * @param date          日期
      * @return 用户收益对象
      */
-    private UserProfit createUserProfit(Long userId, BigDecimal staticProfit, BigDecimal dynamicProfit, BigDecimal clubProfit, Date date) {
+    private UserProfit createUserProfit(Long userId, BigDecimal staticProfit, BigDecimal dynamicProfit, BigDecimal clubProfit, BigDecimal totalProfit, Date date) {
         UserProfit userProfit = new UserProfit();
         userProfit.setUserId(userId);
         userProfit.setStaticProfit(staticProfit);
         userProfit.setDynamicProfit(dynamicProfit);
         userProfit.setClubProfit(clubProfit);
+        userProfit.setTotalProfit(totalProfit);
         if (date != null) {
             userProfit.setDate(date);
             userProfit.setCreateTime(date);

@@ -20,7 +20,7 @@ public class SysConfig {
     private Long id;
 
     /**
-     * APP版本
+     * 版本号
      */
     private String appVersion;
 

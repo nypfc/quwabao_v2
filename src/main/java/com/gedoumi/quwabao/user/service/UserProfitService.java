@@ -72,7 +72,6 @@ public class UserProfitService {
      * 批量添加用户收益
      *
      * @param userProfits 用户收益集合
-     * @return 数据库受影响行数
      */
     public void insertBatch(List<UserProfit> userProfits) {
         userProfitMapper.insertBatch(userProfits);
@@ -82,7 +81,6 @@ public class UserProfitService {
      * 批量更新用户收益
      *
      * @param userProfits 用户收益集合
-     * @return 数据库受影响行数
      */
     @Transactional(rollbackFor = Exception.class)
     public void updateBatch(List<UserProfit> userProfits) {

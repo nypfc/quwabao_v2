@@ -187,6 +187,15 @@ public class UserService {
     }
 
     /**
+     * 获取所有团队长ID
+     *
+     * @return 团队长用户ID集合
+     */
+    public List<Long> getTeamLeaderIds() {
+        return userMapper.selectTeamLeaderIds(UserTypeEnum.LEADER.getValue());
+    }
+
+    /**
      * 注册用户
      *
      * @param registerForm 注册表单
