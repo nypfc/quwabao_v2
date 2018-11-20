@@ -23,6 +23,14 @@ public interface UserTreeMapper {
     List<User> selectByParentId(Long parentId);
 
     /**
+     * 根据上级用户ID查询下级用户ID列表
+     *
+     * @param parentId 上级用户ID
+     * @return 用户ID集合
+     */
+    List<Long> selectIdsByParentId(Long parentId);
+
+    /**
      * 根据子用户ID查询
      *
      * @param childId 子用户ID

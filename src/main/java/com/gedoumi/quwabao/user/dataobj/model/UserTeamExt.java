@@ -31,6 +31,11 @@ public class UserTeamExt {
     private Integer teamLevel;
 
     /**
+     * 是否是强制调整团队等级
+     */
+    private Integer manualTeamLevel;
+
+    /**
      * 团队总静态收益
      */
     private BigDecimal teamTotalStaticProfit;

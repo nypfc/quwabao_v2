@@ -6,7 +6,7 @@
 <mapper namespace="com.gedoumi.quwabao.user.mapper.UserTeamExtMapper">
 
     <sql id="Base_Column_List">
-        id, user_id, team_level, team_total_static_profit, team_total_rent, create_time,
+        id, user_id, team_level, manual_team_level, team_total_static_profit, team_total_rent, create_time,
         update_time
     </sql>
 
@@ -36,6 +36,9 @@
             <if test="teamLevel != null">
                 team_level,
             </if>
+            <if test="manualTeamLevel != null">
+                manual_team_level,
+            </if>
             <if test="teamTotalStaticProfit != null">
                 team_total_static_profit,
             </if>
@@ -59,6 +62,9 @@
             <if test="teamLevel != null">
                 #{teamLevel,jdbcType=TINYINT},
             </if>
+            <if test="manualTeamLevel != null">
+                #{manualTeamLevel,jdbcType=TINYINT},
+            </if>
             <if test="teamTotalStaticProfit != null">
                 #{teamTotalStaticProfit,jdbcType=DECIMAL},
             </if>
@@ -74,14 +80,14 @@
         </trim>
     </insert>
 
-    <update id="updateById" parameterType="UserTeamExt">
+    <update id="updateByUserId" parameterType="UserTeamExt">
         update user_team_ext
         <set>
-            <if test="userId != null">
-                user_id = #{userId,jdbcType=BIGINT},
-            </if>
             <if test="teamLevel != null">
                 team_level = #{teamLevel,jdbcType=TINYINT},
+            </if>
+            <if test="manualTeamLevel != null">
+                manual_team_level = #{manualTeamLevel,jdbcType=TINYINT},
             </if>
             <if test="teamTotalStaticProfit != null">
                 team_total_static_profit = #{teamTotalStaticProfit,jdbcType=DECIMAL},
@@ -96,7 +102,7 @@
                 update_time = #{updateTime,jdbcType=TIMESTAMP},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        where user_id = #{userId,jdbcType=BIGINT}
     </update>
 
 </mapper>

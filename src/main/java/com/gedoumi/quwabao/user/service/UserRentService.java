@@ -11,6 +11,7 @@ import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
 import com.gedoumi.quwabao.sys.service.SysRentService;
 import com.gedoumi.quwabao.user.dataobj.dto.UserRentDTO;
 import com.gedoumi.quwabao.user.dataobj.dto.UserRentNumberDTO;
+import com.gedoumi.quwabao.user.dataobj.dto.UserTeamDTO;
 import com.gedoumi.quwabao.user.dataobj.form.RentForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import com.gedoumi.quwabao.user.dataobj.model.UserRent;
@@ -69,17 +70,13 @@ public class UserRentService {
     }
 
     /**
-     * 获取指定用户已租用的矿机价格的总和
+     * 获取用户总静态收益与已租用的矿机价格的总和
      *
-     * @param userIds    用户ID集合
-     * @param rentStatus 矿机状态
+     * @param userId    用户ID
      * @return 矿机价格总和
      */
-    public BigDecimal getTotalRent(List<Long> userIds, Integer rentStatus) {
-        if (userIds.size() == 1)
-            return userRentMapper.selectTotalRentById(userIds.get(0), rentStatus);
-        else
-            return userRentMapper.selectTotalRentByIds(userIds, rentStatus);
+    public UserTeamDTO getTotalStaticProfitAndTotalRentAsset(Long userId) {
+        return userRentMapper.selectTotalStaticProfitAndTotalRentAssetByUserId(userId, RentStatusEnum.ACTIVE.getValue());
     }
 
     /**

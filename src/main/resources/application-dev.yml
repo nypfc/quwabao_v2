@@ -23,7 +23,7 @@ spring:
         max-wait: 1000
         max-active: 20
 
-#logging:  # 测试环境DEBUG日志
-#  level:
-#    com.gedoumi.quwabao.user.mapper: debug
-#    com.gedoumi.quwabao.sys.mapper: debug
+logging:  # 测试环境DEBUG日志
+  level:
+    com.gedoumi.quwabao.user.mapper: debug
+    com.gedoumi.quwabao.sys.mapper: debug

@@ -72,7 +72,7 @@ public class UserController {
         // 获取用户资产信息
         UserAsset userAsset = userAssetService.getUserAsset(user.getId());
         // 获取用户团队信息
-        UserTeamExt userTeamExt = userTeamExtService.getTeamTotalRentMoney(user.getId());
+        UserTeamExt userTeamExt = userTeamExtService.getUserTeamExt(user.getId());
         // 封装返回信息
         UserInfoVO userInfoVO = new UserInfoVO();
         userInfoVO.setUsername(user.getUsername());

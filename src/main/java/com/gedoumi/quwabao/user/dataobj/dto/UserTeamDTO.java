@@ -1,14 +1,32 @@
 package com.gedoumi.quwabao.user.dataobj.dto;
 
 import lombok.Data;
+import org.apache.ibatis.type.Alias;
 
+import java.math.BigDecimal;
+
+/**
+ * 用户团队信息DTO
+ *
+ * @author Minced
+ */
+@Alias("UserTeamDTO")
 @Data
 public class UserTeamDTO {
 
-    private Long id;
+    /**
+     * 用户ID
+     */
+    private Long userId;
 
-    private String mobilePhone;
+    /**
+     * 总静态收益
+     */
+    private BigDecimal totalStaticProfit;
 
-    private String username;
+    /**
+     * 总矿机价格
+     */
+    private BigDecimal totalRentAsset;
 
 }

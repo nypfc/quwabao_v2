@@ -16,6 +16,12 @@
         where ut.parent_id = #{param1}
     </select>
 
+    <select id="selectIdsByParentId" resultType="java.lang.Long">
+        select child_id
+        from user_tree
+        where parent_id = #{param1}
+    </select>
+
     <select id="selectByChildId" resultType="UserTree">
         select id, child_id, parent_id
         from user_tree

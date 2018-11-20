@@ -31,6 +31,16 @@ public class UserTreeService {
     }
 
     /**
+     * 获取下级用户的ID列表
+     *
+     * @param userId 用户ID
+     * @return 用户ID集合
+     */
+    public List<Long> getChildIds(Long userId) {
+        return userTreeMapper.selectIdsByParentId(userId);
+    }
+
+    /**
      * 根据子用户ID查询
      *
      * @param childId 子用户ID

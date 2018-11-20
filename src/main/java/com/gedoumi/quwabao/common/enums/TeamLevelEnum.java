@@ -8,7 +8,7 @@ import lombok.Getter;
  * @author Minced
  */
 @Getter
-public enum TeamLevel {
+public enum TeamLevelEnum {
 
     LEVEL_0(0, "普通用户"),
     LEVEL_1(1, "明星俱乐部"),
@@ -21,7 +21,7 @@ public enum TeamLevel {
 
     private String description;
 
-    TeamLevel(Integer value, String description) {
+    TeamLevelEnum(Integer value, String description) {
         this.value = value;
         this.description = description;
     }

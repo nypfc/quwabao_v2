@@ -6,6 +6,7 @@ import com.gedoumi.quwabao.common.utils.JsonUtil;
 import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
 import com.gedoumi.quwabao.sys.service.SysRentService;
 import com.gedoumi.quwabao.user.dataobj.dto.UserRentDTO;
+import com.gedoumi.quwabao.user.dataobj.dto.UserTeamDTO;
 import com.gedoumi.quwabao.user.dataobj.model.UserRent;
 import org.junit.Test;
 import org.springframework.stereotype.Component;
@@ -53,6 +54,12 @@ public class UserRentMapperTest extends QuwabaoApplicationTests {
             userRent.setDays(0);  // 冗余字段
             userRentMapper.insert(userRent);
         }
+    }
+
+    @Test
+    public void selectTotalStaticProfitAndTotalRentAssetByUserId() {
+        UserTeamDTO userTeamDTO = userRentMapper.selectTotalStaticProfitAndTotalRentAssetByUserId(174L, 1);
+        System.out.println(JsonUtil.objectToJson(userTeamDTO));
     }
 
 }

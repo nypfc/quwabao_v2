@@ -33,11 +33,12 @@
           and user_id = #{param1}
     </select>
 
-    <select id="selectTotalRentByIds" resultType="java.math.BigDecimal">
-        select sum(rent_asset)
-        from user_rent
-        where user_id in
-        <foreach collection="list" item="item" open="(" separator="," close=")">#{item}</foreach>
+    <select id="selectTotalStaticProfitAndTotalRentAssetByUserId" resultType="UserTeamDTO">
+        select ur.user_id, up.static_profit as total_static_profit, sum(ur.rent_asset) as total_rent_asset
+        from user_rent ur
+                 left join user_profit up on up.user_id = ur.user_id
+        where ur.user_id = #{param1}
+          and ur.rent_status = #{param2}
     </select>
 
     <select id="selectAllActiveRents" resultType="UserRentDTO">

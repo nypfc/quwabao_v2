@@ -38,11 +38,11 @@ public interface UserTeamExtMapper {
     Integer insert(UserTeamExt userTeamExt);
 
     /**
-     * 根据ID用户团队
+     * 根据用户ID更新用户团队
      *
      * @param userTeamExt 用户团队对象
      * @return 数据库受影响行数
      */
-    Integer updateById(UserTeamExt userTeamExt);
+    Integer updateByUserId(UserTeamExt userTeamExt);
 
 }

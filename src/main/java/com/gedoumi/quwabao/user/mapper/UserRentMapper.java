@@ -2,6 +2,7 @@ package com.gedoumi.quwabao.user.mapper;
 
 import com.gedoumi.quwabao.user.dataobj.dto.UserRentDTO;
 import com.gedoumi.quwabao.user.dataobj.dto.UserRentNumberDTO;
+import com.gedoumi.quwabao.user.dataobj.dto.UserTeamDTO;
 import com.gedoumi.quwabao.user.dataobj.model.UserRent;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -44,13 +45,13 @@ public interface UserRentMapper {
     BigDecimal selectTotalRentById(Long userId, Integer rentStatus);
 
     /**
-     * 查询指定用户的租用矿机价格的总和
+     * 根据用户ID查询总静态收益与激活的总矿机价格
      *
-     * @param userIds    用户ID集合
+     * @param userId     用户ID
      * @param rentStatus 矿机状态
      * @return 矿机价格总和
      */
-    BigDecimal selectTotalRentByIds(List<Long> userIds, Integer rentStatus);
+    UserTeamDTO selectTotalStaticProfitAndTotalRentAssetByUserId(Long userId, Integer rentStatus);
 
     /**
      * 查询所有激活的矿机
