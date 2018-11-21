@@ -64,6 +64,16 @@ public class UserService {
     }
 
     /**
+     * 根据手机号获取用户
+     *
+     * @param mobile 手机号
+     * @return 用户对象
+     */
+    public User getByMobile(String mobile) {
+        return userMapper.selectByMobile(mobile);
+    }
+
+    /**
      * 重置密码
      *
      * @param resetPasswordForm 重置密码表单
@@ -275,6 +285,16 @@ public class UserService {
         // 创建缓存
         redisCache.setKeyValueData(user.getToken(), user);
         return user;
+    }
+
+    /**
+     * 根据用户对象更新用户
+     *
+     * @param user 用户对象
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateById(User user) {
+        userMapper.updateById(user);
     }
 
 }

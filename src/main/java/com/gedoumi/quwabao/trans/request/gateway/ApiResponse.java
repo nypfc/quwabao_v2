@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.api.request.gateway;
+package com.gedoumi.quwabao.trans.request.gateway;
 
 import com.gedoumi.quwabao.common.constants.Constants;
 

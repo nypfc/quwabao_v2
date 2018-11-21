@@ -66,18 +66,16 @@ public class UserAssetService {
      *
      * @param userId 用户ID
      * @param money  交易量
+     * @return 余额足够返回true，否则返回false
      */
-    public void remainAsset(Long userId, BigDecimal money) {
+    public boolean remainAsset(Long userId, BigDecimal money) {
         // 查询用户资产
         UserAsset userAsset = Optional.ofNullable(userAssetMapper.selectByUserId(userId)).orElseThrow(() -> {
             log.error("用户:{}资产不存在", userId);
             return new BusinessException(CodeEnum.RemainAssetError);
         });
         // 余额判断
-        if (userAsset.getRemainAsset().compareTo(money) < 0) {
-            log.error("用户:{}余额不足", userId);
-            throw new BusinessException(CodeEnum.RemainAssetError);
-        }
+        return userAsset.getRemainAsset().compareTo(money) >= 0;
     }
 
     /**

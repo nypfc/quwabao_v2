@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.api.request.face;
+package com.gedoumi.quwabao.trans.request.face;
 
 
 public class FaceApiData {

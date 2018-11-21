@@ -1,9 +1,9 @@
-package com.gedoumi.quwabao.api.request.gateway;
+package com.gedoumi.quwabao.trans.request.gateway;
 
-import com.gedoumi.quwabao.api.request.gateway.vo.AppWithDrawVO;
-import com.gedoumi.quwabao.api.request.gateway.vo.QueryVO;
-import com.gedoumi.quwabao.api.request.gateway.vo.RechargeVO;
-import com.gedoumi.quwabao.api.request.gateway.vo.WithDrawVO;
+import com.gedoumi.quwabao.trans.request.gateway.vo.AppWithDrawVO;
+import com.gedoumi.quwabao.trans.request.gateway.vo.QueryVO;
+import com.gedoumi.quwabao.trans.request.gateway.vo.RechargeVO;
+import com.gedoumi.quwabao.trans.request.gateway.vo.WithDrawVO;
 import com.gedoumi.quwabao.common.utils.ResponseObject;
 import com.gedoumi.quwabao.common.utils.HttpClientUtils;
 import com.gedoumi.quwabao.common.utils.JsonUtil;
@@ -32,10 +32,10 @@ public class TransApi {
 
     private static final String test_url = "http://192.168.12.41:8090";
     private static final String url = "http://175.25.17.53:8098";
-    private static final String path = "/api/v2/gedoumi/recharge";
-    private static final String path_get_address = "/api/v1/pfc_eth/query";
-    private static final String path_bind_address = "/api/v1/pfc_eth/bind";
-    private static final String path_withdraw = "/api/v1/gedoumi/withdraw";
+    private static final String path = "/trans/v2/gedoumi/recharge";
+    private static final String path_get_address = "/trans/v1/pfc_eth/query";
+    private static final String path_bind_address = "/trans/v1/pfc_eth/bind";
+    private static final String path_withdraw = "/trans/v1/gedoumi/withdraw";
 
     private static String getUrl() {
         String value = PropertiesUtils.getInstance().getValue("gateway.url");

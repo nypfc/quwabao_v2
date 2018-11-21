@@ -29,7 +29,7 @@ public enum CodeEnum {
     ApplyTeamRewardTwiceError(2238, "同类型的团队奖励已经申请过"),
     TransMoneyError(2239, "账户余额不足"),
     TransPswdError(2240, "交易密码不正确"),
-    TransMobileError(2241, "转账手机号码不正确"),
+    TransMobileNotExist(2241, "转账手机号码不存在"),
     OrgPswdError(2242, "原密码不正确"),
     ResetPswdError(2243, "请输入密码"),
     NoNameError(2244, "请输入用户名"),

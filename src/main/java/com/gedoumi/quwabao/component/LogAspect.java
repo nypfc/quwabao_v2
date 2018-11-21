@@ -1,7 +1,7 @@
 package com.gedoumi.quwabao.component;
 
-import com.gedoumi.quwabao.api.request.gateway.ApiResponse;
-import com.gedoumi.quwabao.api.request.gateway.vo.RechargeVO;
+import com.gedoumi.quwabao.trans.request.gateway.ApiResponse;
+import com.gedoumi.quwabao.trans.request.gateway.vo.RechargeVO;
 import com.gedoumi.quwabao.common.enums.LogType;
 import com.gedoumi.quwabao.common.enums.SysLogStatus;
 import com.gedoumi.quwabao.common.utils.JsonUtil;

@@ -117,7 +117,10 @@ public class UserRentService {
         SysRent rent = sysRentService.getRent(rentType);
         BigDecimal rentMoney = rent.getMoney();
         // 判断余额
-        userAssetService.remainAsset(userId, rentMoney);
+        if (!userAssetService.remainAsset(userId, rentMoney)) {
+            log.error("用户:{}余额不足", userId);
+            throw new BusinessException(CodeEnum.RemainAssetError);
+        }
         // 创建用户矿机
         UserRent userRent = new UserRent();
         Date now = new Date();

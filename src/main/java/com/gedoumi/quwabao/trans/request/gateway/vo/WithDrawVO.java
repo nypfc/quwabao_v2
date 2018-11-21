@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.api.request.gateway.vo;
+package com.gedoumi.quwabao.trans.request.gateway.vo;
 
 import com.gedoumi.quwabao.common.utils.AesCBC;
 import lombok.Data;

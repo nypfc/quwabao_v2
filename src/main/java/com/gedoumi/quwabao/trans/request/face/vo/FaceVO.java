@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.api.request.face.vo;
+package com.gedoumi.quwabao.trans.request.face.vo;
 
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
 import lombok.Data;

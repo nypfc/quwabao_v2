@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.api.request.gateway.vo;
+package com.gedoumi.quwabao.trans.request.gateway.vo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

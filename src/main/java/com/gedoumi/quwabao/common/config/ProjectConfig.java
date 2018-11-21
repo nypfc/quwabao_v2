@@ -41,6 +41,7 @@ public class ProjectConfig implements WebMvcConfigurer {
         // 令牌验证拦截器
         registry.addInterceptor(apiRequestInterceptor())
                 .addPathPatterns("/v2/user/**")
+                .addPathPatterns("/v2/trans/**")
                 .addPathPatterns("/v2/rent")
                 // 验证接口不需要拦截
                 .excludePathPatterns("/v2/user/check/**")

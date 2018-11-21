@@ -8,7 +8,6 @@ import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
 import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.user.dataobj.form.LoginForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
-import com.gedoumi.quwabao.user.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,7 @@ import java.util.UUID;
 public class LoginService {
 
     @Resource
-    private UserMapper userMapper;
+    private UserService userService;
 
     @Resource
     private RedisCache redisCache;
@@ -48,7 +47,7 @@ public class LoginService {
         String salt = MD5EncryptUtil.md5Encrypy(mobile);
         String encryptedPassword = MD5EncryptUtil.md5Encrypy(password, salt);
         // 根据手机号获取用户并验证
-        User user = Optional.ofNullable(userMapper.selectByMobile(mobile)).orElseThrow(() -> {
+        User user = Optional.ofNullable(userService.getByMobile(mobile)).orElseThrow(() -> {
             log.error("手机号:{}未能查询到用户", mobile);
             return new BusinessException(CodeEnum.MobileNotExist);
         });
@@ -65,7 +64,7 @@ public class LoginService {
             update.setId(user.getId());
             update.setErrorCount(user.getErrorCount() + 1);
             update.setErrorTime(new Date());
-            userMapper.updateById(update);
+            userService.updateById(update);
             log.error("手机号:{}，密码:{}，密码不正确", mobile, password);
             throw new BusinessException(CodeEnum.PasswordError);
         }
@@ -75,7 +74,7 @@ public class LoginService {
         user.setErrorCount(0);  // 错误次数重置
         user.setLastLoginTime(new Date());
         user.setLastLoginIp(ContextUtil.getClientIp());
-        userMapper.updateById(user);
+        userService.updateById(user);
         // 缓存用户
         redisCache.setKeyValueData(token, user);
         return user;
@@ -95,7 +94,7 @@ public class LoginService {
                 update.setId(user.getId());
                 update.setToken(user.getToken());
                 update.setUpdateTime(new Date());
-                userMapper.updateById(update);
+                userService.updateById(update);
                 redisCache.deleteKeyValueData(token);
             });
         }

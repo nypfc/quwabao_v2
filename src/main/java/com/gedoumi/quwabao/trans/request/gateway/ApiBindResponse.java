@@ -1,6 +1,6 @@
-package com.gedoumi.quwabao.api.request.gateway;
+package com.gedoumi.quwabao.trans.request.gateway;
 
-import com.gedoumi.quwabao.api.request.gateway.vo.QueryVO;
+import com.gedoumi.quwabao.trans.request.gateway.vo.QueryVO;
 
 public class ApiBindResponse extends ApiResponse{
 
