@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.api.face;
+package com.gedoumi.quwabao.api.request.face;
 
 
 import org.apache.commons.lang3.StringUtils;

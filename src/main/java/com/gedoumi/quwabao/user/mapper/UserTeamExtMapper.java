@@ -45,4 +45,11 @@ public interface UserTeamExtMapper {
      */
     Integer updateByUserId(UserTeamExt userTeamExt);
 
+    /**
+     * 批量更新用户团队信息
+     *
+     * @param userTeamExts 用户团队信息集合
+     */
+    Integer updateBatch(List<UserTeamExt> userTeamExts);
+
 }

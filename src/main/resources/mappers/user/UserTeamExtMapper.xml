@@ -105,4 +105,17 @@
         where user_id = #{userId,jdbcType=BIGINT}
     </update>
 
+    <update id="updateBatch" parameterType="list">
+        <foreach collection="list" item="userTeamExt" separator=";">
+            update user_team_ext
+            <set>
+                team_level = #{userTeamExt.teamLevel,jdbcType=TINYINT},
+                team_total_static_profit = #{userTeamExt.teamTotalStaticProfit,jdbcType=DECIMAL},
+                team_total_rent = #{userTeamExt.teamTotalRent,jdbcType=DECIMAL},
+                update_time = #{userTeamExt.updateTime,jdbcType=TIMESTAMP},
+            </set>
+            where user_id = #{userTeamExt.userId,jdbcType=BIGINT}
+        </foreach>
+    </update>
+
 </mapper>

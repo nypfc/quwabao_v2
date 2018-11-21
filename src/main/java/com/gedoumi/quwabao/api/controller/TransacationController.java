@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.user.controller;
+package com.gedoumi.quwabao.api.controller;
 
 import com.gedoumi.quwabao.common.utils.ResponseObject;
 import com.gedoumi.quwabao.user.dataobj.form.TransferForm;

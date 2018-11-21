@@ -1,9 +1,9 @@
-package com.gedoumi.quwabao.api.gateway;
+package com.gedoumi.quwabao.api.request.gateway;
 
-import com.gedoumi.quwabao.api.gateway.vo.AppWithDrawVO;
-import com.gedoumi.quwabao.api.gateway.vo.QueryVO;
-import com.gedoumi.quwabao.api.gateway.vo.RechargeVO;
-import com.gedoumi.quwabao.api.gateway.vo.WithDrawVO;
+import com.gedoumi.quwabao.api.request.gateway.vo.AppWithDrawVO;
+import com.gedoumi.quwabao.api.request.gateway.vo.QueryVO;
+import com.gedoumi.quwabao.api.request.gateway.vo.RechargeVO;
+import com.gedoumi.quwabao.api.request.gateway.vo.WithDrawVO;
 import com.gedoumi.quwabao.common.utils.ResponseObject;
 import com.gedoumi.quwabao.common.utils.HttpClientUtils;
 import com.gedoumi.quwabao.common.utils.JsonUtil;

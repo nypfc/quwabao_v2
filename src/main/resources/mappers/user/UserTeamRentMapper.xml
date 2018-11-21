@@ -44,4 +44,22 @@
         </trim>
     </insert>
 
+    <insert id="insertBatch">
+        <foreach collection="list" item="userTeamRent" separator=";">
+            insert into user_team_rent
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                create_time,
+                create_date,
+                team_total_rent,
+                user_id,
+            </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
+                #{userTeamRent.createTime,jdbcType=TIMESTAMP},
+                #{userTeamRent.createDate,jdbcType=TIMESTAMP},
+                #{userTeamRent.teamTotalRent,jdbcType=DECIMAL},
+                #{userTeamRent.userId,jdbcType=BIGINT},
+            </trim>
+        </foreach>
+    </insert>
+
 </mapper>

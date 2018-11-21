@@ -3,6 +3,8 @@ package com.gedoumi.quwabao.user.mapper;
 import com.gedoumi.quwabao.user.dataobj.model.UserTeamRent;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 用户团队业绩记录Mapper
  *
@@ -17,6 +19,13 @@ public interface UserTeamRentMapper {
      * @param userTeamRent 记录对象
      * @return 数据库受影响行数
      */
-    int insert(UserTeamRent userTeamRent);
+    Integer insert(UserTeamRent userTeamRent);
+
+    /**
+     * 批量添加用户团队业绩记录
+     *
+     * @param userTeamRents 记录集合
+     */
+    Integer insertBatch(List<UserTeamRent> userTeamRents);
 
 }

@@ -22,11 +22,11 @@ public class UserTeamDTO {
     /**
      * 总静态收益
      */
-    private BigDecimal totalStaticProfit;
+    private BigDecimal totalStaticProfit = BigDecimal.ZERO;
 
     /**
      * 总矿机价格
      */
-    private BigDecimal totalRentAsset;
+    private BigDecimal totalRentAsset = BigDecimal.ZERO;
 
 }

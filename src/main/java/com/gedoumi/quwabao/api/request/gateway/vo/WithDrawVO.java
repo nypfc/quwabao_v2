@@ -1,10 +1,10 @@
-package com.gedoumi.quwabao.api.gateway.vo;
+package com.gedoumi.quwabao.api.request.gateway.vo;
 
 import com.gedoumi.quwabao.common.utils.AesCBC;
 import lombok.Data;
 
 @Data
-public class RechargeVO {
+public class WithDrawVO {
 
     private String pfc_account;
 
@@ -12,9 +12,11 @@ public class RechargeVO {
 
     private String amount;
 
-    private Long ts;
+    private String memo;
 
-    private String seq;
+    private long ts;
+
+    private long seq;
 
     private String sig;
 
@@ -24,6 +26,8 @@ public class RechargeVO {
                 .append(this.amount)
                 .append("asset_name")
                 .append(this.asset_name)
+                .append("memo")
+                .append(this.memo)
                 .append("pfc_account")
                 .append(this.pfc_account)
                 .append("seq")
@@ -38,4 +42,5 @@ public class RechargeVO {
         }
         return sign;
     }
+
 }

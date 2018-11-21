@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.api.gateway.vo;
+package com.gedoumi.quwabao.api.request.gateway.vo;
 
 import lombok.Data;
 

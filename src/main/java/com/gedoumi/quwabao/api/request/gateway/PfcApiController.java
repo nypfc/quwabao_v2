@@ -1,6 +1,6 @@
-package com.gedoumi.quwabao.api.gateway;
+package com.gedoumi.quwabao.api.request.gateway;
 
-import com.gedoumi.quwabao.api.gateway.vo.RechargeVO;
+import com.gedoumi.quwabao.api.request.gateway.vo.RechargeVO;
 import com.gedoumi.quwabao.common.annotation.PfcLogAspect;
 import com.gedoumi.quwabao.common.utils.JsonUtil;
 import lombok.extern.slf4j.Slf4j;

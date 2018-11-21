@@ -37,6 +37,12 @@
           and ur.rent_status = #{param3};
     </select>
 
+    <select id="selectTotalStaticProfit" resultType="java.math.BigDecimal">
+        select sum(static_profit)
+        from user_profit
+        where `date` = #{param1}
+    </select>
+
     <insert id="insert" parameterType="UserProfit">
         insert into user_profit
         <trim prefix="(" suffix=")" suffixOverrides=",">

@@ -1,6 +1,6 @@
-package com.gedoumi.quwabao.api.face;
+package com.gedoumi.quwabao.api.request.face;
 
-import com.gedoumi.quwabao.api.face.vo.FaceVO;
+import com.gedoumi.quwabao.api.request.face.vo.FaceVO;
 import com.gedoumi.quwabao.common.utils.HttpClientUtils;
 import com.gedoumi.quwabao.common.utils.JsonUtil;
 import com.gedoumi.quwabao.common.utils.PropertiesUtils;

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -51,6 +52,15 @@ public class UserTeamExtService {
         userTeamExt.setUpdateTime(now);
         userTeamExtMapper.insert(userTeamExt);
         return userTeamExt;
+    }
+
+    /**
+     * 批量更新用户团队信息
+     *
+     * @param userTeamExts 用户团队信息集合
+     */
+    public void updateBatch(List<UserTeamExt> userTeamExts) {
+        userTeamExtMapper.updateBatch(userTeamExts);
     }
 
 }

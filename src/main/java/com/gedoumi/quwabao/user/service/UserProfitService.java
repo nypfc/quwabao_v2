@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -66,6 +67,16 @@ public class UserProfitService {
      */
     public UserProfitDTO getCurrentDayUserProfit(Long userId, String date) {
         return userProfitMapper.selectByuserIdAndDate(userId, date, RentStatusEnum.ACTIVE.getValue());
+    }
+
+    /**
+     * 获取当日总静态收益
+     *
+     * @param date 日期
+     * @return 总静态收益
+     */
+    public BigDecimal getCurrentDayTotalStaticProfit(String date) {
+        return userProfitMapper.selectTotalStaticProfit(date);
     }
 
     /**

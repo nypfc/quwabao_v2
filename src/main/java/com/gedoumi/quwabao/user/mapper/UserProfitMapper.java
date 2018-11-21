@@ -4,6 +4,7 @@ import com.gedoumi.quwabao.user.dataobj.dto.UserProfitDTO;
 import com.gedoumi.quwabao.user.dataobj.model.UserProfit;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -31,7 +32,7 @@ public interface UserProfitMapper {
     List<UserProfit> selectByDate(String date);
 
     /**
-     * 查询当日指定用户的收益
+     * 根据日期查询指定用户的收益
      *
      * @param userId     用户ID
      * @param date       日期
@@ -39,6 +40,14 @@ public interface UserProfitMapper {
      * @return 用户收益DTO对象
      */
     UserProfitDTO selectByuserIdAndDate(Long userId, String date, Integer rentStatus);
+
+    /**
+     * 根据日期查询当日的总静态收益
+     *
+     * @param date 日期
+     * @return 总静态收益
+     */
+    BigDecimal selectTotalStaticProfit(String date);
 
     /**
      * 创建用户收益
