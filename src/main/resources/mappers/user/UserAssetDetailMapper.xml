@@ -19,6 +19,14 @@
         order by create_time desc
     </select>
 
+    <select id="selectTotalDayWithdraw" resultType="java.math.BigDecimal">
+        select sum(money)
+        from user_asset_detail
+        where user_id = #{param1}
+          and trans_type = #{param2}
+          and create_time between #{param3} and #{param4};
+    </select>
+
     <insert id="insert" parameterType="UserAssetDetail">
         insert into user_asset_detail
         <trim prefix="(" suffix=")" suffixOverrides=",">

@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao.sys.controller;
 
-import com.gedoumi.quwabao.common.enums.SmsType;
+import com.gedoumi.quwabao.common.enums.SmsTypeEnum;
 import com.gedoumi.quwabao.common.utils.ResponseObject;
 import com.gedoumi.quwabao.sys.dataobj.form.SendSMSForm;
 import com.gedoumi.quwabao.sys.service.SysSmsService;
@@ -34,7 +34,7 @@ public class SysSmsController {
      */
     @PostMapping("/register")
     public ResponseObject sendRegisterSms(@RequestBody @Valid SendSMSForm sendSMSForm) {
-        sysSmsService.sendSms(SmsType.Register.getValue(), sendSMSForm.getMobile());
+        sysSmsService.sendSms(SmsTypeEnum.Register.getValue(), sendSMSForm.getMobile());
         return new ResponseObject();
     }
 
@@ -46,7 +46,7 @@ public class SysSmsController {
      */
     @PostMapping("/password")
     public ResponseObject sendResetPasswordSms(@RequestBody @Valid SendSMSForm sendSMSForm) {
-        sysSmsService.sendSms(SmsType.ResetPassword.getValue(), sendSMSForm.getMobile());
+        sysSmsService.sendSms(SmsTypeEnum.ResetPassword.getValue(), sendSMSForm.getMobile());
         return new ResponseObject();
     }
 

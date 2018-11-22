@@ -1,13 +1,19 @@
 package com.gedoumi.quwabao.trans.controller;
 
-import com.gedoumi.quwabao.trans.service.TransDetailService;
+import com.gedoumi.quwabao.common.annotation.DuplicateRequest;
+import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.ResponseObject;
+import com.gedoumi.quwabao.sys.dataobj.model.SysConfig;
+import com.gedoumi.quwabao.sys.service.SysConfigService;
+import com.gedoumi.quwabao.trans.dataobj.form.WithdrawForm;
+import com.gedoumi.quwabao.trans.dataobj.vo.WithdrawInfoVO;
+import com.gedoumi.quwabao.trans.service.TransDetailService;
 import com.gedoumi.quwabao.user.dataobj.form.TransferForm;
+import com.gedoumi.quwabao.user.dataobj.model.User;
+import com.gedoumi.quwabao.user.service.UserAssetDetailService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -25,6 +31,12 @@ public class TransacationController {
     @Resource
     private TransDetailService transDetailService;
 
+    @Resource
+    private UserAssetDetailService userAssetDetailService;
+
+    @Resource
+    private SysConfigService sysConfigService;
+
     /**
      * APP内用户转账
      *
@@ -35,6 +47,55 @@ public class TransacationController {
     public ResponseObject transfer(@RequestBody @Valid TransferForm transferForm) {
         transDetailService.transfer(transferForm);
         return new ResponseObject();
+    }
+
+    /**
+     * 提现
+     *
+     * @param withdrawForm 提现表单
+     * @return ResponseObject
+     */
+    @DuplicateRequest  // 防止重复提交
+    @PostMapping("/withdraw")
+    public ResponseObject withdraw(@RequestBody WithdrawForm withdrawForm) {
+        return new ResponseObject();
+    }
+
+    /**
+     * 获取以太坊地址
+     *
+     * @return ResponseObject
+     */
+    @GetMapping("/ethAddress")
+    public ResponseObject getEthAddress() {
+        // 获取用户
+        User user = ContextUtil.getUserFromRequest();
+        // 如果用户已有以太坊地址，直接返回以太坊地址，否则先绑定地址
+        String ethAddress = user.getEthAddress();
+        if (StringUtils.isNotEmpty(ethAddress))
+            return new ResponseObject<>(ethAddress);
+
+        return new ResponseObject();
+    }
+
+    /**
+     * 获取提现信息
+     *
+     * @return ResponseObject
+     */
+    @GetMapping("/withdraw/info")
+    public ResponseObject withdrawInfo() {
+        // 获取用户
+        User user = ContextUtil.getUserFromRequest();
+        // 获取系统配置
+        SysConfig sysConfig = sysConfigService.getSysConfig();
+        // 封装返回信息
+        WithdrawInfoVO withdrawInfoVO = new WithdrawInfoVO();
+        withdrawInfoVO.setSingleMin(sysConfig.getWithdrawSingleMin());
+        withdrawInfoVO.setSingleMax(sysConfig.getWithdrawSingleMax());
+        withdrawInfoVO.setDayLimit(sysConfig.getWithdrawDayLimit());
+        withdrawInfoVO.setRemainLimit(userAssetDetailService.getTotalDayWithdraw(user.getId()));
+        return new ResponseObject<>(withdrawInfoVO);
     }
 
 }

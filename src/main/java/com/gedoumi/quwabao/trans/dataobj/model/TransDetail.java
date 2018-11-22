@@ -50,4 +50,9 @@ public class TransDetail {
      */
     private Long toUserId;
 
+    /**
+     * 转账详情类型（冗余字段，目前强制为0）
+     */
+    private Integer transDetailType = 0;
+
 }

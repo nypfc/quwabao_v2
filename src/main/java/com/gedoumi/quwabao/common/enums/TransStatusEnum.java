@@ -2,18 +2,22 @@ package com.gedoumi.quwabao.common.enums;
 
 import lombok.Getter;
 
+/**
+ * 转账状态枚举
+ *
+ * @author Minced
+ */
 @Getter
-public enum SmsStatus {
+public enum TransStatusEnum {
 
-    Disable(0, "禁用"),
-    Enable(1, "可用"),
-    ;
+    Failed(0, "失败"),
+    Success(1, "成功");
 
     private int value;
 
     private String name;
 
-    SmsStatus(int value, String name) {
+    TransStatusEnum(int value, String name) {
         this.value = value;
         this.name = name;
     }

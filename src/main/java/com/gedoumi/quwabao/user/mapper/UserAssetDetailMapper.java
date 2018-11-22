@@ -3,6 +3,8 @@ package com.gedoumi.quwabao.user.mapper;
 import com.gedoumi.quwabao.user.dataobj.model.UserAssetDetail;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,6 +23,17 @@ public interface UserAssetDetailMapper {
      * @return 用户资产详情集合
      */
     List<UserAssetDetail> selectTransInIds(Long userId, List<Integer> transType);
+
+    /**
+     * 查询当日已经提现的总金额
+     *
+     * @param userId        用户ID
+     * @param transType     交易类型
+     * @param startDateTime 开始时间
+     * @param endDateTime   结束时间
+     * @return 已经提现的总金额
+     */
+    BigDecimal selectTotalDayWithdraw(Long userId, Integer transType, Date startDateTime, Date endDateTime);
 
     /**
      * 创建用户资产详情

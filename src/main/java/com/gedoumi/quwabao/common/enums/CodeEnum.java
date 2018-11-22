@@ -40,6 +40,7 @@ public enum CodeEnum {
     RentMaxError(2250, "该类型矿机已经不再提供，请租用其他类型矿机"),
     DeviceError(2251, "您的账号已经在其他设备登录"),
     GateWayError(8889, "排队较多，请稍后查看【交易记录】"),
+    DuplicateRequest(8890, "上次请求还未处理完成"),
     WithDrawAmountEmty(2252, "金额不能为空或者负数"),
     WithDrawAmountError(2253, "余额不足"),
     WithDrawTimesError(2254, "上次提现请求还未处理"),

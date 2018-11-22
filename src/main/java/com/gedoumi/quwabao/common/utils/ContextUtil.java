@@ -15,7 +15,7 @@ import static com.gedoumi.quwabao.common.constants.Constants.AUTH_TOKEN;
  *
  * @author Minced
  */
-public class ContextUtil {
+public final class ContextUtil {
 
     /**
      * 获取HttpServletRequest对象

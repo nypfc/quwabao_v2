@@ -17,7 +17,7 @@ import java.nio.charset.Charset;
  * 对原始数据进行AES加密后，在进行Base64编码转化；
  * 正确
  */
-public class AesCBC {
+public final class AesCBC {
 
     /*
      * 已确认
@@ -41,7 +41,7 @@ public class AesCBC {
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         byte[] ivp = new byte[16];
         System.arraycopy(raw, 0, ivp, 0, 16);
-        IvParameterSpec iv = new IvParameterSpec(ivp);//使用CBC模式，需要一个向量iv，可增加加密算法的强度
+        IvParameterSpec iv = new IvParameterSpec(ivp);  // 使用CBC模式，需要一个向量iv，可增加加密算法的强度
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
 
         byte[] padding = pKCS7Encode(sSrc.getBytes(CHARSET).length);

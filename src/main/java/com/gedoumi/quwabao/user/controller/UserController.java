@@ -25,6 +25,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.gedoumi.quwabao.common.constants.Constants.SCALE;
+
 /**
  * 用户Controller
  *
@@ -205,7 +207,7 @@ public class UserController {
             userRentVO.setLastDig(userRent.getLastDig().stripTrailingZeros().toPlainString());
             // 矿机剩余收益
             BigDecimal remainProfit = userRent.getTotalAsset().subtract(userRent.getAlreadyDig())
-                    .setScale(5, BigDecimal.ROUND_DOWN).stripTrailingZeros();
+                    .setScale(SCALE, BigDecimal.ROUND_DOWN).stripTrailingZeros();
             userRentVO.setRemainProfit(remainProfit.toPlainString());
             return userRentVO;
         }).collect(Collectors.toList());

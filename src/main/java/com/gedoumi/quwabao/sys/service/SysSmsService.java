@@ -2,7 +2,7 @@ package com.gedoumi.quwabao.sys.service;
 
 import com.gedoumi.quwabao.common.config.properties.SMSProperties;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
-import com.gedoumi.quwabao.common.enums.SmsStatus;
+import com.gedoumi.quwabao.common.enums.SmsStatusEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.CodeUtils;
 import com.gedoumi.quwabao.common.utils.CurrentDateUtil;
@@ -101,7 +101,7 @@ public class SysSmsService {
         SysSms sms = new SysSms();
         Date now = new Date();
         sms.setCode(smsCode);
-        sms.setSmsStatus(SmsStatus.Enable.getValue());
+        sms.setSmsStatus(SmsStatusEnum.Enable.getValue());
         sms.setSmsType(sendType);
         sms.setMobilePhone(mobile);
         sms.setCreateTime(now);
@@ -120,7 +120,7 @@ public class SysSmsService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void updateSmsStatus(String mobile) {
-        sysSmsMapper.updateSmsStatus(mobile, SmsStatus.Enable.getValue(), SmsStatus.Disable.getValue(), new Date());
+        sysSmsMapper.updateSmsStatus(mobile, SmsStatusEnum.Enable.getValue(), SmsStatusEnum.Disable.getValue(), new Date());
     }
 
 }

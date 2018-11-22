@@ -15,6 +15,7 @@ public interface Constants {
 
     String API_USER_KEY = "user";
     Integer API_SUCCESS_CODE = 0;
+    Integer SCALE = 5;
     BigDecimal CLUB_PROFIT_STANDARD = new BigDecimal("500000.00000");
     BigDecimal TEAM_LEVEL1_PROPORTION = new BigDecimal("0.03");
     BigDecimal TEAM_LEVEL2_PROPORTION = new BigDecimal("0.06");

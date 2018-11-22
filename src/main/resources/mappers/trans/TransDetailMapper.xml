@@ -37,6 +37,9 @@
             <if test="toUserId != null">
                 to_user_id,
             </if>
+            <if test="transDetailType != null">
+                trans_detail_type,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="createTime != null">
@@ -56,6 +59,9 @@
             </if>
             <if test="toUserId != null">
                 #{toUserId,jdbcType=BIGINT},
+            </if>
+            <if test="transDetailType != null">
+                #{transDetailType,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>

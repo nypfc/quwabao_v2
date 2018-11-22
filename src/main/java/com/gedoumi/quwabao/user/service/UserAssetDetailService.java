@@ -3,6 +3,7 @@ package com.gedoumi.quwabao.user.service;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.TransTypeEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
+import com.gedoumi.quwabao.common.utils.CurrentDateUtil;
 import com.gedoumi.quwabao.user.dataobj.model.UserAssetDetail;
 import com.gedoumi.quwabao.user.mapper.UserAssetDetailMapper;
 import com.github.pagehelper.PageHelper;
@@ -16,6 +17,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 用户资产详情Service
@@ -59,20 +61,34 @@ public class UserAssetDetailService {
     }
 
     /**
+     * 获取当天已经提现的总额
+     *
+     * @param userId 用户ID
+     * @return 已经提现的总和
+     */
+    public BigDecimal getTotalDayWithdraw(Long userId) {
+        CurrentDateUtil currentDate = new CurrentDateUtil();
+        return Optional.ofNullable(userAssetDetailMapper.selectTotalDayWithdraw(userId, TransTypeEnum.NetOut.getValue(),
+                currentDate.getStartTime(), currentDate.getEndTime())).orElse(BigDecimal.ZERO);
+    }
+
+    /**
      * 创建用户资产详情
      *
-     * @param userId    用户ID
-     * @param money     金额
-     * @param rentId    矿机ID
-     * @param profit    带本金收益
-     * @param profitExt 不带本金的收益
-     * @param transType 交易类型
-     * @return 用户资产详情对象
+     * @param userId       用户ID
+     * @param rewardUserId 从哪个用户获取的金额
+     * @param money        金额
+     * @param rentId       矿机ID
+     * @param profit       带本金收益
+     * @param profitExt    不带本金的收益
+     * @param transType    交易类型
+     * @param fee          手续费
      */
-    public void insertUserDetailAsset(Long userId, BigDecimal money, Long rentId, BigDecimal profit, BigDecimal profitExt, Integer transType) {
+    public void insertUserDetailAsset(Long userId, Long rewardUserId, BigDecimal money, Long rentId, BigDecimal profit, BigDecimal profitExt, Integer transType, BigDecimal fee) {
         UserAssetDetail detail = new UserAssetDetail();
         Date now = new Date();
         detail.setUserId(userId);
+        detail.setRewardUserId(rewardUserId);
         detail.setMoney(money);
         detail.setRentId(rentId);
         detail.setProfit(profit);  // 带本金的收益
@@ -81,6 +97,7 @@ public class UserAssetDetailService {
         detail.setDigDate(now);
         detail.setCreateTime(now);
         detail.setUpdateTime(now);
+        detail.setFee(fee);
         detail.setVersionType(0);  // 冗余字段
         userAssetDetailMapper.insert(detail);
     }

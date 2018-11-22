@@ -1,7 +1,7 @@
 package com.gedoumi.quwabao.user.service;
 
 import com.gedoumi.quwabao.common.enums.CodeEnum;
-import com.gedoumi.quwabao.common.enums.SmsType;
+import com.gedoumi.quwabao.common.enums.SmsTypeEnum;
 import com.gedoumi.quwabao.common.enums.UserStatusEnum;
 import com.gedoumi.quwabao.common.enums.UserTypeEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
@@ -88,7 +88,7 @@ public class UserService {
         // 短信验证
         String key = "sms:" + mobile;
         Optional.ofNullable((SysSms) redisCache.getKeyValueData(key))
-                .filter(s -> s.getSmsType().equals(SmsType.ResetPassword.getValue()))
+                .filter(s -> s.getSmsType().equals(SmsTypeEnum.ResetPassword.getValue()))
                 .filter(s -> s.getCode().equals(smsCode)).orElseThrow(() -> {
             log.error("手机号:{}验证码:{}错误", mobile, smsCode);
             return new BusinessException(CodeEnum.SmsCodeError);
@@ -227,7 +227,7 @@ public class UserService {
         // 短信验证码验证
         String key = "sms:" + mobile;
         Optional.ofNullable((SysSms) redisCache.getKeyValueData(key))
-                .filter(s -> s.getSmsType().equals(SmsType.Register.getValue()))
+                .filter(s -> s.getSmsType().equals(SmsTypeEnum.Register.getValue()))
                 .filter(s -> s.getCode().equals(smsCode)).orElseThrow(() -> {
             log.error("手机号:{}验证码:{}错误", mobile, smsCode);
             return new BusinessException(CodeEnum.SmsCodeError);

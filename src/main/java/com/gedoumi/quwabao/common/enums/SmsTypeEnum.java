@@ -3,7 +3,7 @@ package com.gedoumi.quwabao.common.enums;
 import lombok.Getter;
 
 @Getter
-public enum SmsType {
+public enum SmsTypeEnum {
 
     Register(0, "register", "注册"),
     Login(1, "login", "登录"),
@@ -16,7 +16,7 @@ public enum SmsType {
 
     private String description;
 
-    SmsType(int value, String name, String description) {
+    SmsTypeEnum(int value, String name, String description) {
         this.value = value;
         this.name = name;
         this.description = description;

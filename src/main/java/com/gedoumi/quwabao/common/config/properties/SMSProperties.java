@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 /**
- * 短信属性类
+ * 短信配置
  *
  * @author Minced
  */

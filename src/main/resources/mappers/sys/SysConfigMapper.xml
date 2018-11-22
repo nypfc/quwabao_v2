@@ -6,7 +6,8 @@
 <mapper namespace="com.gedoumi.quwabao.sys.mapper.SysConfigMapper">
 
     <sql id="Base_Column_List">
-        id, app_version, download_url, static_profit, dynamic_profit
+        id, app_version, download_url, static_profit, dynamic_profit, trans_fee_proportion,
+        withdraw_single_min, withdraw_single_max, withdraw_day_limit
     </sql>
 
     <select id="selectById" resultType="SysConfig">

@@ -3,9 +3,10 @@ package com.gedoumi.quwabao.common.utils;
 import lombok.Getter;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import static com.gedoumi.quwabao.common.constants.Constants.DATE_FORMAT;
 
 /**
  * 当日的开始时间与结束时间
@@ -31,8 +32,7 @@ public final class CurrentDateUtil {
      */
     public CurrentDateUtil() {
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date startTime = sdf.parse(sdf.format(new Date()));
+            Date startTime = DATE_FORMAT.parse(DATE_FORMAT.format(new Date()));
             this.startTime = startTime;
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(startTime);

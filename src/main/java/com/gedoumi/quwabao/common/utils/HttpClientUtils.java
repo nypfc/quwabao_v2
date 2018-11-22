@@ -34,7 +34,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
 @Slf4j
-public class HttpClientUtils {
+public final class HttpClientUtils {
 
     final static int MAX_TOTAL = 200;
     final static int MAX_PERROUTE = 20;

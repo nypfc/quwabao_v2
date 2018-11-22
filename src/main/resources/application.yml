@@ -16,7 +16,7 @@ spring:
       default_encoding: UTF-8
       auto_import: common/common.ftl as common  # 将common.ftl设置为包文件并设置别名为common
 
-mybatis:  # MyBatis-Plus配置
+mybatis:  # MyBatis配置
   type-aliases-package: com.gedoumi.quwabao
   mapper-locations: classpath:mappers/**/**.xml  # xml文件位置
   configuration:  # 原生Mybatis配置
@@ -26,19 +26,11 @@ mybatis:  # MyBatis-Plus配置
     default-executor-type: reuse  # 配置默认的执行器（REUSE 执行器会重用预处理语句）
     default-statement-timeout: 600  # 事务超时时间
 
-pagehelper:  # MyBatis分页插件配置项
+pagehelper:  # MyBatis分页插件配置
   helperDialect: mysql
-  #  reasonable: true  # 分页合理性
   support-methods-arguments: true
   params: count=countSql
-
-sms:  # 短信配置
-  url: http://www.trans.zthysms.com/sendSms.do
-  username: xiangqiandaihy
-  password: 65tkXZ
-  day-count: 10  # 每日短信数量
-  interval-second: 60  # 短信间隔时间（单位：秒）
-  expired-second: 60  # 短信过期时间（单位：秒）
+  #  reasonable: true  # 分页合理性
 
 task:  # 线程池配置
   pool:
@@ -48,8 +40,20 @@ task:  # 线程池配置
     keep-alive-second: 60
     thread-name-prefix: SMS-Thread
 
-sys:  # 交易所私钥
-  private-key: test
+sms:  # 短信配置
+  url: http://www.trans.zthysms.com/sendSms.do
+  username: xiangqiandaihy
+  password: 65tkXZ
+  day-count: 10  # 每日短信数量
+  interval-second: 60  # 短信间隔时间（单位：秒）
+  expired-second: 60  # 短信过期时间（单位：秒）
+
+gateway: # 交易所配置
+  private-key: test  # 交易所私钥
+  url: http://139.198.12.20:4000
+  get-eth-address: /api/v1/pfc_eth/query
+  bind-eth-address: /api/v1/pfc_eth/bind
+  withdraw: /api/v1/pfc/withdraw
 
 #logging:
 #  pattern:

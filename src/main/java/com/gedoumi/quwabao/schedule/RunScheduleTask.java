@@ -113,8 +113,8 @@ public class RunScheduleTask {
                 map.put(userId, map.getOrDefault(userId, BigDecimal.ZERO).add(profitDay));
 
                 // 向用户资产详情集合中增加数据
-                BigDecimal totalDay = totalAsset.divide(profitDay, 5, BigDecimal.ROUND_DOWN);  // 计算总共需要多少天挖完
-                BigDecimal profit = totalAsset.subtract(rentAsset).divide(totalDay, 5, BigDecimal.ROUND_DOWN);  // 计算带本金的收益
+                BigDecimal totalDay = totalAsset.divide(profitDay, SCALE, BigDecimal.ROUND_DOWN);  // 计算总共需要多少天挖完
+                BigDecimal profit = totalAsset.subtract(rentAsset).divide(totalDay, SCALE, BigDecimal.ROUND_DOWN);  // 计算带本金的收益
                 insertUserAssetDetails.add(createUserAssetDetail(rentDTO.getUserId(), profitDay,
                         rentDTO.getId(), profit, profitDay, TransTypeEnum.Profit.getValue(), null, now));
             }
@@ -169,7 +169,7 @@ public class RunScheduleTask {
             if (size == 1)
                 return;
             // 当前用户总静态收益（所有激活的矿机价格的每日收益）* 0.2（0.2为可变值）
-            BigDecimal staticReward = up.getStaticProfit().multiply(sysConfig.getStaticProfit()).setScale(5, BigDecimal.ROUND_DOWN);
+            BigDecimal staticReward = up.getStaticProfit().multiply(sysConfig.getStaticProfit()).setScale(SCALE, BigDecimal.ROUND_DOWN);
             // 遍历链条
             for (int i = 0; i < size; i++) {
                 // 第0层为自身，自身不获取收益，从第一层开始获取收益
@@ -177,8 +177,8 @@ public class RunScheduleTask {
                 if (i - 1 >= 0 && i <= 11) {
                     Long parentId = list.get(i);
                     // 动态收益 = 当前用户静态收益 * 0.2（0.2位可变值）* 0.5 (i - 1)次方（0.5为可变值）
-                    BigDecimal count = sysConfig.getDynamicProfit().pow(i - 1).setScale(5, BigDecimal.ROUND_DOWN);
-                    BigDecimal dynamicReward = staticReward.multiply(count).setScale(5, BigDecimal.ROUND_DOWN);
+                    BigDecimal count = sysConfig.getDynamicProfit().pow(i - 1).setScale(SCALE, BigDecimal.ROUND_DOWN);
+                    BigDecimal dynamicReward = staticReward.multiply(count).setScale(SCALE, BigDecimal.ROUND_DOWN);
                     // 累加用户的动态收益
                     map.put(parentId, map.getOrDefault(parentId, BigDecimal.ZERO).add(dynamicReward));
                     // 资产详情按正常收益储存，用于数据记录
@@ -202,7 +202,7 @@ public class RunScheduleTask {
             // 如果总收益大于已激活的矿机价格，则将动态收益多余的部分减去
             if (totalProfit.compareTo(totalRentAsset) > 0) {
                 totalProfit = totalRentAsset;
-                totalDynamicProfit = totalProfit.subtract(totalRentAsset).setScale(5, BigDecimal.ROUND_DOWN);
+                totalDynamicProfit = totalProfit.subtract(totalRentAsset).setScale(SCALE, BigDecimal.ROUND_DOWN);
             }
             // 向用户资产集合中增加数据
             updateUserAssets.add(createUserAsset(userId, totalDynamicProfit, now));
@@ -250,8 +250,8 @@ public class RunScheduleTask {
             // 所有皇家用户平分当天所有产币量的1%
             BigDecimal totalStaticProfit = Optional.ofNullable(userProfitService.getCurrentDayTotalStaticProfit(DATE_FORMAT.format(now)))
                     .orElse(BigDecimal.ZERO);
-            BigDecimal clubProfit = totalStaticProfit.multiply(TEAM_LEVEL4_PROPORTION).setScale(5, BigDecimal.ROUND_DOWN)
-                    .divide(new BigDecimal(count), 5, BigDecimal.ROUND_DOWN);
+            BigDecimal clubProfit = totalStaticProfit.multiply(TEAM_LEVEL4_PROPORTION).setScale(SCALE, BigDecimal.ROUND_DOWN)
+                    .divide(new BigDecimal(count), SCALE, BigDecimal.ROUND_DOWN);
             for (UserTeamExt userTeamExt : topTeam) {
                 Long userId = userTeamExt.getUserId();
                 // 如果当天总收益超过了正在激活矿机的总价格，总收益置为总矿机价格，俱乐部多余部分减去，剩余的部分为实际的俱乐部收益
@@ -262,7 +262,7 @@ public class RunScheduleTask {
                 BigDecimal dynamicProfit = profitDTO.getDynamicProfit();
                 BigDecimal total = staticProfit.add(dynamicProfit).add(clubProfit);
                 if (total.compareTo(rentAsset) > 0) {
-                    clubProfit = rentAsset.subtract(staticProfit).subtract(dynamicProfit).setScale(5, BigDecimal.ROUND_DOWN);
+                    clubProfit = rentAsset.subtract(staticProfit).subtract(dynamicProfit).setScale(SCALE, BigDecimal.ROUND_DOWN);
                 }
                 updateUserAssets.add(createUserAsset(userId, clubProfit, now));
                 updateUserProfits.add(createUserProfit(userId, staticProfit, dynamicProfit, clubProfit, rentAsset, now));
@@ -377,7 +377,7 @@ public class RunScheduleTask {
                             for (TeamLevelDTO dto : dtos) {
                                 if (dto.getTeamLevel() >= teamLevel) {
                                     // 下级大于等于自身的等级，俱乐部收益 = 下级的总静态收益 * 1%
-                                    BigDecimal profit = dto.getTotalStaticProfit().multiply(new BigDecimal("0.01")).setScale(5, BigDecimal.ROUND_DOWN);
+                                    BigDecimal profit = dto.getTotalStaticProfit().multiply(new BigDecimal("0.01")).setScale(SCALE, BigDecimal.ROUND_DOWN);
                                     clubProfit = clubProfit.add(profit);
                                 } else {
                                     // 下级小于自身等级，俱乐部收益 = 下级的总静态收益 * 自身等级对应百分比 - 下级总静态收益排除下级自身的静态收益 * 下级等级对应百分比
@@ -385,13 +385,13 @@ public class RunScheduleTask {
                                     // 下级总静态收益 * 自身等级对应百分比
                                     switch (teamLevel) {
                                         case 1:
-                                            profit = dto.getTotalStaticProfit().multiply(TEAM_LEVEL1_PROPORTION).setScale(5, BigDecimal.ROUND_DOWN);
+                                            profit = dto.getTotalStaticProfit().multiply(TEAM_LEVEL1_PROPORTION).setScale(SCALE, BigDecimal.ROUND_DOWN);
                                             break;
                                         case 2:
-                                            profit = dto.getTotalStaticProfit().multiply(TEAM_LEVEL2_PROPORTION).setScale(5, BigDecimal.ROUND_DOWN);
+                                            profit = dto.getTotalStaticProfit().multiply(TEAM_LEVEL2_PROPORTION).setScale(SCALE, BigDecimal.ROUND_DOWN);
                                             break;
                                         case 3:
-                                            profit = dto.getTotalStaticProfit().multiply(TEAM_LEVEL3_PROPORTION).setScale(5, BigDecimal.ROUND_DOWN);
+                                            profit = dto.getTotalStaticProfit().multiply(TEAM_LEVEL3_PROPORTION).setScale(SCALE, BigDecimal.ROUND_DOWN);
                                             break;
                                         default:
                                             profit = BigDecimal.ZERO;
@@ -403,24 +403,24 @@ public class RunScheduleTask {
                                         dtoStatic = BigDecimal.ZERO;
                                     else
                                         dtoStatic = p.getStaticProfit();
-                                    BigDecimal d_ = dto.getTotalStaticProfit().subtract(dtoStatic).setScale(5, BigDecimal.ROUND_DOWN);
+                                    BigDecimal d_ = dto.getTotalStaticProfit().subtract(dtoStatic).setScale(SCALE, BigDecimal.ROUND_DOWN);
                                     BigDecimal profit_;
                                     // 排除后 * 下级等级对应百分比
                                     switch (dto.getTeamLevel()) {
                                         case 1:
-                                            profit_ = d_.multiply(TEAM_LEVEL1_PROPORTION).setScale(5, BigDecimal.ROUND_DOWN);
+                                            profit_ = d_.multiply(TEAM_LEVEL1_PROPORTION).setScale(SCALE, BigDecimal.ROUND_DOWN);
                                             break;
                                         case 2:
-                                            profit_ = d_.multiply(TEAM_LEVEL2_PROPORTION).setScale(5, BigDecimal.ROUND_DOWN);
+                                            profit_ = d_.multiply(TEAM_LEVEL2_PROPORTION).setScale(SCALE, BigDecimal.ROUND_DOWN);
                                             break;
                                         case 3:
-                                            profit_ = d_.multiply(TEAM_LEVEL3_PROPORTION).setScale(5, BigDecimal.ROUND_DOWN);
+                                            profit_ = d_.multiply(TEAM_LEVEL3_PROPORTION).setScale(SCALE, BigDecimal.ROUND_DOWN);
                                             break;
                                         default:
                                             profit_ = BigDecimal.ZERO;
                                     }
                                     // 二者相减
-                                    BigDecimal result = profit.subtract(profit_).setScale(5, BigDecimal.ROUND_DOWN);
+                                    BigDecimal result = profit.subtract(profit_).setScale(SCALE, BigDecimal.ROUND_DOWN);
                                     // 收益累加
                                     clubProfit = clubProfit.add(result);
                                 }
@@ -430,7 +430,7 @@ public class RunScheduleTask {
                             BigDecimal dynamicProfit = profitDTO.getDynamicProfit();
                             BigDecimal total = staticProfit.add(dynamicProfit).add(clubProfit);
                             if (total.compareTo(rentAsset) > 0) {
-                                clubProfit = rentAsset.subtract(staticProfit).subtract(dynamicProfit).setScale(5, BigDecimal.ROUND_DOWN);
+                                clubProfit = rentAsset.subtract(staticProfit).subtract(dynamicProfit).setScale(SCALE, BigDecimal.ROUND_DOWN);
                             }
                             teamLevelDTO.getUserAssets().add(createUserAsset(userId, clubProfit, date));
                             teamLevelDTO.getUserProfits().add(createUserProfit(userId, staticProfit, dynamicProfit, clubProfit, rentAsset, date));

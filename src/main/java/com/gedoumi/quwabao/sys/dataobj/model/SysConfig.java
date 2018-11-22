@@ -39,4 +39,24 @@ public class SysConfig {
      */
     private BigDecimal dynamicProfit;
 
+    /**
+     * 转账手续费比例
+     */
+    private BigDecimal transFeeProportion;
+
+    /**
+     * 每次提现最小金额
+     */
+    private BigDecimal withdrawSingleMin;
+
+    /**
+     * 每次提现最大金额
+     */
+    private BigDecimal withdrawSingleMax;
+
+    /**
+     * 每日提现最大金额
+     */
+    private BigDecimal withdrawDayLimit;
+
 }

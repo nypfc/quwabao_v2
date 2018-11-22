@@ -137,8 +137,8 @@ public class UserRentService {
         // 更新用户资产（注意将rentMoney转为负数）
         userAssetService.updateUserAsset(userId, rentMoney.negate(), false);
         // 创建用户资产详情
-        userAssetDetailService.insertUserDetailAsset(userId, rentMoney, userRent.getId(),
-                BigDecimal.ZERO, BigDecimal.ZERO, TransTypeEnum.Rent.getValue());
+        userAssetDetailService.insertUserDetailAsset(userId, null, rentMoney, userRent.getId(),
+                BigDecimal.ZERO, BigDecimal.ZERO, TransTypeEnum.Rent.getValue(), null);
     }
 
     /**

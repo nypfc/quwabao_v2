@@ -1,10 +1,12 @@
 package com.gedoumi.quwabao.trans.service;
 
 import com.gedoumi.quwabao.common.enums.CodeEnum;
+import com.gedoumi.quwabao.common.enums.TransStatusEnum;
 import com.gedoumi.quwabao.common.enums.TransTypeEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
+import com.gedoumi.quwabao.sys.service.SysConfigService;
 import com.gedoumi.quwabao.trans.dataobj.model.TransDetail;
 import com.gedoumi.quwabao.trans.mapper.TransDetailMapper;
 import com.gedoumi.quwabao.user.dataobj.form.TransferForm;
@@ -20,6 +22,8 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Optional;
+
+import static com.gedoumi.quwabao.common.constants.Constants.SCALE;
 
 /**
  * 交易Service
@@ -41,6 +45,9 @@ public class TransDetailService {
 
     @Resource
     private UserAssetDetailService userAssetDetailService;
+
+    @Resource
+    private SysConfigService sysConfigService;
 
     /**
      * 转账
@@ -86,16 +93,20 @@ public class TransDetailService {
         transDetail.setMoney(transMoney);
         transDetail.setFromUserId(fromUserId);
         transDetail.setToUserId(toUserId);
+        transDetail.setTransStatus(TransStatusEnum.Success.getValue());
         transDetailMapper.insert(transDetail);
-        // 变更转账人与被转账人的资产，注意被转账人金额为负数
+        // 计算手续费与实际接收的金额
+        BigDecimal transFeeProportion = sysConfigService.getSysConfig().getTransFeeProportion();
+        BigDecimal transFee = transMoney.multiply(transFeeProportion).setScale(SCALE, BigDecimal.ROUND_DOWN).stripTrailingZeros();
+        BigDecimal receiveMoney = transMoney.subtract(transFee).setScale(SCALE, BigDecimal.ROUND_DOWN).stripTrailingZeros();
+        // 变更转账人与被转账人的资产，注意被转账人金额转为负数
         userAssetService.updateUserAsset(fromUserId, transMoney.negate(), false);
-        userAssetService.updateUserAsset(toUserId, transMoney, false);
+        userAssetService.updateUserAsset(toUserId, receiveMoney, false);
         // 创建转账人与被转账人的资产详情
-        userAssetDetailService.insertUserDetailAsset(fromUserId, transMoney, null,
-                BigDecimal.ZERO, BigDecimal.ZERO, TransTypeEnum.TransOut.getValue());
-        userAssetDetailService.insertUserDetailAsset(toUserId, transMoney, null,
-                BigDecimal.ZERO, BigDecimal.ZERO, TransTypeEnum.TransIn.getValue());
-
+        userAssetDetailService.insertUserDetailAsset(fromUserId, toUserId, transMoney, null,
+                BigDecimal.ZERO, BigDecimal.ZERO, TransTypeEnum.TransOut.getValue(), transFee);
+        userAssetDetailService.insertUserDetailAsset(toUserId, fromUserId, receiveMoney, null,
+                BigDecimal.ZERO, BigDecimal.ZERO, TransTypeEnum.TransIn.getValue(), null);
     }
 
 }
