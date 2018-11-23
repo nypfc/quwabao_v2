@@ -30,7 +30,7 @@ pagehelper:  # MyBatis分页插件配置
   helperDialect: mysql
   support-methods-arguments: true
   params: count=countSql
-  #  reasonable: true  # 分页合理性
+  # reasonable: true  # 分页合理性
 
 task:  # 线程池配置
   pool:
@@ -41,19 +41,12 @@ task:  # 线程池配置
     thread-name-prefix: SMS-Thread
 
 sms:  # 短信配置
-  url: http://www.trans.zthysms.com/sendSms.do
+  url: http://www.api.zthysms.com/sendSms.do
   username: xiangqiandaihy
   password: 65tkXZ
   day-count: 10  # 每日短信数量
   interval-second: 60  # 短信间隔时间（单位：秒）
   expired-second: 60  # 短信过期时间（单位：秒）
-
-gateway: # 交易所配置
-  private-key: test  # 交易所私钥
-  url: http://139.198.12.20:4000
-  get-eth-address: /api/v1/pfc_eth/query
-  bind-eth-address: /api/v1/pfc_eth/bind
-  withdraw: /api/v1/pfc/withdraw
 
 #logging:
 #  pattern:

@@ -36,7 +36,7 @@ public class WithDrawVO {
                 .append(this.ts);
         String sign = null;
         try {
-            sign = AesCBC.encrypt(params.toString());
+            sign = AesCBC.encrypt(params.toString(), "");
         } catch (Exception e) {
             e.printStackTrace();
         }

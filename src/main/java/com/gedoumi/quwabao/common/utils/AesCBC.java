@@ -2,41 +2,44 @@ package com.gedoumi.quwabao.common.utils;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.util.ResourceUtils;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.File;
 import java.nio.charset.Charset;
+import java.util.Properties;
 
 /**
- * AES 是一种可逆加密算法，对用户的敏感信息加密处理
- * 对原始数据进行AES加密后，在进行Base64编码转化；
- * 正确
+ * AES加密
+ * 对原始数据进行AES加密后，进行Base64编码转化
  */
 public final class AesCBC {
 
     /*
-     * 已确认
      * 加密用的Key 可以用26个字母和数字组成
      * 此处使用AES-128-CBC加密模式，key需要为16位。
      */
-    private static final String PRIVATE_KEY_PATH2 = "privateKey";
-    private static Charset CHARSET = Charset.forName("utf-8");
+    private static Charset CHARSET = Charset.forName("UTF-8");
 
-    //private static
+    /**
+     * 私有化工具类构造方法
+     */
     private AesCBC() {
     }
 
-    // 加密
-    public static String encrypt(String sSrc) throws Exception {
+    /**
+     * AES加密
+     *
+     * @param sSrc 加密字符串
+     * @return 加密后的字符串
+     * @throws Exception ex
+     */
+    public static String encrypt(String sSrc, String secretKey) throws Exception {
         Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-        File f = ResourceUtils.getFile("classpath:" + PRIVATE_KEY_PATH2);
-        byte[] fileBytes = FileUtils.readFileToByteArray(f);
-        byte[] raw = Base64.decodeBase64(fileBytes);
+        byte[] raw = Base64.decodeBase64(secretKey.getBytes());
 
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         byte[] ivp = new byte[16];
@@ -60,16 +63,12 @@ public final class AesCBC {
         // 计算需要填充的位数
         int BLOCK_SIZE = 32;
         int amountToPad = BLOCK_SIZE - (count % BLOCK_SIZE);
-        if (amountToPad == 0) {
-            amountToPad = BLOCK_SIZE;
-        }
         // 获得补位所用的字符
         char padChr = chr(amountToPad);
         StringBuilder tmp = new StringBuilder();
         for (int index = 0; index < amountToPad; index++) {
             tmp.append(padChr);
         }
-        System.out.println(tmp);
         return tmp.toString().getBytes(CHARSET);
     }
 

@@ -1,8 +1,6 @@
 package com.gedoumi.quwabao;
 
-import com.gedoumi.quwabao.common.utils.JsonUtil;
-import com.gedoumi.quwabao.user.dataobj.model.UserTeamExt;
-import com.google.common.collect.Lists;
+import com.gedoumi.quwabao.trans.request.impl.QueryEthAddressRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -11,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Date;
 
 @Slf4j
@@ -30,12 +27,6 @@ public class QuwabaoTest {
         System.out.println("Millis:" + between.toMillis());
         System.out.println("Minutes:" + between.toMinutes());
         System.out.println("Days:" + between.toDays());
-    }
-
-    @Test
-    public void test2() {
-        ArrayList<UserTeamExt> list = Lists.newArrayList();
-        System.out.println(list.stream().count());
     }
 
 }
