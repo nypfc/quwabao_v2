@@ -40,14 +40,6 @@ task:  # 线程池配置
     keep-alive-second: 60
     thread-name-prefix: SMS-Thread
 
-sms:  # 短信配置
-  url: http://www.api.zthysms.com/sendSms.do
-  username: xiangqiandaihy
-  password: 65tkXZ
-  day-count: 10  # 每日短信数量
-  interval-second: 60  # 短信间隔时间（单位：秒）
-  expired-second: 60  # 短信过期时间（单位：秒）
-
 #logging:
 #  pattern:
 #    console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){blue} %clr(%5p) - %clr(%-40.40logger{39}){cyan} : %m%n"

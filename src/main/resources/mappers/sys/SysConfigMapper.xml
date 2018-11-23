@@ -7,7 +7,7 @@
 
     <sql id="Base_Column_List">
         id, app_version, download_url, static_profit, dynamic_profit, trans_fee_proportion,
-        withdraw_single_min, withdraw_single_max, withdraw_day_limit
+        withdraw_single_min, withdraw_single_max, withdraw_day_limit, sms_day_count, sms_expired_second
     </sql>
 
     <select id="selectById" resultType="SysConfig">

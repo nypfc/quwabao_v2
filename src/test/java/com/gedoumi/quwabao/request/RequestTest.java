@@ -1,7 +1,9 @@
 package com.gedoumi.quwabao.request;
 
 import com.gedoumi.quwabao.QuwabaoApplicationTests;
+import com.gedoumi.quwabao.common.utils.JsonUtil;
 import com.gedoumi.quwabao.sys.request.SMSRequest;
+import com.gedoumi.quwabao.sys.request.response.SMSResponse;
 import com.gedoumi.quwabao.trans.request.impl.BindEthAddressRequest;
 import com.gedoumi.quwabao.trans.request.impl.QueryEthAddressRequest;
 import org.junit.Test;
@@ -13,8 +15,8 @@ public class RequestTest extends QuwabaoApplicationTests {
     @Test
     public void smsTest() {
         SMSRequest smsRequest = new SMSRequest("13810060370", "123456");
-        String execute = smsRequest.execute();
-        System.out.println(execute);
+        SMSResponse response = smsRequest.execute();
+        System.out.println(JsonUtil.objectToJson(response));
     }
 
     @Test
