@@ -74,7 +74,7 @@ public class ProjectConfig implements WebMvcConfigurer {
     /**
      * 线程池配置
      *
-     * @return 线程池属性类
+     * @return 线程池配置类
      */
     @Bean
     public TaskThreadPoolProperties taskThreadPoolProperties() {

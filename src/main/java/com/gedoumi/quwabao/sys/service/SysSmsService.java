@@ -48,9 +48,9 @@ public class SysSmsService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void sendSms(Integer sendType, String mobile) {
-        // =========== 1.验证 ===========
-        // 当日短信上限验证
+        // 获取系统配置
         SysConfig sysConfig = sysConfigService.getSysConfig();
+        // 当日短信上限验证
         CurrentDateUtil dateUtil = new CurrentDateUtil();
         Integer count = sysSmsMapper.smsCurrentDayCount(mobile, dateUtil.getStartTime(), dateUtil.getEndTime());
         if (count >= sysConfig.getSmsDayCount()) {
@@ -62,24 +62,21 @@ public class SysSmsService {
             log.error("手机号:{}重复发送短信", mobile);
             throw new BusinessException(CodeEnum.RepeatedlySMS);
         }
-
-        // =========== 2.发送短信 ===========
         // 生成短信验证码
         String smsCode = CodeUtils.generateSMSCode();
-        // 获取短信参数
+        // 发送Post请求
         SMSRequest smsRequest = new SMSRequest(mobile, smsCode);
-        SMSResponse response = Optional.ofNullable(smsRequest.execute()).orElseThrow(() -> {
-            log.error("手机号:{}发送短信返回结果为空");
+        SMSResponse smsResponse = Optional.ofNullable(smsRequest.execute()).orElseThrow(() -> {
+            log.error("smsResponse返回结果为空");
             return new BusinessException(CodeEnum.SendSMSError);
         });
         // 验证结果
-        log.info("ret:{}", response);
-        if (!StringUtils.equals(response.getCode(), "1")) {
-            log.error("手机号:{}发送短信失败，状态码:{}，信息:{}", mobile, response.getCode(), response.getContent());
+        log.info("smsResponse:" + smsResponse);
+        if (!StringUtils.equals(smsResponse.getCode(), "1")) {
+            log.error("手机号:{}发送短信失败，状态码:{}，信息:{}", mobile, smsResponse.getCode(), smsResponse.getContent());
             throw new BusinessException(CodeEnum.SendSMSError);
         }
-
-        // =========== 3.创建短信 ===========
+        // 创建短信
         updateSmsStatus(mobile);  // 将其他短信置为失效
         SysSms sms = new SysSms();
         Date now = new Date();
@@ -90,8 +87,7 @@ public class SysSmsService {
         sms.setCreateTime(now);
         sms.setUpdateTime(now);
         sysSmsMapper.insert(sms);
-
-        // =========== 4.缓存短信 ===========
+        // 缓存短信
         String key = "sms:" + mobile;
         redisCache.setExpireKeyValueData(key, sms, (long) sysConfig.getSmsExpiredSecond(), TimeUnit.SECONDS);
     }

@@ -60,12 +60,12 @@ public class SysConfig {
     private BigDecimal withdrawDayLimit;
 
     /**
-     * 每日短信上限
+     * 每日短信最大数量
      */
     private Integer smsDayCount;
 
     /**
-     * 短信过期时间
+     * 短信失效时间
      */
     private Integer smsExpiredSecond;
 

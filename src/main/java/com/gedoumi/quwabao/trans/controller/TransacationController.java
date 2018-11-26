@@ -7,12 +7,12 @@ import com.gedoumi.quwabao.sys.dataobj.model.SysConfig;
 import com.gedoumi.quwabao.sys.service.SysConfigService;
 import com.gedoumi.quwabao.trans.dataobj.form.WithdrawForm;
 import com.gedoumi.quwabao.trans.dataobj.vo.WithdrawInfoVO;
+import com.gedoumi.quwabao.trans.service.GatewayService;
 import com.gedoumi.quwabao.trans.service.TransDetailService;
 import com.gedoumi.quwabao.user.dataobj.form.TransferForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import com.gedoumi.quwabao.user.service.UserAssetDetailService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -30,6 +30,9 @@ public class TransacationController {
 
     @Resource
     private TransDetailService transDetailService;
+
+    @Resource
+    private GatewayService gatewayService;
 
     @Resource
     private UserAssetDetailService userAssetDetailService;
@@ -58,6 +61,7 @@ public class TransacationController {
     @DuplicateRequest  // 防止重复提交
     @PostMapping("/withdraw")
     public ResponseObject withdraw(@RequestBody WithdrawForm withdrawForm) {
+        gatewayService.withdraw(withdrawForm);
         return new ResponseObject();
     }
 
@@ -68,14 +72,7 @@ public class TransacationController {
      */
     @GetMapping("/ethAddress")
     public ResponseObject getEthAddress() {
-        // 获取用户
-        User user = ContextUtil.getUserFromRequest();
-        // 如果用户已有以太坊地址，直接返回以太坊地址，否则先绑定地址
-        String ethAddress = user.getEthAddress();
-        if (StringUtils.isNotEmpty(ethAddress))
-            return new ResponseObject<>(ethAddress);
-
-        return new ResponseObject();
+        return new ResponseObject<>(gatewayService.getEthAddress());
     }
 
     /**

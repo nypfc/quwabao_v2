@@ -4,8 +4,10 @@ import com.gedoumi.quwabao.QuwabaoApplicationTests;
 import com.gedoumi.quwabao.common.utils.JsonUtil;
 import com.gedoumi.quwabao.sys.request.SMSRequest;
 import com.gedoumi.quwabao.sys.request.response.SMSResponse;
-import com.gedoumi.quwabao.trans.request.impl.BindEthAddressRequest;
-import com.gedoumi.quwabao.trans.request.impl.QueryEthAddressRequest;
+import com.gedoumi.quwabao.trans.request.BindEthAddressRequest;
+import com.gedoumi.quwabao.trans.request.QueryEthAddressRequest;
+import com.gedoumi.quwabao.trans.request.response.BindEthAddressResponse;
+import com.gedoumi.quwabao.trans.request.response.QueryEthAddressResponse;
 import org.junit.Test;
 import org.springframework.stereotype.Component;
 
@@ -15,22 +17,22 @@ public class RequestTest extends QuwabaoApplicationTests {
     @Test
     public void smsTest() {
         SMSRequest smsRequest = new SMSRequest("13810060370", "123456");
-        SMSResponse response = smsRequest.execute();
-        System.out.println(JsonUtil.objectToJson(response));
+        SMSResponse smsResponse = smsRequest.execute();
+        System.out.println(smsResponse);
     }
 
     @Test
     public void queryEthAddressTest() {
         QueryEthAddressRequest query = new QueryEthAddressRequest("13810060370");
-        String result = query.execute();
-        System.out.println(result);
+        QueryEthAddressResponse response = query.execute();
+        System.out.println(JsonUtil.objectToJson(response));
     }
 
     @Test
     public void bindEthAddressTest() {
         BindEthAddressRequest bind = new BindEthAddressRequest("13810060370");
-        String result = bind.execute();
-        System.out.println(result);
+        BindEthAddressResponse response = bind.execute();
+        System.out.println(JsonUtil.objectToJson(response));
     }
 
 }

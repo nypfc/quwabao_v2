@@ -3,7 +3,6 @@ package com.gedoumi.quwabao.sys.request;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
 import com.gedoumi.quwabao.sys.request.response.SMSResponse;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.http.HttpEntity;
@@ -21,7 +20,6 @@ import java.util.Properties;
  *
  * @author Minced
  */
-@Slf4j
 @Getter
 public class SMSRequest {
 
@@ -72,14 +70,14 @@ public class SMSRequest {
         headers.set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         HttpEntity requestEntity = new HttpEntity<>(paramMap, headers);
         // 发送Post请求
-        String responseStr = new RestTemplate().postForObject(url, requestEntity, String.class);
-        // 封装返回信息
-        if (StringUtils.isEmpty(responseStr))
+        String response = new RestTemplate().postForObject(url, requestEntity, String.class);
+        // 封装返回数据
+        if (StringUtils.isEmpty(response))
             return null;
-        String[] responseStrArr = responseStr.split(",");
+        String[] responseArr = response.split(",");
         SMSResponse smsResponse = new SMSResponse();
-        smsResponse.setCode(responseStrArr[0]);
-        smsResponse.setContent(responseStrArr[1]);
+        smsResponse.setCode(responseArr[0]);
+        smsResponse.setContent(responseArr[1]);
         return smsResponse;
     }
 

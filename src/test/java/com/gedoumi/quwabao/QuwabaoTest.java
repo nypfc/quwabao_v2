@@ -1,6 +1,5 @@
 package com.gedoumi.quwabao;
 
-import com.gedoumi.quwabao.trans.request.impl.QueryEthAddressRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -27,6 +26,11 @@ public class QuwabaoTest {
         System.out.println("Millis:" + between.toMillis());
         System.out.println("Minutes:" + between.toMinutes());
         System.out.println("Days:" + between.toDays());
+    }
+
+    @Test
+    public void test2() {
+
     }
 
 }

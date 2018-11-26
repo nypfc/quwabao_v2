@@ -1,5 +1,7 @@
 package com.gedoumi.quwabao.trans.request;
 
+import com.gedoumi.quwabao.trans.request.response.GatewayResponse;
+
 /**
  * 交易所请求
  *
@@ -10,9 +12,9 @@ public interface GatewayRequest {
     /**
      * 执行请求
      *
-     * @return 请求结果
+     * @return 网关响应对象
      */
-    String execute();
+    GatewayResponse execute();
 
     /**
      * 计算签名
