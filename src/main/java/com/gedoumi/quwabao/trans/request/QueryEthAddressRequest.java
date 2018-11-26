@@ -1,26 +1,27 @@
-package com.gedoumi.quwabao.trans.request.impl;
+package com.gedoumi.quwabao.trans.request;
 
 import com.gedoumi.quwabao.common.utils.AesCBC;
+import com.gedoumi.quwabao.common.utils.JsonUtil;
 import com.gedoumi.quwabao.trans.request.GatewayRequest;
+import com.gedoumi.quwabao.trans.request.response.QueryEthAddressResponse;
 import lombok.Getter;
+import org.springframework.boot.env.YamlPropertySourceLoader;
+import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 /**
- * 绑定以太坊地址
+ * 查询以太坊地址
  *
  * @author Minced
  */
 @Getter
-public class BindEthAddressRequest implements GatewayRequest {
+public class QueryEthAddressRequest implements GatewayRequest {
 
     /**
      * API URL
@@ -52,11 +53,11 @@ public class BindEthAddressRequest implements GatewayRequest {
      *
      * @param pfcAccount PFC账号
      */
-    public BindEthAddressRequest(String pfcAccount) {
+    public QueryEthAddressRequest(String pfcAccount) {
         try {
             Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource("properties/gateway.properties"));
             this.url = properties.getProperty("gateway.url");
-            this.uri = properties.getProperty("gateway.bindEthAddress");
+            this.uri = properties.getProperty("gateway.getEthAddress");
             this.privateKey = properties.getProperty("gateway.privateKey");
         } catch (IOException e) {
             e.printStackTrace();
@@ -65,22 +66,16 @@ public class BindEthAddressRequest implements GatewayRequest {
     }
 
     @Override
-    public String execute() {
-        long ts = System.currentTimeMillis() / 1000;
-        MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
-        paramMap.add("pfc_account", getPfcAccount());
-        paramMap.add("ts", String.valueOf(ts));
-        paramMap.add("sig", sign());
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        HttpEntity entity = new HttpEntity<>(paramMap, headers);
-        return new RestTemplate().postForObject(getUrl() + getUri(), entity, String.class);
+    public QueryEthAddressResponse execute() {
+        String url = getUrl() + getUri() + "?pfc_account={1}&ts={2}&sig={3}";
+        String response = new RestTemplate().getForObject(url, String.class, this.pfcAccount, String.valueOf(this.ts), sign());
+        return JsonUtil.jsonToPojo(response, QueryEthAddressResponse.class);
     }
 
     @Override
     public String sign() {
-        StringBuilder params = new StringBuilder(getUri());
-        params.append("pfc_account").append(getPfcAccount()).append("ts").append(ts);
+        StringBuilder params = new StringBuilder(this.uri);
+        params.append("pfc_account").append(this.pfcAccount).append("ts").append(this.ts);
         try {
             return AesCBC.encrypt(params.toString(), this.privateKey);
         } catch (Exception e) {

@@ -1,6 +1,7 @@
 package com.gedoumi.quwabao.sys.request;
 
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
+import com.gedoumi.quwabao.sys.request.response.SMSResponse;
 import lombok.Getter;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -47,7 +49,7 @@ public class SMSRequest {
      *
      * @return 结果数据
      */
-    public String execute() {
+    public SMSResponse execute() {
         // 获取短信参数
         String url = "";
         MultiValueMap<String, String> paramMap = null;
@@ -68,7 +70,15 @@ public class SMSRequest {
         headers.set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         HttpEntity requestEntity = new HttpEntity<>(paramMap, headers);
         // 发送Post请求
-        return new RestTemplate().postForObject(url, requestEntity, String.class);
+        String response = new RestTemplate().postForObject(url, requestEntity, String.class);
+        // 封装返回数据
+        if (StringUtils.isEmpty(response))
+            return null;
+        String[] responseArr = response.split(",");
+        SMSResponse smsResponse = new SMSResponse();
+        smsResponse.setCode(responseArr[0]);
+        smsResponse.setContent(responseArr[1]);
+        return smsResponse;
     }
 
     /**

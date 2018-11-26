@@ -1,6 +1,5 @@
 package com.gedoumi.quwabao.common.config;
 
-import com.gedoumi.quwabao.common.config.properties.SMSProperties;
 import com.gedoumi.quwabao.common.config.properties.TaskThreadPoolProperties;
 import com.gedoumi.quwabao.component.ApiInterceptor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -73,19 +72,9 @@ public class ProjectConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 短信配置
-     *
-     * @return 短信属性类
-     */
-    @Bean
-    public SMSProperties smsProperties() {
-        return new SMSProperties();
-    }
-
-    /**
      * 线程池配置
      *
-     * @return 线程池属性类
+     * @return 线程池配置类
      */
     @Bean
     public TaskThreadPoolProperties taskThreadPoolProperties() {

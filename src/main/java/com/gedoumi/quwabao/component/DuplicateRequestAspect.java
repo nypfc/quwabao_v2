@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 import java.util.Optional;
 
 /**
- * 防止重复提交
+ * 防止重复提交AOP
  *
  * @author Minced
  */
