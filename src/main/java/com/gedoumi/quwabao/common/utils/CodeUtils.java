@@ -59,7 +59,7 @@ public final class CodeUtils {
     private static byte[] RC4Base(byte[] input, String mKkey) {
         int x = 0;
         int y = 0;
-        byte key[] = initKey(mKkey);
+        byte[] key = initKey(mKkey);
         int xorIndex;
         byte[] result = new byte[input.length];
 
@@ -78,7 +78,7 @@ public final class CodeUtils {
 
     private static byte[] initKey(String aKey) {
         byte[] b_key = aKey.getBytes();
-        byte state[] = new byte[256];
+        byte[] state = new byte[256];
 
         for (int i = 0; i < 256; i++) {
             state[i] = (byte) i;
