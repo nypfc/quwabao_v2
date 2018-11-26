@@ -23,7 +23,7 @@ public class QueryEthAddressResponse extends GatewayResponse {
      * @author Minced
      */
     @Data
-    private class ResponseData {
+    public class ResponseData {
 
         /**
          * 账号名

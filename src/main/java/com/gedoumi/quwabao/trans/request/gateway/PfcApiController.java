@@ -1,8 +1,7 @@
 package com.gedoumi.quwabao.trans.request.gateway;
 
-import com.gedoumi.quwabao.trans.request.gateway.vo.RechargeVO;
-import com.gedoumi.quwabao.common.annotation.PfcLogAspect;
 import com.gedoumi.quwabao.common.utils.JsonUtil;
+import com.gedoumi.quwabao.trans.request.gateway.vo.RechargeVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v2/gedoumi")
 public class PfcApiController {
 
-    @PfcLogAspect
     @PostMapping(value = "/recharge")
     public ApiResponse recharge(RechargeVO rechargeVO) {
         log.info("recharge begin {}", JsonUtil.objectToJson(rechargeVO));

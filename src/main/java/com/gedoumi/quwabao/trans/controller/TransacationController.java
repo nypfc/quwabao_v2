@@ -13,7 +13,6 @@ import com.gedoumi.quwabao.user.dataobj.form.TransferForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import com.gedoumi.quwabao.user.service.UserAssetDetailService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -72,7 +71,7 @@ public class TransacationController {
      */
     @GetMapping("/ethAddress")
     public ResponseObject getEthAddress() {
-        return new ResponseObject<>(gatewayService.bindEthAddress());
+        return new ResponseObject<>(gatewayService.getEthAddress());
     }
 
     /**
