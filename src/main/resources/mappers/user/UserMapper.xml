@@ -6,9 +6,28 @@
 <mapper namespace="com.gedoumi.quwabao.user.mapper.UserMapper">
 
     <sql id="Base_Column_List">
-        id, error_count, error_time, last_login_ip, last_login_time, mobile_phone, password,
-        real_name, register_time, update_time, user_status, username, invite_code, token,
-        deviceId, reg_invite_code, user_type, sex, eth_address, validate_status, id_card
+        id,
+        error_count,
+        error_time,
+        last_login_ip,
+        last_login_time,
+        mobile_phone,
+        password,
+        pay_password
+        real_name,
+        register_time,
+        update_time,
+        user_status,
+        username,
+        invite_code,
+        token,
+        deviceId,
+        reg_invite_code,
+        user_type,
+        sex,
+        eth_address,
+        validate_status,
+        id_card
     </sql>
 
     <select id="selectByMobile" resultType="User">
@@ -79,6 +98,9 @@
             <if test="password != null">
                 password,
             </if>
+            <if test="payPassword != null">
+                pay_password,
+            </if>
             <if test="realName != null">
                 real_name,
             </if>
@@ -143,6 +165,9 @@
             </if>
             <if test="password != null">
                 #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{pay_password,jdbcType=VARCHAR},
             </if>
             <if test="realName != null">
                 #{realName,jdbcType=VARCHAR},
@@ -209,6 +234,9 @@
             </if>
             <if test="password != null">
                 password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="payPassword != null">
+                pay_password = #{pay_password,jdbcType=VARCHAR},
             </if>
             <if test="realName != null">
                 real_name = #{realName,jdbcType=VARCHAR},

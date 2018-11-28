@@ -31,8 +31,7 @@ public class RechargeController {
     @PostMapping(value = "/api/v2/pfc/recharge")
     public RechargeResponse recharge(RechargeForm rechargeForm) {
         log.info("recharge begin {}", JsonUtil.objectToJson(rechargeForm));
-        gatewayService.recharge(rechargeForm);
-        return null;
+        return gatewayService.recharge(rechargeForm);
     }
 
 }

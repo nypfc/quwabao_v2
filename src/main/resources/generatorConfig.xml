@@ -43,7 +43,7 @@
         </javaClientGenerator>
 
         <!--生成对应表及类名-->
-        <table tableName="trans_detail" domainObjectName="TransDetail" enableCountByExample="false" enableUpdateByExample="false"
+        <table tableName="sys_zone" domainObjectName="SysZone" enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
     </context>
 </generatorConfiguration>

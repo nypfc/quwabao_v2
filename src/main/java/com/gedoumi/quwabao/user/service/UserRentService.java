@@ -107,9 +107,9 @@ public class UserRentService {
         User user = ContextUtil.getUserFromRequest();
         Long userId = user.getId();
         String mobile = user.getMobilePhone();
-        // 密码加密比对
+        // 支付密码验证
         String encrypyPassword = MD5EncryptUtil.md5Encrypy(password, MD5EncryptUtil.md5Encrypy(mobile));
-        if (!StringUtils.equals(encrypyPassword, user.getPassword())) {
+        if (!StringUtils.equals(encrypyPassword, user.getPayPassword())) {
             log.error("手机号:{} 密码:{} 租用矿机密码不匹配", mobile, password);
             throw new BusinessException(CodeEnum.PasswordError);
         }

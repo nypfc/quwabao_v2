@@ -88,7 +88,7 @@ public class UserService {
         // 短信验证
         String key = "sms:" + mobile;
         Optional.ofNullable((SysSms) redisCache.getKeyValueData(key))
-                .filter(s -> s.getSmsType().equals(SmsTypeEnum.ResetPassword.getValue()))
+                .filter(s -> s.getSmsType().equals(SmsTypeEnum.RESET_PASSWORD.getValue()))
                 .filter(s -> s.getCode().equals(smsCode)).orElseThrow(() -> {
             log.error("手机号:{}验证码:{}错误", mobile, smsCode);
             return new BusinessException(CodeEnum.SmsCodeError);
@@ -227,7 +227,7 @@ public class UserService {
         // 短信验证码验证
         String key = "sms:" + mobile;
         Optional.ofNullable((SysSms) redisCache.getKeyValueData(key))
-                .filter(s -> s.getSmsType().equals(SmsTypeEnum.Register.getValue()))
+                .filter(s -> s.getSmsType().equals(SmsTypeEnum.REGISTER.getValue()))
                 .filter(s -> s.getCode().equals(smsCode)).orElseThrow(() -> {
             log.error("手机号:{}验证码:{}错误", mobile, smsCode);
             return new BusinessException(CodeEnum.SmsCodeError);

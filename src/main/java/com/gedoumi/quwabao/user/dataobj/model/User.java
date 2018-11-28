@@ -50,6 +50,11 @@ public class User {
     private String password;
 
     /**
+     * 支付密码
+     */
+    private String payPassword;
+
+    /**
      * 真实姓名
      */
     private String realName;

@@ -71,7 +71,7 @@ public class TransDetailService {
             throw new BusinessException(CodeEnum.TransSelfError);
         }
         String encrypyPassword = MD5EncryptUtil.md5Encrypy(password, MD5EncryptUtil.md5Encrypy(mobile));
-        if (!user.getPassword().equals(encrypyPassword)) {
+        if (!user.getPayPassword().equals(encrypyPassword)) {
             log.error("密码：{}错误", password);
             throw new BusinessException(CodeEnum.PasswordError);
         }

@@ -44,10 +44,11 @@ public class SysSmsService {
      * 发送短信
      *
      * @param sendType 类型
+     * @param zone     国家编码
      * @param mobile   手机号
      */
     @Transactional(rollbackFor = Exception.class)
-    public void sendSms(Integer sendType, String mobile) {
+    public void sendSms(Integer sendType, String zone, String mobile) {
         // 获取系统配置
         SysConfig sysConfig = sysConfigService.getSysConfig();
         // 当日短信上限验证

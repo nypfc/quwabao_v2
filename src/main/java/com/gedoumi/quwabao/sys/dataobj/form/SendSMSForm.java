@@ -14,6 +14,12 @@ import javax.validation.constraints.NotBlank;
 public class SendSMSForm {
 
     /**
+     * 国家编码
+     */
+    @NotBlank
+    private String zone;
+
+    /**
      * 手机号
      */
     @NotBlank

@@ -28,9 +28,4 @@ public class QuwabaoTest {
         System.out.println("Days:" + between.toDays());
     }
 
-    @Test
-    public void test2() {
-
-    }
-
 }
