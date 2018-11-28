@@ -49,6 +49,8 @@ public class SysSmsService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void sendSms(Integer sendType, String zone, String mobile) {
+        // TODO 国际短信
+
         // 获取系统配置
         SysConfig sysConfig = sysConfigService.getSysConfig();
         // 当日短信上限验证
