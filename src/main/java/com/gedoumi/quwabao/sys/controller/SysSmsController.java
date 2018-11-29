@@ -55,7 +55,7 @@ public class SysSmsController {
      */
     @PostMapping("/send")
     public ResponseObject sendRegisterSms(@RequestBody @Valid SendSMSForm sendSMSForm) {
-        sysSmsService.sendSms(SmsTypeEnum.REGISTER.getValue(), sendSMSForm.getZone(), sendSMSForm.getMobile());
+        sysSmsService.sendSms(sendSMSForm);
         return new ResponseObject();
     }
 
