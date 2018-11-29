@@ -1,6 +1,8 @@
 package com.gedoumi.quwabao.sys.dataobj.form;
 
 import com.gedoumi.quwabao.common.validate.MobilePhone;
+import com.gedoumi.quwabao.common.validate.StringValue;
+import com.gedoumi.quwabao.sys.request.response.SMSResponse;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -14,10 +16,23 @@ import javax.validation.constraints.NotBlank;
 public class SendSMSForm {
 
     /**
+     * 国家编码
+     */
+    @NotBlank
+    private String zone;
+
+    /**
      * 手机号
      */
     @NotBlank
     @MobilePhone
     private String mobile;
+
+    /**
+     * 短信类型
+     */
+    @NotBlank
+    @StringValue({"0", "1", "2", "3", "4"})
+    private String type;
 
 }

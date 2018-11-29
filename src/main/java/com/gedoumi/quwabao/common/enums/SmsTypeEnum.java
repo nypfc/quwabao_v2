@@ -5,9 +5,11 @@ import lombok.Getter;
 @Getter
 public enum SmsTypeEnum {
 
-    Register(0, "register", "注册"),
-    Login(1, "login", "登录"),
-    ResetPassword(2, "resetPwd", "重置密码"),
+    REGISTER(0, "register", "注册"),
+    LOGIN(1, "login", "登录"),
+    RESET_PASSWORD(2, "resetPwd", "重置密码"),
+    UPDATE_PAY_PASSWORD(3, "updatePayPassword", "修改支付密码"),
+    UPDATE_MOBILE(4, "updateMobile", "修改手机号"),
     ;
 
     private int value;

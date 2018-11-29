@@ -8,13 +8,10 @@ import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.CodeUtils;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
+import com.gedoumi.quwabao.common.utils.PasswordUtil;
 import com.gedoumi.quwabao.component.RedisCache;
-import com.gedoumi.quwabao.sys.dataobj.model.SysSms;
 import com.gedoumi.quwabao.sys.service.SysSmsService;
-import com.gedoumi.quwabao.user.dataobj.form.RegisterForm;
-import com.gedoumi.quwabao.user.dataobj.form.ResetPasswordForm;
-import com.gedoumi.quwabao.user.dataobj.form.UpdatePasswordForm;
-import com.gedoumi.quwabao.user.dataobj.form.UpdateUsernameForm;
+import com.gedoumi.quwabao.user.dataobj.form.*;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import com.gedoumi.quwabao.user.mapper.UserMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -86,24 +83,18 @@ public class UserService {
         String password = resetPasswordForm.getPassword();
         String smsCode = resetPasswordForm.getSmsCode();
         // 短信验证
-        String key = "sms:" + mobile;
-        Optional.ofNullable((SysSms) redisCache.getKeyValueData(key))
-                .filter(s -> s.getSmsType().equals(SmsTypeEnum.ResetPassword.getValue()))
-                .filter(s -> s.getCode().equals(smsCode)).orElseThrow(() -> {
+        if (!sysSmsService.validateSms(mobile, smsCode, SmsTypeEnum.RESET_PASSWORD.getValue())) {
             log.error("手机号:{}验证码:{}错误", mobile, smsCode);
-            return new BusinessException(CodeEnum.SmsCodeError);
-        });
-        sysSmsService.updateSmsStatus(mobile);  // 短信置为失效
-        redisCache.deleteKeyValueData(key);  // 删除缓存
+            throw new BusinessException(CodeEnum.SmsCodeError);
+        }
         // 重置密码
         User user = Optional.ofNullable(userMapper.selectByMobile(mobile)).orElseThrow(() -> {
             log.error("手机号:{}未能查询到用户", mobile);
             return new BusinessException(CodeEnum.MobileNotExist);
         });
         String token = UUID.randomUUID().toString();
-        String encrypedPassword = MD5EncryptUtil.md5Encrypy(password, MD5EncryptUtil.md5Encrypy(mobile));  // 密码加密
         user.setErrorCount(0);  // 错误次数重置
-        user.setPassword(encrypedPassword);
+        user.setPassword(PasswordUtil.passwordEncrypt(mobile, password));
         user.setToken(token);
         user.setLastLoginIp(ContextUtil.getClientIp());
         Date now = new Date();
@@ -206,6 +197,101 @@ public class UserService {
     }
 
     /**
+     * 更新手机号前验证手机号
+     *
+     * @param checkBeforUpdateForm 更新手机号前验证手机号表单
+     */
+    public void checkMobileBeforUpdate(CheckBeforUpdateForm checkBeforUpdateForm) {
+        // 获取用户
+        User user = ContextUtil.getUserFromRequest();
+        String mobile = user.getMobilePhone();
+        // 获取参数
+        Integer type = Integer.parseInt(checkBeforUpdateForm.getType());
+        String payPassword = PasswordUtil.passwordEncrypt(mobile, checkBeforUpdateForm.getPassword());
+        String smsCode = checkBeforUpdateForm.getSmsCode();
+        switch (type) {
+            case 1:  // 支付密码验证
+                if (StringUtils.isEmpty(payPassword)) {
+                    log.error("支付密码验证方式：支付密码参数为空");
+                    throw new BusinessException(CodeEnum.ParamError);
+                }
+                PasswordUtil.payPasswordValidate(mobile, user.getPayPassword(), payPassword);
+                break;
+            case 2:  // 短信验证
+                if (StringUtils.isEmpty(smsCode)) {
+                    log.error("短信验证方式：短信验证码参数为空");
+                    throw new BusinessException(CodeEnum.ParamError);
+                }
+                // 短信验证码验证
+                if (!sysSmsService.validateSms(mobile, smsCode, SmsTypeEnum.UPDATE_MOBILE.getValue())) {
+                    log.error("手机号:{}验证码:{}错误", mobile, smsCode);
+                    throw new BusinessException(CodeEnum.SmsCodeError);
+                }
+                break;
+            default:
+                log.error("type参数：{}有误", type);
+                throw new BusinessException(CodeEnum.ParamError);
+        }
+    }
+
+    /**
+     * 更新手机号
+     *
+     * @param updateMobileForm 更新手机号表单
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateMobile(UpdateMobileForm updateMobileForm) {
+        // 获取用户
+        User user = ContextUtil.getUserFromRequest();
+        // 获取参数
+        String newMobile = updateMobileForm.getNewMobile();
+        String smsCode = updateMobileForm.getSmsCode();
+        // 参数验证
+        if (StringUtils.equals(user.getMobilePhone(), newMobile)) {
+            log.error("修改手机号与原手机号相同：{}", newMobile);
+            throw new BusinessException(CodeEnum.MobileSame);
+        }
+        if (getByMobile(newMobile) != null) {
+            log.error("修改的手机号已存在：{}", newMobile);
+            throw new BusinessException(CodeEnum.MobileExist);
+        }
+        // 短信验证码验证
+        if (!sysSmsService.validateSms(newMobile, smsCode, SmsTypeEnum.UPDATE_MOBILE.getValue())) {
+            log.error("手机号:{}验证码:{}错误", newMobile, smsCode);
+            throw new BusinessException(CodeEnum.SmsCodeError);
+        }
+        // 更新手机号
+        user.setMobilePhone(newMobile);
+        userMapper.updateById(user);
+        // 更新缓存
+        redisCache.setKeyValueData(user.getToken(), user);
+    }
+
+    /**
+     * 更新支付密码
+     *
+     * @param updatePayPasswordForm 更新支付密码表单
+     */
+    public void updatePayPassword(UpdatePayPasswordForm updatePayPasswordForm) {
+        // 获取用户
+        User user = ContextUtil.getUserFromRequest();
+        String mobile = user.getMobilePhone();
+        // 获取参数
+        String payPassword = PasswordUtil.passwordEncrypt(mobile, updatePayPasswordForm.getPassword());
+        String smsCode = updatePayPasswordForm.getSmsCode();
+        // 短信验证码验证
+        if (!sysSmsService.validateSms(mobile, smsCode, SmsTypeEnum.UPDATE_PAY_PASSWORD.getValue())) {
+            log.error("手机号:{}验证码:{}错误", mobile, smsCode);
+            throw new BusinessException(CodeEnum.SmsCodeError);
+        }
+        // 更新手机号
+        user.setPayPassword(payPassword);
+        userMapper.updateById(user);
+        // 更新缓存
+        redisCache.setKeyValueData(user.getToken(), user);
+    }
+
+    /**
      * 注册用户
      *
      * @param registerForm 注册表单
@@ -225,13 +311,10 @@ public class UserService {
             throw new BusinessException(CodeEnum.MobileExist);
         }
         // 短信验证码验证
-        String key = "sms:" + mobile;
-        Optional.ofNullable((SysSms) redisCache.getKeyValueData(key))
-                .filter(s -> s.getSmsType().equals(SmsTypeEnum.Register.getValue()))
-                .filter(s -> s.getCode().equals(smsCode)).orElseThrow(() -> {
+        if (!sysSmsService.validateSms(mobile, smsCode, SmsTypeEnum.REGISTER.getValue())) {
             log.error("手机号:{}验证码:{}错误", mobile, smsCode);
-            return new BusinessException(CodeEnum.SmsCodeError);
-        });
+            throw new BusinessException(CodeEnum.SmsCodeError);
+        }
         // 邀请码验证
         if (!checkInviteCode(inviteCode)) {
             log.error("邀请码:{}对应用户不存在", inviteCode);
@@ -240,7 +323,7 @@ public class UserService {
         // 创建用户
         User user = new User();
         user.setMobilePhone(mobile);
-        user.setPassword(MD5EncryptUtil.md5Encrypy(password, MD5EncryptUtil.md5Encrypy(mobile)));
+        user.setPassword(PasswordUtil.passwordEncrypt(mobile, password));
         user.setUserStatus(UserStatusEnum.ENABLE.getValue());
         user.setLastLoginIp(ContextUtil.getClientIp());
         user.setToken(UUID.randomUUID().toString());

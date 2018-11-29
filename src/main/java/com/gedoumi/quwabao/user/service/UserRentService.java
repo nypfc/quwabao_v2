@@ -6,7 +6,7 @@ import com.gedoumi.quwabao.common.enums.TransTypeEnum;
 import com.gedoumi.quwabao.common.enums.UserRentStatusEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
-import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
+import com.gedoumi.quwabao.common.utils.PasswordUtil;
 import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
 import com.gedoumi.quwabao.sys.service.SysRentService;
 import com.gedoumi.quwabao.user.dataobj.dto.UserRentDTO;
@@ -17,7 +17,6 @@ import com.gedoumi.quwabao.user.dataobj.model.User;
 import com.gedoumi.quwabao.user.dataobj.model.UserRent;
 import com.gedoumi.quwabao.user.mapper.UserRentMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,7 +71,7 @@ public class UserRentService {
     /**
      * 获取用户总静态收益与已租用的矿机价格的总和
      *
-     * @param userId    用户ID
+     * @param userId 用户ID
      * @return 矿机价格总和
      */
     public UserTeamDTO getTotalStaticProfitAndTotalRentAsset(Long userId) {
@@ -107,12 +106,8 @@ public class UserRentService {
         User user = ContextUtil.getUserFromRequest();
         Long userId = user.getId();
         String mobile = user.getMobilePhone();
-        // 密码加密比对
-        String encrypyPassword = MD5EncryptUtil.md5Encrypy(password, MD5EncryptUtil.md5Encrypy(mobile));
-        if (!StringUtils.equals(encrypyPassword, user.getPassword())) {
-            log.error("手机号:{} 密码:{} 租用矿机密码不匹配", mobile, password);
-            throw new BusinessException(CodeEnum.PasswordError);
-        }
+        // 支付密码验证
+        PasswordUtil.payPasswordValidate(mobile, user.getPayPassword(), password);
         // 查询矿机信息
         SysRent rent = sysRentService.getRent(rentType);
         BigDecimal rentMoney = rent.getMoney();

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gedoumi.quwabao.sys.mapper.SysZoneMapper">
+
+    <sql id="Base_Column_List">
+        id,
+        zone_id,
+        zone_name
+    </sql>
+
+    <select id="selectById" parameterType="java.lang.Long" resultType="SysZone">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_zone
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByZoneId" resultType="java.lang.Integer">
+        select count(0)
+        from sys_zone
+        where zone_id = #{param1}
+    </select>
+
+    <select id="selectAll" parameterType="java.lang.Long" resultType="SysZone">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_zone
+    </select>
+
+</mapper>

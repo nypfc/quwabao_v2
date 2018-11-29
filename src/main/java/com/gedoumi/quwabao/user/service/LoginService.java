@@ -4,7 +4,7 @@ import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.UserStatusEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
-import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
+import com.gedoumi.quwabao.common.utils.PasswordUtil;
 import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.user.dataobj.form.LoginForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
@@ -44,8 +44,7 @@ public class LoginService {
         // 获取表单数据
         String mobile = loginForm.getMobile();
         String password = loginForm.getPassword();
-        String salt = MD5EncryptUtil.md5Encrypy(mobile);
-        String encryptedPassword = MD5EncryptUtil.md5Encrypy(password, salt);
+        String encryptedPassword = PasswordUtil.passwordEncrypt(mobile, password);
         // 根据手机号获取用户并验证
         User user = Optional.ofNullable(userService.getByMobile(mobile)).orElseThrow(() -> {
             log.error("手机号:{}未能查询到用户", mobile);

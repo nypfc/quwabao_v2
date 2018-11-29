@@ -2,7 +2,9 @@ package com.gedoumi.quwabao.request;
 
 import com.gedoumi.quwabao.QuwabaoApplicationTests;
 import com.gedoumi.quwabao.common.utils.JsonUtil;
+import com.gedoumi.quwabao.sys.request.InterSMSRequest;
 import com.gedoumi.quwabao.sys.request.SMSRequest;
+import com.gedoumi.quwabao.sys.request.response.InterSMSResponse;
 import com.gedoumi.quwabao.sys.request.response.SMSResponse;
 import com.gedoumi.quwabao.trans.request.BindEthAddressRequest;
 import com.gedoumi.quwabao.trans.request.QueryEthAddressRequest;
@@ -19,6 +21,13 @@ public class RequestTest extends QuwabaoApplicationTests {
         SMSRequest smsRequest = new SMSRequest("13810060370", "123456");
         SMSResponse smsResponse = smsRequest.execute();
         System.out.println(smsResponse);
+    }
+
+    @Test
+    public void interSmsTest() {
+        InterSMSRequest smsRequest = new InterSMSRequest("86", "13810060370", "135790");
+        InterSMSResponse smsResponse = smsRequest.execute();
+        System.out.println(JsonUtil.objectToJson(smsResponse));
     }
 
     @Test

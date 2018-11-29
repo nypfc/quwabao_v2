@@ -9,6 +9,7 @@ import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.sys.service.SysLogService;
 import com.gedoumi.quwabao.trans.dataobj.form.RechargeForm;
 import com.gedoumi.quwabao.trans.dataobj.form.WithdrawForm;
+import com.gedoumi.quwabao.trans.dataobj.vo.RechargeResponse;
 import com.gedoumi.quwabao.trans.request.BindEthAddressRequest;
 import com.gedoumi.quwabao.trans.request.response.BindEthAddressResponse;
 import com.gedoumi.quwabao.user.dataobj.model.User;
@@ -99,9 +100,25 @@ public class GatewayService {
      * 充值回调
      *
      * @param rechargeForm 充值表单
+     * @return 回调响应对象
      */
-    public void recharge(RechargeForm rechargeForm) {
-        // TODO 充值回调
+    public RechargeResponse recharge(RechargeForm rechargeForm) {
+        // 创建响应对象
+        RechargeResponse rechargeResponse = new RechargeResponse();
+        // 验证参数
+        if (rechargeForm == null
+                || StringUtils.isEmpty(rechargeForm.getPfc_account())
+                || StringUtils.isEmpty(rechargeForm.getAsset_name())
+                || StringUtils.isEmpty(rechargeForm.getAmount())
+                || StringUtils.isEmpty(rechargeForm.getSeq())
+                || rechargeForm.getTs() == null
+                || StringUtils.isEmpty(rechargeForm.getSig())) {
+            rechargeResponse.acessError();
+            return rechargeResponse;
+        }
+        // 验证签名
+
+        return rechargeResponse;
     }
 
 }

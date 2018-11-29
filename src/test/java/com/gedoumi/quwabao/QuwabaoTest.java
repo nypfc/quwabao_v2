@@ -30,7 +30,9 @@ public class QuwabaoTest {
 
     @Test
     public void test2() {
-
+        String mobile = "13810060370";
+        String format = String.format("sms:%s", mobile);
+        System.out.println(format);
     }
 
 }
