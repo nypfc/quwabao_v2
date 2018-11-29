@@ -27,4 +27,14 @@ public class SysZoneService {
         return sysZoneMapper.selectAll();
     }
 
+    /**
+     * 根据国家编码获取查询结果数量
+     *
+     * @param zone 国家编码
+     * @return 查询结果数量
+     */
+    public Integer countSysZone(String zone) {
+        return sysZoneMapper.countByZoneId(zone);
+    }
+
 }

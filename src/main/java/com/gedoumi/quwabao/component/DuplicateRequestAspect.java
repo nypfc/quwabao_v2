@@ -48,16 +48,9 @@ public class DuplicateRequestAspect {
         User user = ContextUtil.getUserFromRequest();
         String mobile = user.getMobilePhone();
         // 获取key：手机号 + 方法名
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        String methodName = signature.getMethod().getName();
+        String methodName = ((MethodSignature) joinPoint.getSignature()).getMethod().getName();
         String key = mobile + ":" + methodName;
-        // 如果获取到缓存，说明上次请求未完成，抛出异常
-        Optional.ofNullable(redisCache.getKeyValueData(key)).ifPresent(value -> {
-            log.error("手机号:{}重复请求", mobile);
-            throw new BusinessException(CodeEnum.DuplicateRequest);
-        });
-        // 设置缓存
-        redisCache.setKeyValueData(key, methodName);
+        setCache(mobile, key, methodName);  // 设置缓存
         try {
             // 执行切点
             Object result = joinPoint.proceed();
@@ -69,6 +62,23 @@ public class DuplicateRequestAspect {
             redisCache.deleteKeyValueData(key);
             throw t;
         }
+    }
+
+    /**
+     * 设置缓存
+     *
+     * @param mobile     手机号
+     * @param key        key
+     * @param methodName 方法名
+     */
+    private synchronized void setCache(String mobile, String key, String methodName) {
+        // 如果获取到缓存，说明上次请求未完成，抛出异常
+        Optional.ofNullable(redisCache.getKeyValueData(key)).ifPresent(value -> {
+            log.error("手机号:{}重复请求", mobile);
+            throw new BusinessException(CodeEnum.DuplicateRequest);
+        });
+        // 设置缓存
+        redisCache.setKeyValueData(key, methodName);
     }
 
 }

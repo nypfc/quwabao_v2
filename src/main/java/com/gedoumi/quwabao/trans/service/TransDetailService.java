@@ -6,6 +6,7 @@ import com.gedoumi.quwabao.common.enums.TransTypeEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
+import com.gedoumi.quwabao.common.utils.PasswordUtil;
 import com.gedoumi.quwabao.sys.service.SysConfigService;
 import com.gedoumi.quwabao.trans.dataobj.model.TransDetail;
 import com.gedoumi.quwabao.trans.mapper.TransDetailMapper;
@@ -15,6 +16,7 @@ import com.gedoumi.quwabao.user.service.UserAssetDetailService;
 import com.gedoumi.quwabao.user.service.UserAssetService;
 import com.gedoumi.quwabao.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,11 +72,7 @@ public class TransDetailService {
             log.error("手机号：{}向自身：{}转账", toMobile, mobile);
             throw new BusinessException(CodeEnum.TransSelfError);
         }
-        String encrypyPassword = MD5EncryptUtil.md5Encrypy(password, MD5EncryptUtil.md5Encrypy(mobile));
-        if (!user.getPayPassword().equals(encrypyPassword)) {
-            log.error("密码：{}错误", password);
-            throw new BusinessException(CodeEnum.PasswordError);
-        }
+        PasswordUtil.payPasswordValidate(mobile, user.getPayPassword(), password);  // 支付密码验证
         User toUser = Optional.ofNullable(userService.getByMobile(toMobile)).orElseThrow(() -> {
             log.error("被转账手机号：{}不存在", toMobile);
             return new BusinessException(CodeEnum.TransMobileNotExist);

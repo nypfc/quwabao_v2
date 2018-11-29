@@ -17,6 +17,12 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
 
+    <select id="countByZoneId" resultType="java.lang.Integer">
+        select count(0)
+        from sys_zone
+        where zone_id = #{param1}
+    </select>
+
     <select id="selectAll" parameterType="java.lang.Long" resultType="SysZone">
         select
         <include refid="Base_Column_List"/>

@@ -11,6 +11,11 @@ import lombok.Data;
 public class SMSResponse {
 
     /**
+     * 成功响应吗
+     */
+    public static final String SUCCESS = "1";
+
+    /**
      * 返回码
      */
     private String code;

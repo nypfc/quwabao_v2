@@ -28,7 +28,7 @@ public enum CodeEnum {
     ApplyTeamRewardError(2237, "不符合申请团队奖励的条件"),
     ApplyTeamRewardTwiceError(2238, "同类型的团队奖励已经申请过"),
     TransMoneyError(2239, "账户余额不足"),
-    TransPswdError(2240, "交易密码不正确"),
+    PayPswdError(2240, "交易密码不正确"),
     TransMobileNotExist(2241, "转账手机号码不存在"),
     OrgPswdError(2242, "原密码不正确"),
     ResetPswdError(2243, "请输入密码"),
@@ -60,8 +60,11 @@ public enum CodeEnum {
     Gaming(2267, "游戏期"),
     Bouns(2268, "算奖期"),
     ParamError(2269, "参数错误"),
-    SendSMSError(2270, "发送短息错误"),
-    RepeatedlySMS(2271, "不能重复发送短信"),
+    PayPswdNull(2270, "还未设置支付密码"),
+    ZoneError(2271, "区号错误"),
+    SendSMSError(2272, "发送短息错误"),
+    RepeatedlySMS(2273, "不能重复发送短信"),
+    MobileSame(2274, "修改手机号不能与原手机号相同"),
     ;
 
     private Integer code;

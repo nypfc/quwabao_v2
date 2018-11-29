@@ -53,45 +53,9 @@ public class SysSmsController {
      * @param sendSMSForm 发送短信表单
      * @return ResponseObject
      */
-    @PostMapping("/register")
+    @PostMapping("/send")
     public ResponseObject sendRegisterSms(@RequestBody @Valid SendSMSForm sendSMSForm) {
         sysSmsService.sendSms(SmsTypeEnum.REGISTER.getValue(), sendSMSForm.getZone(), sendSMSForm.getMobile());
-        return new ResponseObject();
-    }
-
-    /**
-     * 发送重置密码的短信验证码
-     *
-     * @param sendSMSForm 发送短信表单
-     * @return ResponseObject
-     */
-    @PostMapping("/reset/password")
-    public ResponseObject sendResetPasswordSms(@RequestBody @Valid SendSMSForm sendSMSForm) {
-        sysSmsService.sendSms(SmsTypeEnum.RESET_PASSWORD.getValue(), sendSMSForm.getZone(), sendSMSForm.getMobile());
-        return new ResponseObject();
-    }
-
-    /**
-     * 发送修改支付密码的短信验证码
-     *
-     * @param sendSMSForm 发送短信表单
-     * @return ResponseObject
-     */
-    @PostMapping("/update/payPassword")
-    public ResponseObject sendUpdatePayPasswordSms(@RequestBody @Valid SendSMSForm sendSMSForm) {
-        sysSmsService.sendSms(SmsTypeEnum.UPDATE_PAY_PASSWORD.getValue(), sendSMSForm.getZone(), sendSMSForm.getMobile());
-        return new ResponseObject();
-    }
-
-    /**
-     * 发送修改手机号的短信验证码
-     *
-     * @param sendSMSForm 发送短信表单
-     * @return ResponseObject
-     */
-    @PostMapping("/update/mobile")
-    public ResponseObject sendUpdateMobileSms(@RequestBody @Valid SendSMSForm sendSMSForm) {
-        sysSmsService.sendSms(SmsTypeEnum.UPDATE_MOBILE.getValue(), sendSMSForm.getZone(), sendSMSForm.getMobile());
         return new ResponseObject();
     }
 

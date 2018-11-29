@@ -170,6 +170,42 @@ public class UserController {
     }
 
     /**
+     * 更新手机号前验证手机号
+     *
+     * @param checkBeforUpdateForm 更新手机号前验证手机号表单
+     * @return ResponseObject
+     */
+    @PostMapping("/update/mobile/check")
+    public ResponseObject checkMobileBeforUpdate(@RequestBody CheckBeforUpdateForm checkBeforUpdateForm) {
+        userService.checkMobileBeforUpdate(checkBeforUpdateForm);
+        return new ResponseObject();
+    }
+
+    /**
+     * 更新手机号
+     *
+     * @param updateMobileForm 更新手机号表单
+     * @return ResponseObject
+     */
+    @PutMapping("/mobile")
+    public ResponseObject updateMobile(@RequestBody UpdateMobileForm updateMobileForm) {
+        userService.updateMobile(updateMobileForm);
+        return new ResponseObject();
+    }
+
+    /**
+     * 更新支付密码
+     *
+     * @param updatePayPasswordForm 更新支付密码表单
+     * @return ResponseObject
+     */
+    @PutMapping("/payPassword")
+    public ResponseObject updatePayPassword(@RequestBody UpdatePayPasswordForm updatePayPasswordForm) {
+        userService.updatePayPassword(updatePayPasswordForm);
+        return new ResponseObject();
+    }
+
+    /**
      * 注册
      *
      * @param registerForm 注册表单

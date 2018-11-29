@@ -10,6 +10,8 @@ import lombok.Data;
 @Data
 public class InterSMSResponse {
 
+    public static final String SUCCESS = "0";
+
     /**
      * 响应吗
      */
