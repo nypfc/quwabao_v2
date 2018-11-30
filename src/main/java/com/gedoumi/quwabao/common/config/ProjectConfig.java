@@ -12,6 +12,8 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import static com.gedoumi.quwabao.common.constants.ApiConstants.*;
+
 /**
  * 项目相关配置
  *
@@ -39,15 +41,16 @@ public class ProjectConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         // 令牌验证拦截器
         registry.addInterceptor(apiRequestInterceptor())
-                .addPathPatterns("/v2/user/**")
-                .addPathPatterns("/v2/trans/**")
-                .addPathPatterns("/v2/rent")
+                .addPathPatterns(APP_USER + "/**")
+                .addPathPatterns(APP_TRANSACATION + "/**")
+                .addPathPatterns(SYS_RENT + "/**")
+                .addPathPatterns(APP_GUESS + "/**")
                 // 验证接口不需要拦截
-                .excludePathPatterns("/v2/user/check/**")
+                .excludePathPatterns(APP_USER + "/check/**")
                 // 注册接口不需要拦截
-                .excludePathPatterns("/v2/user/register")
+                .excludePathPatterns(APP_USER + "/register")
                 // 重置密码（忘记密码）接口不需要拦截
-                .excludePathPatterns("/v2/user/password/reset");
+                .excludePathPatterns(APP_USER + "/password/reset");
     }
 
     /**

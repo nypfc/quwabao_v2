@@ -13,6 +13,7 @@ import com.gedoumi.quwabao.user.dataobj.vo.*;
 import com.gedoumi.quwabao.user.service.*;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
@@ -25,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.gedoumi.quwabao.common.constants.ApiConstants.APP_USER;
 import static com.gedoumi.quwabao.common.constants.Constants.SCALE;
 
 /**
@@ -35,7 +37,7 @@ import static com.gedoumi.quwabao.common.constants.Constants.SCALE;
 @Slf4j
 @Validated
 @RestController
-@RequestMapping("/v2/user")
+@RequestMapping(APP_USER)
 public class UserController {
 
     @Resource
@@ -76,24 +78,14 @@ public class UserController {
         // 获取用户团队信息
         UserTeamExt userTeamExt = userTeamExtService.getUserTeamExt(user.getId());
         // 封装返回信息
-        UserInfoVO userInfoVO = new UserInfoVO();
-        userInfoVO.setUsername(user.getUsername());
-        userInfoVO.setMobilePhone(user.getMobilePhone());
-        userInfoVO.setInviteCode(user.getInviteCode());
-
-        UserAssetVO userAssetVO = new UserAssetVO();
-        userAssetVO.setRemainAsset(userAsset.getRemainAsset().stripTrailingZeros().toPlainString());
-        userAssetVO.setTotalProfit(userAsset.getTotalAsset().stripTrailingZeros().toPlainString());
-
-        UserTeamInfoVO teamInfoVO = new UserTeamInfoVO();
-        teamInfoVO.setTeamLevel(userTeamExt.getTeamLevel());
-        teamInfoVO.setTotalRentMoney(userTeamExt.getTeamTotalRent().stripTrailingZeros().toPlainString());
-
         UserVO userVO = new UserVO();
-        userVO.setUser(userInfoVO);
-        userVO.setUserAsset(userAssetVO);
-        userVO.setUserTeam(teamInfoVO);
-
+        userVO.getUser().setUsername(user.getUsername());
+        userVO.getUser().setMobilePhone(user.getMobilePhone());
+        userVO.getUser().setInviteCode(user.getInviteCode());
+        userVO.getUserAsset().setRemainAsset(userAsset.getRemainAsset().stripTrailingZeros().toPlainString());
+        userVO.getUserAsset().setTotalProfit(userAsset.getTotalAsset().stripTrailingZeros().toPlainString());
+        userVO.getUserTeam().setTeamLevel(userTeamExt.getTeamLevel());
+        userVO.getUserTeam().setTotalRentMoney(userTeamExt.getTeamTotalRent().stripTrailingZeros().toPlainString());
         return new ResponseObject<>(userVO);
     }
 
@@ -191,6 +183,22 @@ public class UserController {
     public ResponseObject updateMobile(@RequestBody UpdateMobileForm updateMobileForm) {
         userService.updateMobile(updateMobileForm);
         return new ResponseObject();
+    }
+
+    /**
+     * 验证是否设置了支付密码
+     *
+     * @return ResponseObject
+     */
+    @GetMapping("/payPassword")
+    public ResponseObject checkPayPassword() {
+        boolean flag = false;
+        // 获取用户
+        User user = ContextUtil.getUserFromRequest();
+        // 如果支付密码不为空返回true，否则返回false
+        if (StringUtils.isNotEmpty(user.getPayPassword()))
+            flag = true;
+        return new ResponseObject<>(flag);
     }
 
     /**

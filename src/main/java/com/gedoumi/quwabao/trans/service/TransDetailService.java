@@ -102,9 +102,9 @@ public class TransDetailService {
         userAssetService.updateUserAsset(toUserId, receiveMoney, false);
         // 创建转账人与被转账人的资产详情
         userAssetDetailService.insertUserDetailAsset(fromUserId, toUserId, transMoney, null,
-                BigDecimal.ZERO, BigDecimal.ZERO, TransTypeEnum.TransOut.getValue(), transFee);
+                BigDecimal.ZERO, BigDecimal.ZERO, TransTypeEnum.TransOut.getValue(), transFee, null);
         userAssetDetailService.insertUserDetailAsset(toUserId, fromUserId, receiveMoney, null,
-                BigDecimal.ZERO, BigDecimal.ZERO, TransTypeEnum.TransIn.getValue(), null);
+                BigDecimal.ZERO, BigDecimal.ZERO, TransTypeEnum.TransIn.getValue(), null, null);
     }
 
 }

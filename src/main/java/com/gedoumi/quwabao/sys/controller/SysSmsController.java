@@ -1,6 +1,5 @@
 package com.gedoumi.quwabao.sys.controller;
 
-import com.gedoumi.quwabao.common.enums.SmsTypeEnum;
 import com.gedoumi.quwabao.common.utils.ResponseObject;
 import com.gedoumi.quwabao.sys.dataobj.form.SendSMSForm;
 import com.gedoumi.quwabao.sys.dataobj.model.SysZone;
@@ -16,13 +15,15 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.gedoumi.quwabao.common.constants.ApiConstants.APP_SMS;
+
 /**
  * 短信Controller
  *
  * @author Minced
  */
 @Validated
-@RequestMapping("/v2/sms")
+@RequestMapping(APP_SMS)
 @RestController
 public class SysSmsController {
 

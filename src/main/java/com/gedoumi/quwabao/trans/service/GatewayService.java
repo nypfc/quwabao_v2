@@ -3,6 +3,7 @@ package com.gedoumi.quwabao.trans.service;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.enums.SysLogStatusEnum;
 import com.gedoumi.quwabao.common.enums.SysLogTypeEnum;
+import com.gedoumi.quwabao.common.enums.TransTypeEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.component.RedisCache;
@@ -13,6 +14,8 @@ import com.gedoumi.quwabao.trans.dataobj.vo.RechargeResponse;
 import com.gedoumi.quwabao.trans.request.BindEthAddressRequest;
 import com.gedoumi.quwabao.trans.request.response.BindEthAddressResponse;
 import com.gedoumi.quwabao.user.dataobj.model.User;
+import com.gedoumi.quwabao.user.service.UserAssetDetailService;
+import com.gedoumi.quwabao.user.service.UserAssetService;
 import com.gedoumi.quwabao.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 
 /**
  * 请求API Service
@@ -35,6 +39,12 @@ public class GatewayService {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private UserAssetService userAssetService;
+
+    @Resource
+    private UserAssetDetailService userAssetDetailService;
 
     @Resource
     private RedisCache redisCache;
@@ -105,19 +115,64 @@ public class GatewayService {
     public RechargeResponse recharge(RechargeForm rechargeForm) {
         // 创建响应对象
         RechargeResponse rechargeResponse = new RechargeResponse();
-        // 验证参数
-        if (rechargeForm == null
-                || StringUtils.isEmpty(rechargeForm.getPfc_account())
-                || StringUtils.isEmpty(rechargeForm.getAsset_name())
-                || StringUtils.isEmpty(rechargeForm.getAmount())
-                || StringUtils.isEmpty(rechargeForm.getSeq())
-                || rechargeForm.getTs() == null
-                || StringUtils.isEmpty(rechargeForm.getSig())) {
+        // 获取参数
+        String mobile = rechargeForm.getPfc_account();
+        String assetName = rechargeForm.getAsset_name();
+        String amount = rechargeForm.getAmount();
+        String seq = rechargeForm.getSeq();
+        String ts = rechargeForm.getTs();
+        String sign = rechargeForm.getSig();
+        // 参数非空验证
+        if (StringUtils.isEmpty(mobile) || StringUtils.isEmpty(assetName) || StringUtils.isEmpty(amount)
+                || StringUtils.isEmpty(seq) || StringUtils.isEmpty(ts) || StringUtils.isEmpty(sign)) {
+            log.error("参数非空校验失败");
             rechargeResponse.acessError();
             return rechargeResponse;
         }
         // 验证签名
+        if (!StringUtils.equals(sign, rechargeForm.parameterSign())) {
+            log.error("签名错误");
+            rechargeResponse.acessError();
+            return rechargeResponse;
+        }
+        // 验证合法性验证
+        try {
+            Long.parseLong(ts);
+        } catch (NumberFormatException ex) {
+            log.error("时间戳：{}格式不正确", ts);
+            rechargeResponse.acessError();
+            return rechargeResponse;
+        }
+        BigDecimal money;
+        try {
+            money = new BigDecimal(amount);
+        } catch (NumberFormatException ex) {
+            log.error("金额：{}格式不正确", amount);
+            rechargeResponse.acessError();
+            return rechargeResponse;
+        }
+        User user = userService.getByMobile(mobile);
+        if (user == null) {
+            log.error("pfc_account：{}不存在", mobile);
+            rechargeResponse.accountError();
+            return rechargeResponse;
+        }
+        // 如果资产详情表中已经有对应的充值ID，说明已经充值完成，不增加资产
+        Long userId = user.getId();
+        if (userAssetDetailService.getBySeq(seq) == 0) {
+            // 更新资产
+            userAssetService.updateUserAsset(userId, money, false);
+            // 创建资产详情
+            userAssetDetailService.insertUserDetailAsset(userId, null, money, null, BigDecimal.ZERO,
+                    BigDecimal.ZERO, TransTypeEnum.NetIn.getValue(), null, seq);
+        }
 
+        // 封装返回数据
+        RechargeResponse.ResponseData data = rechargeResponse.new ResponseData();
+        data.setPfc_account(mobile);
+        data.setEth_address(user.getEthAddress());
+        rechargeResponse.success();
+        rechargeResponse.setData(data);
         return rechargeResponse;
     }
 

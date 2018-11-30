@@ -21,6 +21,12 @@ public class UpdateMobileForm {
     private String newMobile;
 
     /**
+     * 原密码
+     */
+    @NotBlank
+    private String orgPassword;
+
+    /**
      * 短信验证码
      */
     @NotBlank

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import static com.gedoumi.quwabao.common.constants.ApiConstants.APP_LOGIN;
+
 /**
  * 登录Controller
  *
@@ -19,7 +21,7 @@ import javax.validation.Valid;
  */
 @Validated
 @RestController
-@RequestMapping("/v2/login")
+@RequestMapping(APP_LOGIN)
 public class LoginController {
 
     @Resource
