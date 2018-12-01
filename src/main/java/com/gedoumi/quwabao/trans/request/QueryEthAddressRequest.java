@@ -1,5 +1,6 @@
 package com.gedoumi.quwabao.trans.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gedoumi.quwabao.common.utils.AesCBC;
 import com.gedoumi.quwabao.common.utils.JsonUtil;
 import com.gedoumi.quwabao.trans.request.GatewayRequest;
@@ -26,16 +27,19 @@ public class QueryEthAddressRequest implements GatewayRequest {
     /**
      * API URL
      */
+    @JsonIgnore
     private String url;
 
     /**
      * API URI
      */
+    @JsonIgnore
     private String uri;
 
     /**
      * 私钥
      */
+    @JsonIgnore
     private String privateKey;
 
     /**
