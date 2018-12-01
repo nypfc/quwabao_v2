@@ -83,8 +83,9 @@ public class UserAssetDetailService {
      * @param profitExt    不带本金的收益
      * @param transType    交易类型
      * @param fee          手续费
+     * @param seq          充值ID
      */
-    public void insertUserDetailAsset(Long userId, Long rewardUserId, BigDecimal money, Long rentId, BigDecimal profit, BigDecimal profitExt, Integer transType, BigDecimal fee) {
+    public void insertUserDetailAsset(Long userId, Long rewardUserId, BigDecimal money, Long rentId, BigDecimal profit, BigDecimal profitExt, Integer transType, BigDecimal fee, String seq) {
         UserAssetDetail detail = new UserAssetDetail();
         Date now = new Date();
         detail.setUserId(userId);
@@ -98,8 +99,19 @@ public class UserAssetDetailService {
         detail.setCreateTime(now);
         detail.setUpdateTime(now);
         detail.setFee(fee);
+        detail.setApiTransSeq(seq);
         detail.setVersionType(0);  // 冗余字段
         userAssetDetailMapper.insert(detail);
+    }
+
+    /**
+     * 查询充值记录的数量
+     *
+     * @param seq 充值ID
+     * @return 查询结果数量
+     */
+    public Integer getBySeq(String seq) {
+        return userAssetDetailMapper.countBySeq(seq);
     }
 
     /**

@@ -245,6 +245,7 @@ public class UserService {
         User user = ContextUtil.getUserFromRequest();
         // 获取参数
         String newMobile = updateMobileForm.getNewMobile();
+        String orgPassword = updateMobileForm.getOrgPassword();
         String smsCode = updateMobileForm.getSmsCode();
         // 参数验证
         if (StringUtils.equals(user.getMobilePhone(), newMobile)) {
@@ -255,6 +256,11 @@ public class UserService {
             log.error("修改的手机号已存在：{}", newMobile);
             throw new BusinessException(CodeEnum.MobileExist);
         }
+        String encryptPassword = PasswordUtil.passwordEncrypt(user.getMobilePhone(), orgPassword);  // 原密码比对
+        if (!StringUtils.equals(encryptPassword, user.getPassword())) {
+            log.error("手机号:{}，密码:{}，密码不正确", user.getMobilePhone(), orgPassword);
+            throw new BusinessException(CodeEnum.PasswordError);
+        }
         // 短信验证码验证
         if (!sysSmsService.validateSms(newMobile, smsCode, SmsTypeEnum.UPDATE_MOBILE.getValue())) {
             log.error("手机号:{}验证码:{}错误", newMobile, smsCode);
@@ -262,6 +268,7 @@ public class UserService {
         }
         // 更新手机号
         user.setMobilePhone(newMobile);
+        user.setPassword(PasswordUtil.passwordEncrypt(newMobile, orgPassword));
         userMapper.updateById(user);
         // 更新缓存
         redisCache.setKeyValueData(user.getToken(), user);

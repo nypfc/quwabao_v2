@@ -6,8 +6,20 @@
 <mapper namespace="com.gedoumi.quwabao.user.mapper.UserAssetDetailMapper">
 
     <sql id="Base_Column_List">
-        id, create_time, money, profit, profit_ext, trans_type, update_time, version_type,
-        user_id, rent_id, dig_date, reward_user_id, api_trans_seq, fee
+        id,
+        create_time,
+        money,
+        profit,
+        profit_ext,
+        trans_type,
+        update_time,
+        version_type,
+        user_id,
+        rent_id,
+        dig_date,
+        reward_user_id,
+        api_trans_seq,
+        fee
     </sql>
 
     <select id="selectTransInIds" resultType="UserAssetDetail">
@@ -25,6 +37,12 @@
         where user_id = #{param1}
           and trans_type = #{param2}
           and create_time between #{param3} and #{param4};
+    </select>
+
+    <select id="countBySeq" resultType="java.lang.Integer">
+        select count(0)
+        from user_asset_detail
+        where api_trans_seq = #{param1}
     </select>
 
     <insert id="insert" parameterType="UserAssetDetail">

@@ -12,12 +12,14 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.gedoumi.quwabao.common.constants.ApiConstants.SYS_RENT;
+
 /**
  * 矿机Controller
  *
  * @author Minced
  */
-@RequestMapping("/v2/rent")
+@RequestMapping(SYS_RENT)
 @RestController
 public class SysRentController {
 

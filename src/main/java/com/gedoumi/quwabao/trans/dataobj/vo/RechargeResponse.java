@@ -23,7 +23,22 @@ public class RechargeResponse {
     /**
      * 响应数据
      */
-    private Object data;
+    private ResponseData data;
+
+    @Data
+    public class ResponseData {
+
+        /**
+         * PFC账号
+         */
+        private String pfc_account;
+
+        /**
+         * 以太坊地址
+         */
+        private String eth_address;
+
+    }
 
     /**
      * 成功的响应内容

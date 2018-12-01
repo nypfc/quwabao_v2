@@ -1,8 +1,8 @@
 package com.gedoumi.quwabao.sys.dataobj.form;
 
+import com.gedoumi.quwabao.common.enums.SmsTypeEnum;
 import com.gedoumi.quwabao.common.validate.MobilePhone;
 import com.gedoumi.quwabao.common.validate.StringValue;
-import com.gedoumi.quwabao.sys.request.response.SMSResponse;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;

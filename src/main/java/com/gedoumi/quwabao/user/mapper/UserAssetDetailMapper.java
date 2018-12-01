@@ -36,6 +36,14 @@ public interface UserAssetDetailMapper {
     BigDecimal selectTotalDayWithdraw(Long userId, Integer transType, Date startDateTime, Date endDateTime);
 
     /**
+     * 根据充值ID查询
+     *
+     * @param seq 充值ID
+     * @return 查询结果
+     */
+    Integer countBySeq(String seq);
+
+    /**
      * 创建用户资产详情
      *
      * @param userAssetDetail 用户资产详情

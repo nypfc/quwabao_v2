@@ -87,7 +87,7 @@ public class UserAssetService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void updateUserAsset(Long userId, BigDecimal money, Boolean isProfit) {
-        userAssetMapper.updateByUserId(userId, money, new Date(), isProfit);
+        userAssetMapper.updateByUserId(userId, money, new Date(), isProfit == null ? false : isProfit);
     }
 
     /**
