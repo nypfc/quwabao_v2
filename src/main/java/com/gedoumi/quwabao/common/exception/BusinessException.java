@@ -4,6 +4,11 @@ import com.gedoumi.quwabao.common.enums.CodeEnum;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 业务异常
+ *
+ * @author Minced
+ */
 @Getter
 @Setter
 public class BusinessException extends RuntimeException {

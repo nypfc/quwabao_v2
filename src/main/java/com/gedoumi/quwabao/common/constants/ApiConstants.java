@@ -40,7 +40,7 @@ public interface ApiConstants {
     /**
      * APP交易
      */
-    String APP_TRANSACATION = VERSION + "/trans";
+    String APP_TRANSACTION = VERSION + "/trans";
 
     /**
      * APP充值回调

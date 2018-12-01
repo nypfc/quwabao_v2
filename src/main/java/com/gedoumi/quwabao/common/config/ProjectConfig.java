@@ -42,7 +42,7 @@ public class ProjectConfig implements WebMvcConfigurer {
         // 令牌验证拦截器
         registry.addInterceptor(apiRequestInterceptor())
                 .addPathPatterns(APP_USER + "/**")
-                .addPathPatterns(APP_TRANSACATION + "/**")
+                .addPathPatterns(APP_TRANSACTION + "/**")
                 .addPathPatterns(SYS_RENT + "/**")
                 .addPathPatterns(APP_GUESS + "/**")
                 // 验证接口不需要拦截
