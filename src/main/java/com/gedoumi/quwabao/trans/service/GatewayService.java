@@ -84,9 +84,7 @@ public class GatewayService {
         }
         // 如果用户没有绑定以太坊地址，则给用户绑定以太坊地址
         if (StringUtils.isEmpty(ethAddress)) {
-            BindEthAddressRequest bindRequest = new BindEthAddressRequest(mobile);
-            BindEthAddressResponse bindResponse = bindRequest.execute();
-
+            getEthAddress();
         }
     }
 
