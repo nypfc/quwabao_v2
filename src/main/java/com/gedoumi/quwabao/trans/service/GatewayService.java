@@ -143,6 +143,7 @@ public class GatewayService {
      * @param rechargeForm 充值表单
      * @return 回调响应对象
      */
+    @Transactional(rollbackFor = Exception.class)
     public RechargeResponseData recharge(RechargeForm rechargeForm) {
         // 获取参数
         String mobile = rechargeForm.getPfc_account();
