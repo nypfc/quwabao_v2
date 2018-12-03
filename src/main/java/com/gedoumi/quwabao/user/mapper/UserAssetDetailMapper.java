@@ -44,6 +44,17 @@ public interface UserAssetDetailMapper {
     Integer countBySeq(String seq);
 
     /**
+     * 根据用户ID查询当日提现总额
+     *
+     * @param userId        用户ID
+     * @param startDateTime 开始时间
+     * @param endDateTime   结束时间
+     * @param transType     交易类型
+     * @return 提现总额
+     */
+    BigDecimal getCurrentDayTotalWithdraw(Long userId, Date startDateTime, Date endDateTime, Integer transType);
+
+    /**
      * 创建用户资产详情
      *
      * @param userAssetDetail 用户资产详情

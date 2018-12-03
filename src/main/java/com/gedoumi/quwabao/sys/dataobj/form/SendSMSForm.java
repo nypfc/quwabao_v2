@@ -1,7 +1,5 @@
 package com.gedoumi.quwabao.sys.dataobj.form;
 
-import com.gedoumi.quwabao.common.enums.SmsTypeEnum;
-import com.gedoumi.quwabao.common.validate.MobilePhone;
 import com.gedoumi.quwabao.common.validate.StringValue;
 import lombok.Data;
 
@@ -25,7 +23,6 @@ public class SendSMSForm {
      * 手机号
      */
     @NotBlank
-    @MobilePhone
     private String mobile;
 
     /**

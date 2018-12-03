@@ -1,8 +1,11 @@
 package com.gedoumi.quwabao.component;
 
 import com.gedoumi.quwabao.common.enums.CodeEnum;
+import com.gedoumi.quwabao.common.enums.RechargeStatusEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
+import com.gedoumi.quwabao.common.exception.RechargeException;
 import com.gedoumi.quwabao.common.utils.ResponseObject;
+import com.gedoumi.quwabao.trans.dataobj.vo.RechargeResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -14,8 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.*;
 
 /**
  * 异常处理类
@@ -84,6 +86,22 @@ public class ApiExceptionAdvice {
         String message = sb.toString();
         log.error(message);
         return new ResponseObject(CodeEnum.ParamError, message);
+    }
+
+    /**
+     * 充值异常
+     *
+     * @param ex 异常
+     * @return ResponseObject
+     */
+    @ExceptionHandler(RechargeException.class)
+    @ResponseStatus(OK)  // 返回状态为200
+    public RechargeResponse rechargeException(RechargeException ex) {
+        RechargeStatusEnum statusEnum = ex.getRechargeStatusEnum();
+        RechargeResponse rechargeResponse = new RechargeResponse();
+        rechargeResponse.setCode(statusEnum.getValue());
+        rechargeResponse.setMsg(statusEnum.getMessage());
+        return rechargeResponse;
     }
 
     /**

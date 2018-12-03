@@ -33,7 +33,9 @@ public class RechargeController {
     @PostMapping(APP_RECHARGE_CALLBACK)
     public RechargeResponse recharge(RechargeForm rechargeForm) {
         log.info("recharge begin {}", JsonUtil.objectToJson(rechargeForm));
-        RechargeResponse rechargeResponse = gatewayService.recharge(rechargeForm);
+        RechargeResponse rechargeResponse = new RechargeResponse();
+        rechargeResponse.success();
+        rechargeResponse.setData(gatewayService.recharge(rechargeForm));
         log.info("recharge end ");
         return rechargeResponse;
     }

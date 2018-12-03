@@ -1,6 +1,5 @@
 package com.gedoumi.quwabao.user.dataobj.form;
 
-import com.gedoumi.quwabao.common.validate.MobilePhone;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -17,7 +16,6 @@ public class RegisterForm {
     /**
      * 手机号
      */
-    @MobilePhone
     @NotBlank
     private String mobile;
 

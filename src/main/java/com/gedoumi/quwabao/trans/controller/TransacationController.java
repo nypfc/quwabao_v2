@@ -60,7 +60,7 @@ public class TransacationController {
      */
     @DuplicateRequest  // 防止重复提交
     @PostMapping("/withdraw")
-    public ResponseObject withdraw(@RequestBody WithdrawForm withdrawForm) {
+    public ResponseObject withdraw(@RequestBody @Valid WithdrawForm withdrawForm) {
         gatewayService.withdraw(withdrawForm);
         return new ResponseObject();
     }

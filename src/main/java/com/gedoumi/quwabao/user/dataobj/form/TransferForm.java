@@ -1,11 +1,9 @@
 package com.gedoumi.quwabao.user.dataobj.form;
 
-import com.gedoumi.quwabao.common.validate.MobilePhone;
 import lombok.Data;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -28,7 +26,6 @@ public class TransferForm {
      * 收款手机号
      */
     @NotBlank
-    @MobilePhone
     private String toMobile;
 
     /**

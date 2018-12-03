@@ -72,7 +72,7 @@ public class TransDetailService {
             log.error("手机号：{}向自身：{}转账", toMobile, mobile);
             throw new BusinessException(CodeEnum.TransSelfError);
         }
-        PasswordUtil.payPasswordValidate(mobile, user.getPayPassword(), password);  // 支付密码验证
+        PasswordUtil.payPasswordValidate(fromUserId, user.getPayPassword(), password);  // 支付密码验证
         User toUser = Optional.ofNullable(userService.getByMobile(toMobile)).orElseThrow(() -> {
             log.error("被转账手机号：{}不存在", toMobile);
             return new BusinessException(CodeEnum.TransMobileNotExist);

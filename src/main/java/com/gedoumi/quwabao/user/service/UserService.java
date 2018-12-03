@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
 import java.util.*;
 
 import static com.gedoumi.quwabao.common.constants.Constants.USER_PREFIX;
@@ -152,6 +153,7 @@ public class UserService {
         }
         // 更新用户名
         user.setUsername(username);
+        user.setUpdateTime(new Date());
         userMapper.updateById(user);
         // 更新缓存
         redisCache.setKeyValueData(user.getToken(), user);
@@ -215,7 +217,7 @@ public class UserService {
                     log.error("支付密码验证方式：支付密码参数为空");
                     throw new BusinessException(CodeEnum.ParamError);
                 }
-                PasswordUtil.payPasswordValidate(mobile, user.getPayPassword(), payPassword);
+                PasswordUtil.payPasswordValidate(user.getId(), user.getPayPassword(), payPassword);
                 break;
             case 2:  // 短信验证
                 if (StringUtils.isEmpty(smsCode)) {
@@ -269,23 +271,49 @@ public class UserService {
         // 更新手机号
         user.setMobilePhone(newMobile);
         user.setPassword(PasswordUtil.passwordEncrypt(newMobile, orgPassword));
+        user.setUpdateTime(new Date());
         userMapper.updateById(user);
         // 更新缓存
         redisCache.setKeyValueData(user.getToken(), user);
     }
 
     /**
-     * 更新支付密码
+     * 修改支付密码
      *
-     * @param updatePayPasswordForm 更新支付密码表单
+     * @param updatePayPasswordForm 修改支付密码表单
      */
     public void updatePayPassword(UpdatePayPasswordForm updatePayPasswordForm) {
         // 获取用户
         User user = ContextUtil.getUserFromRequest();
+        Long userId = user.getId();
+        // 获取参数
+        String originalPayPassword = PasswordUtil.payPasswordEncrypt(userId, updatePayPasswordForm.getOriginalPassword());
+        String newPayPassword = PasswordUtil.payPasswordEncrypt(userId, updatePayPasswordForm.getPassword());
+        // 支付密码验证
+        if (!StringUtils.equals(user.getPayPassword(), originalPayPassword)) {
+            log.error("手机号：{}支付密码错误");
+            throw new BusinessException(CodeEnum.PayPswdError);
+        }
+        // 修改支付密码
+        user.setPayPassword(newPayPassword);
+        user.setUpdateTime(new Date());
+        userMapper.updateById(user);
+        // 更新缓存
+        redisCache.setKeyValueData(user.getToken(), user);
+    }
+
+    /**
+     * 重置支付密码
+     *
+     * @param resetPayPasswordForm 充值支付密码表单
+     */
+    public void resetPayPassword(ResetPayPasswordForm resetPayPasswordForm) {
+        // 获取用户
+        User user = ContextUtil.getUserFromRequest();
         String mobile = user.getMobilePhone();
         // 获取参数
-        String payPassword = PasswordUtil.passwordEncrypt(mobile, updatePayPasswordForm.getPassword());
-        String smsCode = updatePayPasswordForm.getSmsCode();
+        String payPassword = PasswordUtil.payPasswordEncrypt(user.getId(), resetPayPasswordForm.getPassword());
+        String smsCode = resetPayPasswordForm.getSmsCode();
         // 短信验证码验证
         if (!sysSmsService.validateSms(mobile, smsCode, SmsTypeEnum.UPDATE_PAY_PASSWORD.getValue())) {
             log.error("手机号:{}验证码:{}错误", mobile, smsCode);
@@ -293,6 +321,7 @@ public class UserService {
         }
         // 更新手机号
         user.setPayPassword(payPassword);
+        user.setUpdateTime(new Date());
         userMapper.updateById(user);
         // 更新缓存
         redisCache.setKeyValueData(user.getToken(), user);

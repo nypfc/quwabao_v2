@@ -105,9 +105,8 @@ public class UserRentService {
         // 获取用户
         User user = ContextUtil.getUserFromRequest();
         Long userId = user.getId();
-        String mobile = user.getMobilePhone();
         // 支付密码验证
-        PasswordUtil.payPasswordValidate(mobile, user.getPayPassword(), password);
+        PasswordUtil.payPasswordValidate(userId, user.getPayPassword(), password);
         // 查询矿机信息
         SysRent rent = sysRentService.getRent(rentType);
         BigDecimal rentMoney = rent.getMoney();

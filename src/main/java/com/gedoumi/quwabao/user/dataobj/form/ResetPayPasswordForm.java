@@ -5,21 +5,13 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 /**
- * 重置密码表单
- *
- * @author Minced
+ * 更新支付密码表单
  */
 @Data
-public class ResetPasswordForm {
+public class ResetPayPasswordForm {
 
     /**
-     * 手机号
-     */
-    @NotBlank
-    private String mobile;
-
-    /**
-     * 密码
+     * 支付密码
      */
     @NotBlank
     private String password;

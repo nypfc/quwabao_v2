@@ -1,5 +1,7 @@
 package com.gedoumi.quwabao.trans.dataobj.vo;
 
+import com.gedoumi.quwabao.common.enums.RechargeStatusEnum;
+import com.gedoumi.quwabao.trans.dataobj.dto.RechargeResponseData;
 import lombok.Data;
 
 /**
@@ -23,45 +25,14 @@ public class RechargeResponse {
     /**
      * 响应数据
      */
-    private ResponseData data;
-
-    @Data
-    public class ResponseData {
-
-        /**
-         * PFC账号
-         */
-        private String pfc_account;
-
-        /**
-         * 以太坊地址
-         */
-        private String eth_address;
-
-    }
+    private RechargeResponseData data;
 
     /**
      * 成功的响应内容
      */
     public void success() {
-        this.code = 0;
-        this.msg = "ok";
-    }
-
-    /**
-     * 验证失败的响应内容
-     */
-    public void acessError() {
-        this.code = 9001;
-        this.msg = "invalid access";
-    }
-
-    /**
-     * 账号错误的响应内容
-     */
-    public void accountError() {
-        this.code = 2001;
-        this.msg = "unknown pfc_account";
+        this.code = RechargeStatusEnum.SUCCESS.getValue();
+        this.msg = RechargeStatusEnum.SUCCESS.getMessage();
     }
 
 }

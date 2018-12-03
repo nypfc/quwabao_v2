@@ -1,6 +1,5 @@
 package com.gedoumi.quwabao.user.dataobj.form;
 
-import com.gedoumi.quwabao.common.validate.MobilePhone;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -17,7 +16,6 @@ public class LoginForm {
      * 用户名
      */
     @NotBlank
-    @MobilePhone
     private String mobile;
 
     /**

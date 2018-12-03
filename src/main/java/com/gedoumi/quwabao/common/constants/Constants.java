@@ -20,6 +20,8 @@ public interface Constants {
     BigDecimal TEAM_LEVEL2_PROPORTION = new BigDecimal("0.06");
     BigDecimal TEAM_LEVEL3_PROPORTION = new BigDecimal("0.09");
     BigDecimal TEAM_LEVEL4_PROPORTION = new BigDecimal("0.01");
+    String ASSET_NAME = "pfc";
+    String MEMO = "erc20#";
     String AUTH_TOKEN = "auth-token";
     String USER_PREFIX = "挖宝客";
 

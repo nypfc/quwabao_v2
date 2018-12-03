@@ -115,6 +115,17 @@ public class UserAssetDetailService {
     }
 
     /**
+     * 查询当日总提现金额
+     *
+     * @param userId 用户ID
+     * @return 总提现金额
+     */
+    public BigDecimal getCurrentDayTotalWithdraw(Long userId) {
+        CurrentDateUtil dateUtil = new CurrentDateUtil();
+        return userAssetDetailMapper.getCurrentDayTotalWithdraw(userId, dateUtil.getStartTime(), dateUtil.getEndTime(), TransTypeEnum.NetOut.getValue());
+    }
+
+    /**
      * 批量创建用户资产详情
      *
      * @param details 用户资产详情集合

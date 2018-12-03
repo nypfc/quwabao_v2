@@ -45,6 +45,14 @@
         where api_trans_seq = #{param1}
     </select>
 
+    <select id="getCurrentDayTotalWithdraw" resultType="java.math.BigDecimal">
+        select sum(0)
+        from user_asset_detail
+        where user_id = #{param1}
+          and create_time between #{param2} and #{param3}
+          and trans_type = #{param4}
+    </select>
+
     <insert id="insert" parameterType="UserAssetDetail">
         insert into user_asset_detail
         <trim prefix="(" suffix=")" suffixOverrides=",">

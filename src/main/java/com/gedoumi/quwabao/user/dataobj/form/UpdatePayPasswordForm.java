@@ -11,15 +11,15 @@ import javax.validation.constraints.NotBlank;
 public class UpdatePayPasswordForm {
 
     /**
-     * 支付密码
+     * 原支付密码
+     */
+    @NotBlank
+    private String originalPassword;
+
+    /**
+     * 新支付密码
      */
     @NotBlank
     private String password;
-
-    /**
-     * 短信验证码
-     */
-    @NotBlank
-    private String smsCode;
 
 }

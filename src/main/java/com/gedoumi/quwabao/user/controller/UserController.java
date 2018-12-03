@@ -3,7 +3,6 @@ package com.gedoumi.quwabao.user.controller;
 import com.gedoumi.quwabao.common.enums.UserProfitVOEnum;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.ResponseObject;
-import com.gedoumi.quwabao.common.validate.MobilePhone;
 import com.gedoumi.quwabao.sys.dataobj.model.SysRent;
 import com.gedoumi.quwabao.sys.service.SysRentService;
 import com.gedoumi.quwabao.user.dataobj.dto.UserRentNumberDTO;
@@ -135,7 +134,7 @@ public class UserController {
      * @return ResponseObject
      */
     @GetMapping("/check/mobile/{mobile}")
-    public ResponseObject checkMobilePhone(@MobilePhone @PathVariable String mobile) {
+    public ResponseObject checkMobilePhone(@PathVariable String mobile) {
         return new ResponseObject<>(userService.checkMobilePhone(mobile));
     }
 
@@ -202,14 +201,26 @@ public class UserController {
     }
 
     /**
-     * 更新支付密码
+     * 修改支付密码
      *
-     * @param updatePayPasswordForm 更新支付密码表单
+     * @param updatePayPasswordForm 修改支付密码表单
      * @return ResponseObject
      */
     @PutMapping("/payPassword")
     public ResponseObject updatePayPassword(@RequestBody UpdatePayPasswordForm updatePayPasswordForm) {
         userService.updatePayPassword(updatePayPasswordForm);
+        return new ResponseObject();
+    }
+
+    /**
+     * 重置支付密码
+     *
+     * @param resetPayPasswordForm 重置支付密码表单
+     * @return ResponseObject
+     */
+    @PutMapping("/payPassword")
+    public ResponseObject resetPayPassword(@RequestBody ResetPayPasswordForm resetPayPasswordForm) {
+        userService.resetPayPassword(resetPayPasswordForm);
         return new ResponseObject();
     }
 
