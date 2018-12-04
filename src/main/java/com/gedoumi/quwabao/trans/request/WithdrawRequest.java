@@ -3,8 +3,6 @@ package com.gedoumi.quwabao.trans.request;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gedoumi.quwabao.common.utils.AesCBC;
 import com.gedoumi.quwabao.common.utils.JsonUtil;
-import com.gedoumi.quwabao.trans.request.response.BindEthAddressResponse;
-import com.gedoumi.quwabao.trans.request.response.GatewayResponse;
 import com.gedoumi.quwabao.trans.request.response.WithdrawResponse;
 import lombok.Getter;
 import org.springframework.core.io.ClassPathResource;
@@ -21,6 +19,11 @@ import java.util.Properties;
 import static com.gedoumi.quwabao.common.constants.Constants.ASSET_NAME;
 import static com.gedoumi.quwabao.common.constants.Constants.MEMO;
 
+/**
+ * 提现请求类
+ *
+ * @author Minced
+ */
 @Getter
 public class WithdrawRequest implements GatewayRequest {
 
@@ -72,7 +75,7 @@ public class WithdrawRequest implements GatewayRequest {
     /**
      * 充值ID
      */
-    private String seq;
+    private Long seq;
 
     /**
      * 构造方法，注入请求参数
@@ -82,7 +85,7 @@ public class WithdrawRequest implements GatewayRequest {
      * @param ethAddress 以太坊地址
      * @param seq        充值ID
      */
-    public WithdrawRequest(String pfcAccount, String amount, String ethAddress, String seq) {
+    public WithdrawRequest(String pfcAccount, String amount, String ethAddress, Long seq) {
         try {
             Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource("properties/gateway.properties"));
             this.url = properties.getProperty("gateway.url");
@@ -98,8 +101,8 @@ public class WithdrawRequest implements GatewayRequest {
     }
 
     @Override
-    public GatewayResponse execute() {
-        MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+    public WithdrawResponse execute() {
+        MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<>();
         paramMap.add("pfc_account", this.pfcAccount);
         paramMap.add("asset_name", this.assetName);
         paramMap.add("amount", this.amount);

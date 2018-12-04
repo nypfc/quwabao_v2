@@ -12,8 +12,8 @@ public class UpdatePayPasswordForm {
 
     /**
      * 原支付密码
+     * 用户可能没有支付密码，不需要进行非空验证
      */
-    @NotBlank
     private String originalPassword;
 
     /**

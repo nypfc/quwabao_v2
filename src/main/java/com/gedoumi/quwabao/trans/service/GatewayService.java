@@ -13,7 +13,9 @@ import com.gedoumi.quwabao.trans.dataobj.dto.RechargeResponseData;
 import com.gedoumi.quwabao.trans.dataobj.form.RechargeForm;
 import com.gedoumi.quwabao.trans.dataobj.form.WithdrawForm;
 import com.gedoumi.quwabao.trans.request.BindEthAddressRequest;
+import com.gedoumi.quwabao.trans.request.WithdrawRequest;
 import com.gedoumi.quwabao.trans.request.response.BindEthAddressResponse;
+import com.gedoumi.quwabao.trans.request.response.WithdrawResponse;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import com.gedoumi.quwabao.user.service.UserAssetDetailService;
 import com.gedoumi.quwabao.user.service.UserAssetService;
@@ -24,6 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 /**
@@ -67,13 +72,14 @@ public class GatewayService {
         String userPayPassword = user.getPayPassword();
         String ethAddress = user.getEthAddress();
         // 获取参数
-        BigDecimal amount = new BigDecimal(withdrawForm.getAmount());
+        String amount = withdrawForm.getAmount();
+        BigDecimal amountBigDecimal = new BigDecimal(withdrawForm.getAmount());
         String payPassword = withdrawForm.getPassword();
         // 支付密码验证
         PasswordUtil.payPasswordValidate(userId, userPayPassword, payPassword);
         // 条件验证
         SysConfig sysConfig = sysConfigService.getSysConfig();
-        if (amount.compareTo(sysConfig.getWithdrawSingleMin()) < 0 || amount.compareTo(sysConfig.getWithdrawSingleMax()) > 0) {
+        if (amountBigDecimal.compareTo(sysConfig.getWithdrawSingleMin()) < 0 || amountBigDecimal.compareTo(sysConfig.getWithdrawSingleMax()) > 0) {
             log.error("手机号：{} 单次提现量：{} 不在要求范围内", mobile, amount);
             throw new BusinessException(CodeEnum.WithDrawSingleLimitError);
         }
@@ -84,7 +90,16 @@ public class GatewayService {
         }
         // 如果用户没有绑定以太坊地址，则给用户绑定以太坊地址
         if (StringUtils.isEmpty(ethAddress)) {
-            getEthAddress();
+            log.info("手机号：{}绑定以太坊地址", mobile);
+            ethAddress = getEthAddress();
+        }
+        // 发送提现请求
+        WithdrawRequest request = new WithdrawRequest(mobile, amount, ethAddress, 12345L);
+        WithdrawResponse response;
+        try {
+            response = request.execute();
+        } catch (Exception ex) {
+
         }
     }
 

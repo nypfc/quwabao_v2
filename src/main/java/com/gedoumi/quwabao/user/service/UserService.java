@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotBlank;
 import java.util.*;
 
 import static com.gedoumi.quwabao.common.constants.Constants.USER_PREFIX;
@@ -287,12 +286,21 @@ public class UserService {
         User user = ContextUtil.getUserFromRequest();
         Long userId = user.getId();
         // 获取参数
-        String originalPayPassword = PasswordUtil.payPasswordEncrypt(userId, updatePayPasswordForm.getOriginalPassword());
         String newPayPassword = PasswordUtil.payPasswordEncrypt(userId, updatePayPasswordForm.getPassword());
-        // 支付密码验证
-        if (!StringUtils.equals(user.getPayPassword(), originalPayPassword)) {
-            log.error("手机号：{}支付密码错误");
-            throw new BusinessException(CodeEnum.PayPswdError);
+        // 如果支付密码不为空，则支付密码验证
+        String userPayPassword = user.getPayPassword();
+        if (StringUtils.isNotEmpty(userPayPassword)) {
+            // 获取原支付密码
+            String originalPayPassword = updatePayPasswordForm.getOriginalPassword();
+            if (StringUtils.isEmpty(originalPayPassword)) {
+                log.error("验证支付密码时支付密码为空");
+                throw new BusinessException(CodeEnum.ParamError);
+            }
+            originalPayPassword = PasswordUtil.payPasswordEncrypt(userId, originalPayPassword);
+            if (!StringUtils.equals(userPayPassword, originalPayPassword)) {
+                log.error("手机号：{}支付密码错误");
+                throw new BusinessException(CodeEnum.PayPswdError);
+            }
         }
         // 修改支付密码
         user.setPayPassword(newPayPassword);

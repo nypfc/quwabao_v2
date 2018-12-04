@@ -5,7 +5,7 @@
 
 <mapper namespace="com.gedoumi.quwabao.sys.mapper.SysLogMapper">
 
-    <insert id="createSysLog" parameterType="SysLog">
+    <insert id="createSysLog" parameterType="SysLog" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO sys_log (client_ip,
                              create_time,
                              log_status,

@@ -72,7 +72,7 @@ public class BindEthAddressRequest implements GatewayRequest {
 
     @Override
     public BindEthAddressResponse execute() {
-        MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
+        MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<>();
         paramMap.add("pfc_account", this.pfcAccount);
         paramMap.add("ts", String.valueOf(this.ts));
         paramMap.add("sig", sign());
