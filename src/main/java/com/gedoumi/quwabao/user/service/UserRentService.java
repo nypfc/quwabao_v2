@@ -1,9 +1,6 @@
 package com.gedoumi.quwabao.user.service;
 
-import com.gedoumi.quwabao.common.enums.CodeEnum;
-import com.gedoumi.quwabao.common.enums.RentStatusEnum;
-import com.gedoumi.quwabao.common.enums.TransTypeEnum;
-import com.gedoumi.quwabao.common.enums.UserRentStatusEnum;
+import com.gedoumi.quwabao.common.enums.*;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.PasswordUtil;
@@ -16,6 +13,7 @@ import com.gedoumi.quwabao.user.dataobj.form.RentForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import com.gedoumi.quwabao.user.dataobj.model.UserRent;
 import com.gedoumi.quwabao.user.mapper.UserRentMapper;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -126,6 +124,12 @@ public class UserRentService {
         userRent.setTotalAsset(rent.getProfitMoneyExt());
         userRent.setUserId(userId);
         userRent.setRentType(rentType);
+        // 判断是不是第一次购买矿机
+        if (userRentMapper.countRentsById(userId, RentStatusEnum.ACTIVE.getValue()) == 0) {
+            userRent.setFirstRentType(FirstRentTypeEnum.FIRST.getValue());
+        } else {
+            userRent.setFirstRentType(FirstRentTypeEnum.NOT_FIRST.getValue());
+        }
         userRent.setRentStatus(UserRentStatusEnum.ACTIVE.getValue());
         userRentMapper.insert(userRent);
         // 更新用户资产（注意将rentMoney转为负数）

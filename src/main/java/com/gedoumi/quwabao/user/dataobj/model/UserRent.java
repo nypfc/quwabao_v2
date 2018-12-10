@@ -76,7 +76,7 @@ public class UserRent {
     private Integer digNumber;
 
     /**
-     * （冗余字段）
+     * 第一次购买矿机标识
      */
     private Integer firstRentType;
 

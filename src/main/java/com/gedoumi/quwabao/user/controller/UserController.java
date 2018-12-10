@@ -1,5 +1,6 @@
 package com.gedoumi.quwabao.user.controller;
 
+import com.gedoumi.quwabao.common.enums.TeamLevelManualEnum;
 import com.gedoumi.quwabao.common.enums.UserProfitVOEnum;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.ResponseObject;
@@ -83,7 +84,12 @@ public class UserController {
         userVO.getUser().setInviteCode(user.getInviteCode());
         userVO.getUserAsset().setRemainAsset(userAsset.getRemainAsset().stripTrailingZeros().toPlainString());
         userVO.getUserAsset().setTotalProfit(userAsset.getTotalAsset().stripTrailingZeros().toPlainString());
-        userVO.getUserTeam().setTeamLevel(userTeamExt.getTeamLevel());
+        // 如果是手动调整的等级，展示手动团队等级字段，否则展示计算出来的团队等级
+        if (userTeamExt.getManualTeamLevel().equals(TeamLevelManualEnum.MANUAL.getValue())) {
+            userVO.getUserTeam().setTeamLevel(userTeamExt.getManualLevel());
+        } else {
+            userVO.getUserTeam().setTeamLevel(userTeamExt.getTeamLevel());
+        }
         userVO.getUserTeam().setTotalRentMoney(userTeamExt.getTeamTotalRent().stripTrailingZeros().toPlainString());
         return new ResponseObject<>(userVO);
     }
@@ -218,7 +224,7 @@ public class UserController {
      * @param resetPayPasswordForm 重置支付密码表单
      * @return ResponseObject
      */
-    @PutMapping("/payPassword")
+    @PutMapping("/payPassword/reset")
     public ResponseObject resetPayPassword(@RequestBody ResetPayPasswordForm resetPayPasswordForm) {
         userService.resetPayPassword(resetPayPasswordForm);
         return new ResponseObject();

@@ -31,6 +31,11 @@ public class UserTeamExt {
     private Integer teamLevel;
 
     /**
+     * 手动团队等级
+     */
+    private Integer manualLevel;
+
+    /**
      * 是否是强制调整团队等级
      */
     private Integer manualTeamLevel;

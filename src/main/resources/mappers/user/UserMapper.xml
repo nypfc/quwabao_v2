@@ -236,7 +236,7 @@
                 password = #{password,jdbcType=VARCHAR},
             </if>
             <if test="payPassword != null">
-                pay_password = #{pay_password,jdbcType=VARCHAR},
+                pay_password = #{payPassword,jdbcType=VARCHAR},
             </if>
             <if test="realName != null">
                 real_name = #{realName,jdbcType=VARCHAR},

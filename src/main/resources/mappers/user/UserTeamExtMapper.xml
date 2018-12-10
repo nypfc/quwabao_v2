@@ -6,7 +6,14 @@
 <mapper namespace="com.gedoumi.quwabao.user.mapper.UserTeamExtMapper">
 
     <sql id="Base_Column_List">
-        id, user_id, team_level, manual_team_level, team_total_static_profit, team_total_rent, create_time,
+        id,
+        user_id,
+        team_level,
+        manual_level,
+        manual_team_level,
+        team_total_static_profit,
+        team_total_rent,
+        create_time,
         update_time
     </sql>
 
@@ -36,6 +43,9 @@
             <if test="teamLevel != null">
                 team_level,
             </if>
+            <if test="manualLevel != null">
+                manual_level,
+            </if>
             <if test="manualTeamLevel != null">
                 manual_team_level,
             </if>
@@ -62,6 +72,9 @@
             <if test="teamLevel != null">
                 #{teamLevel,jdbcType=TINYINT},
             </if>
+            <if test="manualLevel != null">
+                #{manualLevel,jdbcType=TINYINT},
+            </if>
             <if test="manualTeamLevel != null">
                 #{manualTeamLevel,jdbcType=TINYINT},
             </if>
@@ -85,6 +98,9 @@
         <set>
             <if test="teamLevel != null">
                 team_level = #{teamLevel,jdbcType=TINYINT},
+            </if>
+            <if test="manualLevel != null">
+                #{manualLevel,jdbcType=TINYINT},
             </if>
             <if test="manualTeamLevel != null">
                 manual_team_level = #{manualTeamLevel,jdbcType=TINYINT},

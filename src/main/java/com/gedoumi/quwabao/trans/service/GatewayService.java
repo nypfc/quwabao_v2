@@ -4,6 +4,7 @@ import com.gedoumi.quwabao.common.enums.*;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.exception.RechargeException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
+import com.gedoumi.quwabao.common.utils.IdGen;
 import com.gedoumi.quwabao.common.utils.PasswordUtil;
 import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.sys.dataobj.model.SysConfig;
@@ -26,10 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 /**
  * 请求API Service
@@ -63,7 +62,7 @@ public class GatewayService {
      *
      * @param withdrawForm 提现表单
      */
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class, noRollbackFor = BusinessException.class)
     public void withdraw(WithdrawForm withdrawForm) {
         // 获取用户
         User user = ContextUtil.getUserFromRequest();
@@ -83,10 +82,14 @@ public class GatewayService {
             log.error("手机号：{} 单次提现量：{} 不在要求范围内", mobile, amount);
             throw new BusinessException(CodeEnum.WithDrawSingleLimitError);
         }
-        BigDecimal total = userAssetDetailService.getCurrentDayTotalWithdraw(userId);
+        BigDecimal total = Optional.ofNullable(userAssetDetailService.getCurrentDayTotalWithdraw(userId)).orElse(BigDecimal.ZERO);
         if (total.compareTo(sysConfig.getWithdrawDayLimit()) > 0) {
             log.error("手机号：{}超过当日提现限额");
             throw new BusinessException(CodeEnum.WithDrawDayLimitError);
+        }
+        if (!userAssetService.remainAsset(userId, amountBigDecimal)) {
+            log.error("用户:{}余额不足", userId);
+            throw new BusinessException(CodeEnum.RemainAssetError);
         }
         // 如果用户没有绑定以太坊地址，则给用户绑定以太坊地址
         if (StringUtils.isEmpty(ethAddress)) {
@@ -94,13 +97,32 @@ public class GatewayService {
             ethAddress = getEthAddress();
         }
         // 发送提现请求
-        WithdrawRequest request = new WithdrawRequest(mobile, amount, ethAddress, 12345L);
+        long seq = new IdGen().nextId();
+        WithdrawRequest request = new WithdrawRequest(mobile, amount, ethAddress, seq);
         WithdrawResponse response;
         try {
             response = request.execute();
         } catch (Exception ex) {
-
+            // 捕获请求异常并设置网关日志
+            sysLogService.createSysLog(mobile, request, SysLogTypeEnum.WITHDRAW.getValue(), SysLogStatusEnum.FAIL.getValue());
+            // 抛出业务异常
+            throw new BusinessException(CodeEnum.GateWayError);
         }
+        // 判断结果
+        Integer code = response.getCode();
+        if (code == 0) {
+            // 请求成功的网关日志
+            sysLogService.createSysLog(mobile, request, SysLogTypeEnum.WITHDRAW.getValue(), SysLogStatusEnum.SUCCESS.getValue());
+            // 提现成功后减少用户余额
+            userAssetService.updateUserAsset(userId, amountBigDecimal.negate(), false);
+            // 创建用户资产详情
+            userAssetDetailService.insertUserDetailAsset(userId, null, amountBigDecimal, null, BigDecimal.ZERO, BigDecimal.ZERO, TransTypeEnum.NetOut.getValue(), null, String.valueOf(seq));
+            return;
+        }
+        // 错误的请求日志
+        log.error("网关响应失败:{}，信息:{}", code, response.getMsg());
+        sysLogService.createSysLog(mobile, request, SysLogTypeEnum.WITHDRAW.getValue(), SysLogStatusEnum.FAIL.getValue());
+        throw new BusinessException(CodeEnum.GateWayError);
     }
 
     /**

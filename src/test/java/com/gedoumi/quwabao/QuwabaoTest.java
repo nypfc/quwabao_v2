@@ -1,6 +1,8 @@
 package com.gedoumi.quwabao;
 
+import com.gedoumi.quwabao.common.utils.IdGen;
 import com.gedoumi.quwabao.common.utils.PasswordUtil;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -9,7 +11,11 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class QuwabaoTest {
@@ -31,7 +37,27 @@ public class QuwabaoTest {
 
     @Test
     public void test2() {
-        String s = PasswordUtil.payPasswordEncrypt(428L, "123456");
+        IdGen idGen = new IdGen();
+        for (int i = 0; i < 100; i++) {
+            long id = idGen.nextId();
+            System.out.println(id);
+        }
+    }
+
+    @Test
+    public void test3() {
+        Date date1 = new Date(1544427006000L);
+        Date date2 = new Date(1544198400000L);
+        Date date3 = new Date(1541347200000L);
+        ArrayList<Date> dates = Lists.newArrayList(date1, date2, date3);
+        List<Date> collect = dates.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        collect.forEach(value -> System.out.println(sdf.format(value)));
+    }
+
+    @Test
+    public void test4() {
+        String s = PasswordUtil.payPasswordEncrypt(312L, "111111");
         System.out.println(s);
     }
 

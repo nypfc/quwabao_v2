@@ -26,8 +26,8 @@
         group by user_id
     </select>
 
-    <select id="selectTotalRentById" resultType="java.math.BigDecimal">
-        select sum(rent_asset)
+    <select id="countRentsById" resultType="java.lang.Integer">
+        select count(0)
         from user_rent
         where rent_status = #{param2}
           and user_id = #{param1}
