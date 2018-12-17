@@ -1,10 +1,10 @@
 package com.gedoumi.quwabao.user.service;
 
 import com.gedoumi.quwabao.common.enums.CodeEnum;
+import com.gedoumi.quwabao.common.enums.PasswordTypeEnum;
 import com.gedoumi.quwabao.common.enums.UserStatusEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
-import com.gedoumi.quwabao.common.utils.PasswordUtil;
 import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.user.dataobj.form.LoginForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
@@ -39,12 +39,11 @@ public class LoginService {
      * @param loginForm 登录表单
      * @return 登录成功的用户对象
      */
-    @Transactional(rollbackFor = Exception.class, noRollbackFor = BusinessException.class)
+    @Transactional(rollbackFor = Exception.class)
     public User login(LoginForm loginForm) {
         // 获取表单数据
         String mobile = loginForm.getMobile();
         String password = loginForm.getPassword();
-        String encryptedPassword = PasswordUtil.passwordEncrypt(mobile, password);
         // 根据手机号获取用户并验证
         User user = Optional.ofNullable(userService.getByMobile(mobile)).orElseThrow(() -> {
             log.error("手机号:{}未能查询到用户", mobile);
@@ -54,16 +53,7 @@ public class LoginService {
             log.error("手机号:{}已经锁定", mobile);
             throw new BusinessException(CodeEnum.UserLocked);
         }
-        if (user.getErrorCount() >= 3) {
-            log.error("手机号:{}密码错误次数达到3次，需要重置密码", mobile);
-            throw new BusinessException(CodeEnum.TooManyError);
-        }
-        if (!StringUtils.equals(encryptedPassword, user.getPassword())) {
-            User update = new User();
-            update.setId(user.getId());
-            update.setErrorCount(user.getErrorCount() + 1);
-            update.setErrorTime(new Date());
-            userService.updateById(update);
+        if (!userService.passwordValidate(user, password, PasswordTypeEnum.LOGIN)) {
             log.error("手机号:{}，密码:{}，密码不正确", mobile, password);
             throw new BusinessException(CodeEnum.PasswordError);
         }

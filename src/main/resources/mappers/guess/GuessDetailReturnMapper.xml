@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gedoumi.quwabao.guess.mapper.GuessDetailReturnMapper">
+
+    <sql id="Base_Column_List">
+        id,
+        guess_detail_id,
+        r12,
+        r13,
+        r14,
+        r15,
+        r16,
+        r21,
+        r23,
+        r24,
+        r25,
+        r26,
+        r31,
+        r32,
+        r34,
+        r35,
+        r36,
+        r42,
+        r41,
+        r43,
+        r45,
+        r46,
+        r51,
+        r52,
+        r53,
+        r54,
+        r56,
+        r61,
+        r62,
+        r63,
+        r64,
+        r65
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultType="GuessDetailReturn">
+        select
+        <include refid="Base_Column_List"/>
+        from guess_detail_return
+        where id = #{param1}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from guess_detail_return
+        where id = #{param1}
+    </delete>
+
+    <insert id="insert" parameterType="GuessDetailReturn">
+        insert into guess_detail_return (id, guess_detail_id, r12,
+                                         r13, r14, r15, r16,
+                                         r21, r23, r24, r25,
+                                         r26, r31, r32, r34,
+                                         r35, r36, r42, r41,
+                                         r43, r45, r46, r51,
+                                         r52, r53, r54, r56,
+                                         r61, r62, r63, r64,
+                                         r65)
+        values (#{id,jdbcType=BIGINT}, #{guessDetailId,jdbcType=BIGINT}, #{r12,jdbcType=DECIMAL},
+                #{r13,jdbcType=DECIMAL}, #{r14,jdbcType=DECIMAL}, #{r15,jdbcType=DECIMAL}, #{r16,jdbcType=DECIMAL},
+                #{r21,jdbcType=DECIMAL}, #{r23,jdbcType=DECIMAL}, #{r24,jdbcType=DECIMAL}, #{r25,jdbcType=DECIMAL},
+                #{r26,jdbcType=DECIMAL}, #{r31,jdbcType=DECIMAL}, #{r32,jdbcType=DECIMAL}, #{r34,jdbcType=DECIMAL},
+                #{r35,jdbcType=DECIMAL}, #{r36,jdbcType=DECIMAL}, #{r42,jdbcType=DECIMAL}, #{r41,jdbcType=DECIMAL},
+                #{r43,jdbcType=DECIMAL}, #{r45,jdbcType=DECIMAL}, #{r46,jdbcType=DECIMAL}, #{r51,jdbcType=DECIMAL},
+                #{r52,jdbcType=DECIMAL}, #{r53,jdbcType=DECIMAL}, #{r54,jdbcType=DECIMAL}, #{r56,jdbcType=DECIMAL},
+                #{r61,jdbcType=DECIMAL}, #{r62,jdbcType=DECIMAL}, #{r63,jdbcType=DECIMAL}, #{r64,jdbcType=DECIMAL},
+                #{r65,jdbcType=DECIMAL})
+    </insert>
+
+    <insert id="insertSelective" parameterType="GuessDetailReturn">
+        insert into guess_detail_return
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="guessDetailId != null">
+                guess_detail_id,
+            </if>
+            <if test="r12 != null">
+                r12,
+            </if>
+            <if test="r13 != null">
+                r13,
+            </if>
+            <if test="r14 != null">
+                r14,
+            </if>
+            <if test="r15 != null">
+                r15,
+            </if>
+            <if test="r16 != null">
+                r16,
+            </if>
+            <if test="r21 != null">
+                r21,
+            </if>
+            <if test="r23 != null">
+                r23,
+            </if>
+            <if test="r24 != null">
+                r24,
+            </if>
+            <if test="r25 != null">
+                r25,
+            </if>
+            <if test="r26 != null">
+                r26,
+            </if>
+            <if test="r31 != null">
+                r31,
+            </if>
+            <if test="r32 != null">
+                r32,
+            </if>
+            <if test="r34 != null">
+                r34,
+            </if>
+            <if test="r35 != null">
+                r35,
+            </if>
+            <if test="r36 != null">
+                r36,
+            </if>
+            <if test="r42 != null">
+                r42,
+            </if>
+            <if test="r41 != null">
+                r41,
+            </if>
+            <if test="r43 != null">
+                r43,
+            </if>
+            <if test="r45 != null">
+                r45,
+            </if>
+            <if test="r46 != null">
+                r46,
+            </if>
+            <if test="r51 != null">
+                r51,
+            </if>
+            <if test="r52 != null">
+                r52,
+            </if>
+            <if test="r53 != null">
+                r53,
+            </if>
+            <if test="r54 != null">
+                r54,
+            </if>
+            <if test="r56 != null">
+                r56,
+            </if>
+            <if test="r61 != null">
+                r61,
+            </if>
+            <if test="r62 != null">
+                r62,
+            </if>
+            <if test="r63 != null">
+                r63,
+            </if>
+            <if test="r64 != null">
+                r64,
+            </if>
+            <if test="r65 != null">
+                r65,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="guessDetailId != null">
+                #{guessDetailId,jdbcType=BIGINT},
+            </if>
+            <if test="r12 != null">
+                #{r12,jdbcType=DECIMAL},
+            </if>
+            <if test="r13 != null">
+                #{r13,jdbcType=DECIMAL},
+            </if>
+            <if test="r14 != null">
+                #{r14,jdbcType=DECIMAL},
+            </if>
+            <if test="r15 != null">
+                #{r15,jdbcType=DECIMAL},
+            </if>
+            <if test="r16 != null">
+                #{r16,jdbcType=DECIMAL},
+            </if>
+            <if test="r21 != null">
+                #{r21,jdbcType=DECIMAL},
+            </if>
+            <if test="r23 != null">
+                #{r23,jdbcType=DECIMAL},
+            </if>
+            <if test="r24 != null">
+                #{r24,jdbcType=DECIMAL},
+            </if>
+            <if test="r25 != null">
+                #{r25,jdbcType=DECIMAL},
+            </if>
+            <if test="r26 != null">
+                #{r26,jdbcType=DECIMAL},
+            </if>
+            <if test="r31 != null">
+                #{r31,jdbcType=DECIMAL},
+            </if>
+            <if test="r32 != null">
+                #{r32,jdbcType=DECIMAL},
+            </if>
+            <if test="r34 != null">
+                #{r34,jdbcType=DECIMAL},
+            </if>
+            <if test="r35 != null">
+                #{r35,jdbcType=DECIMAL},
+            </if>
+            <if test="r36 != null">
+                #{r36,jdbcType=DECIMAL},
+            </if>
+            <if test="r42 != null">
+                #{r42,jdbcType=DECIMAL},
+            </if>
+            <if test="r41 != null">
+                #{r41,jdbcType=DECIMAL},
+            </if>
+            <if test="r43 != null">
+                #{r43,jdbcType=DECIMAL},
+            </if>
+            <if test="r45 != null">
+                #{r45,jdbcType=DECIMAL},
+            </if>
+            <if test="r46 != null">
+                #{r46,jdbcType=DECIMAL},
+            </if>
+            <if test="r51 != null">
+                #{r51,jdbcType=DECIMAL},
+            </if>
+            <if test="r52 != null">
+                #{r52,jdbcType=DECIMAL},
+            </if>
+            <if test="r53 != null">
+                #{r53,jdbcType=DECIMAL},
+            </if>
+            <if test="r54 != null">
+                #{r54,jdbcType=DECIMAL},
+            </if>
+            <if test="r56 != null">
+                #{r56,jdbcType=DECIMAL},
+            </if>
+            <if test="r61 != null">
+                #{r61,jdbcType=DECIMAL},
+            </if>
+            <if test="r62 != null">
+                #{r62,jdbcType=DECIMAL},
+            </if>
+            <if test="r63 != null">
+                #{r63,jdbcType=DECIMAL},
+            </if>
+            <if test="r64 != null">
+                #{r64,jdbcType=DECIMAL},
+            </if>
+            <if test="r65 != null">
+                #{r65,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="GuessDetailReturn">
+        update guess_detail_return
+        <set>
+            <if test="guessDetailId != null">
+                guess_detail_id = #{guessDetailId,jdbcType=BIGINT},
+            </if>
+            <if test="r12 != null">
+                r12 = #{r12,jdbcType=DECIMAL},
+            </if>
+            <if test="r13 != null">
+                r13 = #{r13,jdbcType=DECIMAL},
+            </if>
+            <if test="r14 != null">
+                r14 = #{r14,jdbcType=DECIMAL},
+            </if>
+            <if test="r15 != null">
+                r15 = #{r15,jdbcType=DECIMAL},
+            </if>
+            <if test="r16 != null">
+                r16 = #{r16,jdbcType=DECIMAL},
+            </if>
+            <if test="r21 != null">
+                r21 = #{r21,jdbcType=DECIMAL},
+            </if>
+            <if test="r23 != null">
+                r23 = #{r23,jdbcType=DECIMAL},
+            </if>
+            <if test="r24 != null">
+                r24 = #{r24,jdbcType=DECIMAL},
+            </if>
+            <if test="r25 != null">
+                r25 = #{r25,jdbcType=DECIMAL},
+            </if>
+            <if test="r26 != null">
+                r26 = #{r26,jdbcType=DECIMAL},
+            </if>
+            <if test="r31 != null">
+                r31 = #{r31,jdbcType=DECIMAL},
+            </if>
+            <if test="r32 != null">
+                r32 = #{r32,jdbcType=DECIMAL},
+            </if>
+            <if test="r34 != null">
+                r34 = #{r34,jdbcType=DECIMAL},
+            </if>
+            <if test="r35 != null">
+                r35 = #{r35,jdbcType=DECIMAL},
+            </if>
+            <if test="r36 != null">
+                r36 = #{r36,jdbcType=DECIMAL},
+            </if>
+            <if test="r42 != null">
+                r42 = #{r42,jdbcType=DECIMAL},
+            </if>
+            <if test="r41 != null">
+                r41 = #{r41,jdbcType=DECIMAL},
+            </if>
+            <if test="r43 != null">
+                r43 = #{r43,jdbcType=DECIMAL},
+            </if>
+            <if test="r45 != null">
+                r45 = #{r45,jdbcType=DECIMAL},
+            </if>
+            <if test="r46 != null">
+                r46 = #{r46,jdbcType=DECIMAL},
+            </if>
+            <if test="r51 != null">
+                r51 = #{r51,jdbcType=DECIMAL},
+            </if>
+            <if test="r52 != null">
+                r52 = #{r52,jdbcType=DECIMAL},
+            </if>
+            <if test="r53 != null">
+                r53 = #{r53,jdbcType=DECIMAL},
+            </if>
+            <if test="r54 != null">
+                r54 = #{r54,jdbcType=DECIMAL},
+            </if>
+            <if test="r56 != null">
+                r56 = #{r56,jdbcType=DECIMAL},
+            </if>
+            <if test="r61 != null">
+                r61 = #{r61,jdbcType=DECIMAL},
+            </if>
+            <if test="r62 != null">
+                r62 = #{r62,jdbcType=DECIMAL},
+            </if>
+            <if test="r63 != null">
+                r63 = #{r63,jdbcType=DECIMAL},
+            </if>
+            <if test="r64 != null">
+                r64 = #{r64,jdbcType=DECIMAL},
+            </if>
+            <if test="r65 != null">
+                r65 = #{r65,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="GuessDetailReturn">
+        update guess_detail_return
+        set guess_detail_id = #{guessDetailId,jdbcType=BIGINT},
+            r12             = #{r12,jdbcType=DECIMAL},
+            r13             = #{r13,jdbcType=DECIMAL},
+            r14             = #{r14,jdbcType=DECIMAL},
+            r15             = #{r15,jdbcType=DECIMAL},
+            r16             = #{r16,jdbcType=DECIMAL},
+            r21             = #{r21,jdbcType=DECIMAL},
+            r23             = #{r23,jdbcType=DECIMAL},
+            r24             = #{r24,jdbcType=DECIMAL},
+            r25             = #{r25,jdbcType=DECIMAL},
+            r26             = #{r26,jdbcType=DECIMAL},
+            r31             = #{r31,jdbcType=DECIMAL},
+            r32             = #{r32,jdbcType=DECIMAL},
+            r34             = #{r34,jdbcType=DECIMAL},
+            r35             = #{r35,jdbcType=DECIMAL},
+            r36             = #{r36,jdbcType=DECIMAL},
+            r42             = #{r42,jdbcType=DECIMAL},
+            r41             = #{r41,jdbcType=DECIMAL},
+            r43             = #{r43,jdbcType=DECIMAL},
+            r45             = #{r45,jdbcType=DECIMAL},
+            r46             = #{r46,jdbcType=DECIMAL},
+            r51             = #{r51,jdbcType=DECIMAL},
+            r52             = #{r52,jdbcType=DECIMAL},
+            r53             = #{r53,jdbcType=DECIMAL},
+            r54             = #{r54,jdbcType=DECIMAL},
+            r56             = #{r56,jdbcType=DECIMAL},
+            r61             = #{r61,jdbcType=DECIMAL},
+            r62             = #{r62,jdbcType=DECIMAL},
+            r63             = #{r63,jdbcType=DECIMAL},
+            r64             = #{r64,jdbcType=DECIMAL},
+            r65             = #{r65,jdbcType=DECIMAL}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

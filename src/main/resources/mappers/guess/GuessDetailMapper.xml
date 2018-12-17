@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gedoumi.quwabao.guess.mapper.GuessDetailMapper">
+
+    <sql id="Base_Column_List">
+        id,
+        guess_id,
+        issue_number,
+        start_time,
+        guess_result,
+        guess_real_return,
+        total_bouns,
+        guess_detail_status
+    </sql>
+
+    <select id="selectById" parameterType="java.lang.Long" resultType="GuessDetail">
+        select
+        <include refid="Base_Column_List"/>
+        from guess_detail
+        where id = #{param1}
+    </select>
+
+    <select id="selectLatest" resultType="GuessDetail">
+        select
+        <include refid="Base_Column_List"/>
+        from guess_detail
+        order by start_time desc
+        limit 0, 1
+    </select>
+
+    <select id="selectByIdIn" parameterType="list" resultType="GuessDetail">
+        select
+        <include refid="Base_Column_List"/>
+        from guess_detail
+        where id in
+        <foreach collection="list" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </select>
+
+    <select id="selectByStatus" resultType="GuessDetail">
+        select
+        <include refid="Base_Column_List"/>
+        from guess_detail
+        where guess_detail_status = #{param1}
+    </select>
+
+    <insert id="insert" parameterType="GuessDetail">
+        insert into guess_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="guessId != null">
+                guess_id,
+            </if>
+            <if test="issueNumber != null">
+                issue_number,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="guessResult != null">
+                guess_result,
+            </if>
+            <if test="guessRealReturn != null">
+                guess_real_return,
+            </if>
+            <if test="totalBouns != null">
+                total_bouns,
+            </if>
+            <if test="guessDetailStatus != null">
+                guess_detail_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="guessId != null">
+                #{guessId,jdbcType=BIGINT},
+            </if>
+            <if test="issueNumber != null">
+                #{issueNumber,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="guessResult != null">
+                #{guessResult,jdbcType=VARCHAR},
+            </if>
+            <if test="guessRealReturn != null">
+                #{guessRealReturn,jdbcType=DECIMAL},
+            </if>
+            <if test="totalBouns != null">
+                #{totalBouns,jdbcType=DECIMAL},
+            </if>
+            <if test="guessDetailStatus != null">
+                #{guessDetailStatus,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="GuessDetail">
+        update guess_detail
+        <set>
+            <if test="guessId != null">
+                guess_id = #{guessId,jdbcType=BIGINT},
+            </if>
+            <if test="issueNumber != null">
+                issue_number = #{issueNumber,jdbcType=INTEGER},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="guessResult != null">
+                guess_result = #{guessResult,jdbcType=VARCHAR},
+            </if>
+            <if test="guessRealReturn != null">
+                guess_real_return = #{guessRealReturn,jdbcType=DECIMAL},
+            </if>
+            <if test="totalBouns != null">
+                total_bouns = #{totalBouns,jdbcType=DECIMAL},
+            </if>
+            <if test="guessDetailStatus != null">
+                guess_detail_status = #{guessDetailStatus,jdbcType=TINYINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gedoumi.quwabao.guess.mapper.GuessBetMapper">
+
+    <sql id="Base_Column_List">
+        id,
+        user_id,
+        guess_detail_id,
+        bet_time,
+        guess_mode,
+        guess_number,
+        bet_money,
+        bet_odds,
+        result_bouns,
+        bet_status
+    </sql>
+
+    <select id="selectById" parameterType="java.lang.Long" resultType="GuessBet">
+        select
+        <include refid="Base_Column_List"/>
+        from guess_bet
+        where id = #{param1}
+    </select>
+
+    <select id="selectByUserId" resultType="GuessBet">
+        select
+        <include refid="Base_Column_List"/>
+        from guess_bet
+        where user_id = #{param1}
+    </select>
+
+    <insert id="insert" parameterType="GuessBet">
+        insert into guess_bet
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="guessDetailId != null">
+                guess_detail_id,
+            </if>
+            <if test="betTime != null">
+                bet_time,
+            </if>
+            <if test="guessMode != null">
+                guess_mode,
+            </if>
+            <if test="guessNumber != null">
+                guess_number,
+            </if>
+            <if test="betMoney != null">
+                bet_money,
+            </if>
+            <if test="betOdds != null">
+                bet_odds,
+            </if>
+            <if test="resultBouns != null">
+                result_bouns,
+            </if>
+            <if test="betStatus != null">
+                bet_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="guessDetailId != null">
+                #{guessDetailId,jdbcType=BIGINT},
+            </if>
+            <if test="betTime != null">
+                #{betTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="guessMode != null">
+                #{guessMode,jdbcType=TINYINT},
+            </if>
+            <if test="guessNumber != null">
+                #{guessNumber,jdbcType=TINYINT},
+            </if>
+            <if test="betMoney != null">
+                #{betMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="betOdds != null">
+                #{betOdds,jdbcType=DECIMAL},
+            </if>
+            <if test="resultBouns != null">
+                #{resultBouns,jdbcType=DECIMAL},
+            </if>
+            <if test="betStatus != null">
+                #{betStatus,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="GuessBet">
+        update guess_bet
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="guessDetailId != null">
+                guess_detail_id = #{guessDetailId,jdbcType=BIGINT},
+            </if>
+            <if test="betTime != null">
+                bet_time = #{betTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="guessMode != null">
+                guess_mode = #{guessMode,jdbcType=TINYINT},
+            </if>
+            <if test="guessNumber != null">
+                guess_number = #{guessNumber,jdbcType=TINYINT},
+            </if>
+            <if test="betMoney != null">
+                bet_money = #{betMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="betOdds != null">
+                bet_odds = #{betOdds,jdbcType=DECIMAL},
+            </if>
+            <if test="resultBouns != null">
+                result_bouns = #{resultBouns,jdbcType=DECIMAL},
+            </if>
+            <if test="betStatus != null">
+                bet_status = #{betStatus,jdbcType=TINYINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

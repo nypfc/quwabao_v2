@@ -38,6 +38,9 @@ public class UserRentService {
     private UserRentMapper userRentMapper;
 
     @Resource
+    private UserService userService;
+
+    @Resource
     private UserAssetService userAssetService;
 
     @Resource
@@ -104,7 +107,10 @@ public class UserRentService {
         User user = ContextUtil.getUserFromRequest();
         Long userId = user.getId();
         // 支付密码验证
-        PasswordUtil.payPasswordValidate(userId, user.getPayPassword(), password);
+        if (!userService.passwordValidate(user, user.getPayPassword(), PasswordTypeEnum.PAYMENT)) {
+            log.error("手机号:{} 未设置支付密码或支付密码不正确", user.getMobilePhone());
+            throw new BusinessException(CodeEnum.PayPswdError);
+        }
         // 查询矿机信息
         SysRent rent = sysRentService.getRent(rentType);
         BigDecimal rentMoney = rent.getMoney();

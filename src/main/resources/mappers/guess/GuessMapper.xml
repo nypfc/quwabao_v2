@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gedoumi.quwabao.guess.mapper.GuessMapper">
+
+    <sql id="Base_Column_List">
+        id,
+        start_time,
+        end_time,
+        odds,
+        bet_time,
+        game_time,
+        bouns_time,
+        guess_return,
+        guess_status
+    </sql>
+
+    <select id="selectById" parameterType="java.lang.Long" resultType="Guess">
+        select
+        <include refid="Base_Column_List"/>
+        from guess
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectLatest" resultType="Guess">
+        select
+        <include refid="Base_Column_List"/>
+        from guess
+        order by start_time desc
+        limit 0, 1
+    </select>
+
+    <insert id="insert" parameterType="Guess">
+        insert into guess
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="startTime != null">
+                start_time,
+            </if>
+            <if test="endTime != null">
+                end_time,
+            </if>
+            <if test="odds != null">
+                odds,
+            </if>
+            <if test="betTime != null">
+                bet_time,
+            </if>
+            <if test="gameTime != null">
+                game_time,
+            </if>
+            <if test="bounsTime != null">
+                bouns_time,
+            </if>
+            <if test="guessReturn != null">
+                guess_return,
+            </if>
+            <if test="guessStatus != null">
+                guess_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="odds != null">
+                #{odds,jdbcType=DECIMAL},
+            </if>
+            <if test="betTime != null">
+                #{betTime,jdbcType=INTEGER},
+            </if>
+            <if test="gameTime != null">
+                #{gameTime,jdbcType=INTEGER},
+            </if>
+            <if test="bounsTime != null">
+                #{bounsTime,jdbcType=INTEGER},
+            </if>
+            <if test="guessReturn != null">
+                #{guessReturn,jdbcType=DECIMAL},
+            </if>
+            <if test="guessStatus != null">
+                #{guessStatus,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="Guess">
+        update guess
+        <set>
+            <if test="startTime != null">
+                start_time = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="odds != null">
+                odds = #{odds,jdbcType=DECIMAL},
+            </if>
+            <if test="betTime != null">
+                bet_time = #{betTime,jdbcType=INTEGER},
+            </if>
+            <if test="gameTime != null">
+                game_time = #{gameTime,jdbcType=INTEGER},
+            </if>
+            <if test="bounsTime != null">
+                bouns_time = #{bounsTime,jdbcType=INTEGER},
+            </if>
+            <if test="guessReturn != null">
+                guess_return = #{guessReturn,jdbcType=DECIMAL},
+            </if>
+            <if test="guessStatus != null">
+                guess_status = #{guessStatus,jdbcType=TINYINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

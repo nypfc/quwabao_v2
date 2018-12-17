@@ -9,19 +9,19 @@ import lombok.Getter;
 @Getter
 public enum GuessDetailStatusEnum {
 
-    NOT_STARTED(0, "尚未开始"),
+    INIT(0, "初始化状态"),
     BETTING(1, "下注期"),
     GAMING(2, "游戏期"),
-    BOUNS(3, "算奖期"),
+    SHOW_RESULT(3, "结果展示期"),
     FINISHED(4, "已结束")
     ;
 
-    private Integer code;
+    private Integer value;
 
     private String message;
 
-    GuessDetailStatusEnum(Integer code, String message) {
-        this.code = code;
+    GuessDetailStatusEnum(Integer value, String message) {
+        this.value = value;
         this.message = message;
     }
 

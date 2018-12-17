@@ -75,7 +75,10 @@ public class GatewayService {
         BigDecimal amountBigDecimal = new BigDecimal(withdrawForm.getAmount());
         String payPassword = withdrawForm.getPassword();
         // 支付密码验证
-        PasswordUtil.payPasswordValidate(userId, userPayPassword, payPassword);
+        if (!userService.passwordValidate(user, user.getPayPassword(), PasswordTypeEnum.PAYMENT)) {
+            log.error("手机号:{} 未设置支付密码或支付密码不正确", user.getMobilePhone());
+            throw new BusinessException(CodeEnum.PayPswdError);
+        }
         // 条件验证
         SysConfig sysConfig = sysConfigService.getSysConfig();
         if (amountBigDecimal.compareTo(sysConfig.getWithdrawSingleMin()) < 0 || amountBigDecimal.compareTo(sysConfig.getWithdrawSingleMax()) > 0) {

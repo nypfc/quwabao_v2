@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gedoumi.quwabao.guess.mapper.GuessDetailMoney1Mapper">
+
+    <sql id="Base_Column_List">
+        id,
+        guess_detail_id,
+        m1,
+        m2,
+        m3,
+        m4,
+        m5,
+        m6,
+        total
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultType="GuessDetailMoney1">
+        select
+        <include refid="Base_Column_List"/>
+        from guess_detail_money1
+        where id = #{param1}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from guess_detail_money1
+        where id = #{param1}
+    </delete>
+
+    <insert id="insert" parameterType="GuessDetailMoney1">
+        insert into guess_detail_money1 (id, guess_detail_id, m1,
+                                         m2, m3, m4, m5,
+                                         m6, total)
+        values (#{id,jdbcType=BIGINT}, #{guessDetailId,jdbcType=BIGINT}, #{m1,jdbcType=DECIMAL},
+                #{m2,jdbcType=DECIMAL}, #{m3,jdbcType=DECIMAL}, #{m4,jdbcType=DECIMAL}, #{m5,jdbcType=DECIMAL},
+                #{m6,jdbcType=DECIMAL}, #{total,jdbcType=DECIMAL})
+    </insert>
+
+    <insert id="insertSelective" parameterType="GuessDetailMoney1">
+        insert into guess_detail_money1
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="guessDetailId != null">
+                guess_detail_id,
+            </if>
+            <if test="m1 != null">
+                m1,
+            </if>
+            <if test="m2 != null">
+                m2,
+            </if>
+            <if test="m3 != null">
+                m3,
+            </if>
+            <if test="m4 != null">
+                m4,
+            </if>
+            <if test="m5 != null">
+                m5,
+            </if>
+            <if test="m6 != null">
+                m6,
+            </if>
+            <if test="total != null">
+                total,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="guessDetailId != null">
+                #{guessDetailId,jdbcType=BIGINT},
+            </if>
+            <if test="m1 != null">
+                #{m1,jdbcType=DECIMAL},
+            </if>
+            <if test="m2 != null">
+                #{m2,jdbcType=DECIMAL},
+            </if>
+            <if test="m3 != null">
+                #{m3,jdbcType=DECIMAL},
+            </if>
+            <if test="m4 != null">
+                #{m4,jdbcType=DECIMAL},
+            </if>
+            <if test="m5 != null">
+                #{m5,jdbcType=DECIMAL},
+            </if>
+            <if test="m6 != null">
+                #{m6,jdbcType=DECIMAL},
+            </if>
+            <if test="total != null">
+                #{total,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="GuessDetailMoney1">
+        update guess_detail_money1
+        <set>
+            <if test="guessDetailId != null">
+                guess_detail_id = #{guessDetailId,jdbcType=BIGINT},
+            </if>
+            <if test="m1 != null">
+                m1 = #{m1,jdbcType=DECIMAL},
+            </if>
+            <if test="m2 != null">
+                m2 = #{m2,jdbcType=DECIMAL},
+            </if>
+            <if test="m3 != null">
+                m3 = #{m3,jdbcType=DECIMAL},
+            </if>
+            <if test="m4 != null">
+                m4 = #{m4,jdbcType=DECIMAL},
+            </if>
+            <if test="m5 != null">
+                m5 = #{m5,jdbcType=DECIMAL},
+            </if>
+            <if test="m6 != null">
+                m6 = #{m6,jdbcType=DECIMAL},
+            </if>
+            <if test="total != null">
+                total = #{total,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="GuessDetailMoney1">
+        update guess_detail_money1
+        set guess_detail_id = #{guessDetailId,jdbcType=BIGINT},
+            m1              = #{m1,jdbcType=DECIMAL},
+            m2              = #{m2,jdbcType=DECIMAL},
+            m3              = #{m3,jdbcType=DECIMAL},
+            m4              = #{m4,jdbcType=DECIMAL},
+            m5              = #{m5,jdbcType=DECIMAL},
+            m6              = #{m6,jdbcType=DECIMAL},
+            total           = #{total,jdbcType=DECIMAL}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

@@ -1,9 +1,6 @@
 package com.gedoumi.quwabao.user.service;
 
-import com.gedoumi.quwabao.common.enums.CodeEnum;
-import com.gedoumi.quwabao.common.enums.SmsTypeEnum;
-import com.gedoumi.quwabao.common.enums.UserStatusEnum;
-import com.gedoumi.quwabao.common.enums.UserTypeEnum;
+import com.gedoumi.quwabao.common.enums.*;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.CodeUtils;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
@@ -68,6 +65,36 @@ public class UserService {
      */
     public User getByMobile(String mobile) {
         return userMapper.selectByMobile(mobile);
+    }
+
+    /**
+     * 密码验证
+     *
+     * @param user     用户对象
+     * @param password 待验证的密码
+     * @param type     密码类型枚举
+     * @return true为验证成功，false为验证失败
+     */
+    public Boolean passwordValidate(User user, String password, PasswordTypeEnum type) {
+        String mobile = user.getMobilePhone();
+        switch (type) {
+            case LOGIN:
+                String userPassword = user.getPassword();
+                String encrypyPassword = MD5EncryptUtil.md5Encrypy(password, MD5EncryptUtil.md5Encrypy(mobile));
+                if (!StringUtils.equals(encrypyPassword, userPassword))
+                    return false;
+                break;
+            case PAYMENT:
+                String userId = String.valueOf(user.getId());
+                String userPayPassword = user.getPassword();
+                if (StringUtils.isEmpty(userPayPassword))
+                    return false;
+                String encrypyPayPassword = MD5EncryptUtil.md5Encrypy(password, String.valueOf(userId));
+                if (!userPayPassword.equals(encrypyPayPassword))
+                    return false;
+                break;
+        }
+        return true;
     }
 
     /**
@@ -216,7 +243,10 @@ public class UserService {
                     log.error("支付密码验证方式：支付密码参数为空");
                     throw new BusinessException(CodeEnum.ParamError);
                 }
-                PasswordUtil.payPasswordValidate(user.getId(), user.getPayPassword(), payPassword);
+                if (!passwordValidate(user, payPassword, PasswordTypeEnum.PAYMENT)) {
+                    log.error("手机号:{} 未设置支付密码或支付密码不正确", mobile);
+                    throw new BusinessException(CodeEnum.PayPswdError);
+                }
                 break;
             case 2:  // 短信验证
                 if (StringUtils.isEmpty(smsCode)) {
@@ -257,9 +287,8 @@ public class UserService {
             log.error("修改的手机号已存在：{}", newMobile);
             throw new BusinessException(CodeEnum.MobileExist);
         }
-        String encryptPassword = PasswordUtil.passwordEncrypt(user.getMobilePhone(), orgPassword);  // 原密码比对
-        if (!StringUtils.equals(encryptPassword, user.getPassword())) {
-            log.error("手机号:{}，密码:{}，密码不正确", user.getMobilePhone(), orgPassword);
+        if (!passwordValidate(user, orgPassword, PasswordTypeEnum.LOGIN)) {
+            log.error("手机号:{} 密码不正确", user.getMobilePhone());
             throw new BusinessException(CodeEnum.PasswordError);
         }
         // 短信验证码验证
@@ -285,25 +314,16 @@ public class UserService {
         // 获取用户
         User user = ContextUtil.getUserFromRequest();
         Long userId = user.getId();
-        // 获取参数
-        String newPayPassword = PasswordUtil.payPasswordEncrypt(userId, updatePayPasswordForm.getPassword());
         // 如果支付密码不为空，则支付密码验证
         String userPayPassword = user.getPayPassword();
         if (StringUtils.isNotEmpty(userPayPassword)) {
-            // 获取原支付密码
-            String originalPayPassword = updatePayPasswordForm.getOriginalPassword();
-            if (StringUtils.isEmpty(originalPayPassword)) {
-                log.error("验证支付密码时支付密码为空");
-                throw new BusinessException(CodeEnum.ParamError);
-            }
-            originalPayPassword = PasswordUtil.payPasswordEncrypt(userId, originalPayPassword);
-            if (!StringUtils.equals(userPayPassword, originalPayPassword)) {
-                log.error("手机号：{}支付密码错误");
+            if (!passwordValidate(user, updatePayPasswordForm.getOriginalPassword(), PasswordTypeEnum.PAYMENT)) {
+                log.error("手机号:{} 未设置支付密码或支付密码不正确", user.getMobilePhone());
                 throw new BusinessException(CodeEnum.PayPswdError);
             }
         }
         // 修改支付密码
-        user.setPayPassword(newPayPassword);
+        user.setPayPassword(PasswordUtil.payPasswordEncrypt(userId, updatePayPasswordForm.getPassword()));
         user.setUpdateTime(new Date());
         userMapper.updateById(user);
         // 更新缓存

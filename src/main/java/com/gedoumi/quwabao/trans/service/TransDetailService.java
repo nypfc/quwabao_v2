@@ -1,6 +1,7 @@
 package com.gedoumi.quwabao.trans.service;
 
 import com.gedoumi.quwabao.common.enums.CodeEnum;
+import com.gedoumi.quwabao.common.enums.PasswordTypeEnum;
 import com.gedoumi.quwabao.common.enums.TransStatusEnum;
 import com.gedoumi.quwabao.common.enums.TransTypeEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
@@ -72,7 +73,11 @@ public class TransDetailService {
             log.error("手机号：{}向自身：{}转账", toMobile, mobile);
             throw new BusinessException(CodeEnum.TransSelfError);
         }
-        PasswordUtil.payPasswordValidate(fromUserId, user.getPayPassword(), password);  // 支付密码验证
+        // 支付密码验证
+        if (!userService.passwordValidate(user, password, PasswordTypeEnum.PAYMENT)) {
+            log.error("手机号:{} 未设置支付密码或支付密码不正确", user.getMobilePhone());
+            throw new BusinessException(CodeEnum.PayPswdError);
+        }
         User toUser = Optional.ofNullable(userService.getByMobile(toMobile)).orElseThrow(() -> {
             log.error("被转账手机号：{}不存在", toMobile);
             return new BusinessException(CodeEnum.TransMobileNotExist);

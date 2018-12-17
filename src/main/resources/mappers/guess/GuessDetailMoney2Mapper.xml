@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gedoumi.quwabao.guess.mapper.GuessDetailMoney2Mapper">
+
+    <sql id="Base_Column_List">
+        id,
+        guess_detail_id,
+        m12,
+        m13,
+        m14,
+        m15,
+        m16,
+        m23,
+        m24,
+        m25,
+        m26,
+        m34,
+        m35,
+        m36,
+        m45,
+        m46,
+        m56,
+        total
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultType="GuessDetailMoney2">
+        select
+        <include refid="Base_Column_List"/>
+        from guess_detail_money2
+        where id = #{param1}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from guess_detail_money2
+        where id = #{param1}
+    </delete>
+
+    <insert id="insert" parameterType="com.gedoumi.quwabao.guess.dataobj.model.GuessDetailMoney2">
+        insert into guess_detail_money2 (id, guess_detail_id, m12,
+                                         m13, m14, m15, m16,
+                                         m23, m24, m25, m26,
+                                         m34, m35, m36, m45,
+                                         m46, m56, total)
+        values (#{id,jdbcType=BIGINT}, #{guessDetailId,jdbcType=BIGINT}, #{m12,jdbcType=DECIMAL},
+                #{m13,jdbcType=DECIMAL}, #{m14,jdbcType=DECIMAL}, #{m15,jdbcType=DECIMAL}, #{m16,jdbcType=DECIMAL},
+                #{m23,jdbcType=DECIMAL}, #{m24,jdbcType=DECIMAL}, #{m25,jdbcType=DECIMAL}, #{m26,jdbcType=DECIMAL},
+                #{m34,jdbcType=DECIMAL}, #{m35,jdbcType=DECIMAL}, #{m36,jdbcType=DECIMAL}, #{m45,jdbcType=DECIMAL},
+                #{m46,jdbcType=DECIMAL}, #{m56,jdbcType=DECIMAL}, #{total,jdbcType=DECIMAL})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.gedoumi.quwabao.guess.dataobj.model.GuessDetailMoney2">
+        insert into guess_detail_money2
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="guessDetailId != null">
+                guess_detail_id,
+            </if>
+            <if test="m12 != null">
+                m12,
+            </if>
+            <if test="m13 != null">
+                m13,
+            </if>
+            <if test="m14 != null">
+                m14,
+            </if>
+            <if test="m15 != null">
+                m15,
+            </if>
+            <if test="m16 != null">
+                m16,
+            </if>
+            <if test="m23 != null">
+                m23,
+            </if>
+            <if test="m24 != null">
+                m24,
+            </if>
+            <if test="m25 != null">
+                m25,
+            </if>
+            <if test="m26 != null">
+                m26,
+            </if>
+            <if test="m34 != null">
+                m34,
+            </if>
+            <if test="m35 != null">
+                m35,
+            </if>
+            <if test="m36 != null">
+                m36,
+            </if>
+            <if test="m45 != null">
+                m45,
+            </if>
+            <if test="m46 != null">
+                m46,
+            </if>
+            <if test="m56 != null">
+                m56,
+            </if>
+            <if test="total != null">
+                total,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="guessDetailId != null">
+                #{guessDetailId,jdbcType=BIGINT},
+            </if>
+            <if test="m12 != null">
+                #{m12,jdbcType=DECIMAL},
+            </if>
+            <if test="m13 != null">
+                #{m13,jdbcType=DECIMAL},
+            </if>
+            <if test="m14 != null">
+                #{m14,jdbcType=DECIMAL},
+            </if>
+            <if test="m15 != null">
+                #{m15,jdbcType=DECIMAL},
+            </if>
+            <if test="m16 != null">
+                #{m16,jdbcType=DECIMAL},
+            </if>
+            <if test="m23 != null">
+                #{m23,jdbcType=DECIMAL},
+            </if>
+            <if test="m24 != null">
+                #{m24,jdbcType=DECIMAL},
+            </if>
+            <if test="m25 != null">
+                #{m25,jdbcType=DECIMAL},
+            </if>
+            <if test="m26 != null">
+                #{m26,jdbcType=DECIMAL},
+            </if>
+            <if test="m34 != null">
+                #{m34,jdbcType=DECIMAL},
+            </if>
+            <if test="m35 != null">
+                #{m35,jdbcType=DECIMAL},
+            </if>
+            <if test="m36 != null">
+                #{m36,jdbcType=DECIMAL},
+            </if>
+            <if test="m45 != null">
+                #{m45,jdbcType=DECIMAL},
+            </if>
+            <if test="m46 != null">
+                #{m46,jdbcType=DECIMAL},
+            </if>
+            <if test="m56 != null">
+                #{m56,jdbcType=DECIMAL},
+            </if>
+            <if test="total != null">
+                #{total,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.gedoumi.quwabao.guess.dataobj.model.GuessDetailMoney2">
+        update guess_detail_money2
+        <set>
+            <if test="guessDetailId != null">
+                guess_detail_id = #{guessDetailId,jdbcType=BIGINT},
+            </if>
+            <if test="m12 != null">
+                m12 = #{m12,jdbcType=DECIMAL},
+            </if>
+            <if test="m13 != null">
+                m13 = #{m13,jdbcType=DECIMAL},
+            </if>
+            <if test="m14 != null">
+                m14 = #{m14,jdbcType=DECIMAL},
+            </if>
+            <if test="m15 != null">
+                m15 = #{m15,jdbcType=DECIMAL},
+            </if>
+            <if test="m16 != null">
+                m16 = #{m16,jdbcType=DECIMAL},
+            </if>
+            <if test="m23 != null">
+                m23 = #{m23,jdbcType=DECIMAL},
+            </if>
+            <if test="m24 != null">
+                m24 = #{m24,jdbcType=DECIMAL},
+            </if>
+            <if test="m25 != null">
+                m25 = #{m25,jdbcType=DECIMAL},
+            </if>
+            <if test="m26 != null">
+                m26 = #{m26,jdbcType=DECIMAL},
+            </if>
+            <if test="m34 != null">
+                m34 = #{m34,jdbcType=DECIMAL},
+            </if>
+            <if test="m35 != null">
+                m35 = #{m35,jdbcType=DECIMAL},
+            </if>
+            <if test="m36 != null">
+                m36 = #{m36,jdbcType=DECIMAL},
+            </if>
+            <if test="m45 != null">
+                m45 = #{m45,jdbcType=DECIMAL},
+            </if>
+            <if test="m46 != null">
+                m46 = #{m46,jdbcType=DECIMAL},
+            </if>
+            <if test="m56 != null">
+                m56 = #{m56,jdbcType=DECIMAL},
+            </if>
+            <if test="total != null">
+                total = #{total,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.gedoumi.quwabao.guess.dataobj.model.GuessDetailMoney2">
+        update guess_detail_money2
+        set guess_detail_id = #{guessDetailId,jdbcType=BIGINT},
+            m12             = #{m12,jdbcType=DECIMAL},
+            m13             = #{m13,jdbcType=DECIMAL},
+            m14             = #{m14,jdbcType=DECIMAL},
+            m15             = #{m15,jdbcType=DECIMAL},
+            m16             = #{m16,jdbcType=DECIMAL},
+            m23             = #{m23,jdbcType=DECIMAL},
+            m24             = #{m24,jdbcType=DECIMAL},
+            m25             = #{m25,jdbcType=DECIMAL},
+            m26             = #{m26,jdbcType=DECIMAL},
+            m34             = #{m34,jdbcType=DECIMAL},
+            m35             = #{m35,jdbcType=DECIMAL},
+            m36             = #{m36,jdbcType=DECIMAL},
+            m45             = #{m45,jdbcType=DECIMAL},
+            m46             = #{m46,jdbcType=DECIMAL},
+            m56             = #{m56,jdbcType=DECIMAL},
+            total           = #{total,jdbcType=DECIMAL}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

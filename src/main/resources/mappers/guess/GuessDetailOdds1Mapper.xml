@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gedoumi.quwabao.guess.mapper.GuessDetailOdds1Mapper">
+
+    <sql id="Base_Column_List">
+        id,
+        guess_detail_id,
+        o1,
+        o2,
+        o3,
+        o4,
+        o5,
+        o6
+    </sql>
+
+    <select id="selectById" parameterType="java.lang.Long" resultType="GuessDetailOdds1">
+        select
+        <include refid="Base_Column_List"/>
+        from guess_detail_odds1
+        where id = #{param1}
+    </select>
+
+    <select id="selectByGuessDetailId" resultType="GuessDetailOdds1">
+        select
+        <include refid="Base_Column_List"/>
+        from guess_detail_odds1
+        where guess_detail_id = #{param1}
+    </select>
+
+    <insert id="insert" parameterType="GuessDetailOdds1">
+        insert into guess_detail_odds1
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="guessDetailId != null">
+                guess_detail_id,
+            </if>
+            <if test="o1 != null">
+                o1,
+            </if>
+            <if test="o2 != null">
+                o2,
+            </if>
+            <if test="o3 != null">
+                o3,
+            </if>
+            <if test="o4 != null">
+                o4,
+            </if>
+            <if test="o5 != null">
+                o5,
+            </if>
+            <if test="o6 != null">
+                o6,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="guessDetailId != null">
+                #{guessDetailId,jdbcType=BIGINT},
+            </if>
+            <if test="o1 != null">
+                #{o1,jdbcType=DECIMAL},
+            </if>
+            <if test="o2 != null">
+                #{o2,jdbcType=DECIMAL},
+            </if>
+            <if test="o3 != null">
+                #{o3,jdbcType=DECIMAL},
+            </if>
+            <if test="o4 != null">
+                #{o4,jdbcType=DECIMAL},
+            </if>
+            <if test="o5 != null">
+                #{o5,jdbcType=DECIMAL},
+            </if>
+            <if test="o6 != null">
+                #{o6,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="GuessDetailOdds1">
+        update guess_detail_odds1
+        <set>
+            <if test="guessDetailId != null">
+                guess_detail_id = #{guessDetailId,jdbcType=BIGINT},
+            </if>
+            <if test="o1 != null">
+                o1 = #{o1,jdbcType=DECIMAL},
+            </if>
+            <if test="o2 != null">
+                o2 = #{o2,jdbcType=DECIMAL},
+            </if>
+            <if test="o3 != null">
+                o3 = #{o3,jdbcType=DECIMAL},
+            </if>
+            <if test="o4 != null">
+                o4 = #{o4,jdbcType=DECIMAL},
+            </if>
+            <if test="o5 != null">
+                o5 = #{o5,jdbcType=DECIMAL},
+            </if>
+            <if test="o6 != null">
+                o6 = #{o6,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>
