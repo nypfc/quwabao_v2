@@ -7,7 +7,9 @@ import com.gedoumi.guess.dao.*;
 import com.gedoumi.guess.entity.*;
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
+import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.guess.dataobj.form.BetForm;
+import com.gedoumi.quwabao.guess.dataobj.form.BetFormValidate;
 import com.gedoumi.quwabao.guess.dataobj.model.GuessBet;
 import com.gedoumi.quwabao.guess.dataobj.model.GuessDetail;
 import com.gedoumi.quwabao.guess.mapper.GuessBetMapper;
@@ -61,6 +63,8 @@ public class GuessBetService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void bet(BetForm betForm) {
+        // 获取用户
+        User user = ContextUtil.getUserFromRequest();
         // 获取参数
         String bet = betForm.getBet();
         String guessMode = betForm.getGuessMode();
@@ -80,12 +84,7 @@ public class GuessBetService {
             return responseObject;
         }
         // 更新用户资产，如果返回false说明余额不足
-        User user = (User) SessionUtil.getSession().getAttribute(Constants.API_USER_KEY);
-        BigDecimal bet_ = new BigDecimal(bet).setScale(5, BigDecimal.ROUND_DOWN);  // double转BigDecimal
-        if (!guessBetService.updateUserAsset(user.getId(), bet_)) {
-            responseObject.setInfo(CodeEnum.RemainAssetError);
-            return responseObject;
-        }
+
         // 创建下注记录
         GuessBet guessBet = new GuessBet();
         guessBet.setUserId(user.getId());
@@ -95,7 +94,7 @@ public class GuessBetService {
         guessBet.setBetMoney(bet_);
         guessBet.setGuessNumber(guessNumber);
         guessBet.setBetOdds(guessBetService.updateGuessDetailMoney(guessBet));  // 更新对应选项的投注金额，并获得其赔率
-        guessBetService.save(guessBet);
+        guessBetMapper.insert(guessBet);
         // 创建竞猜用户资产详情
         guessBetService.createUserAssetDetail(user.getId(), bet_, BigDecimal.ZERO, TransTypeEnum.Bet.getValue());
     }

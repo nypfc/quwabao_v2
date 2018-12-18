@@ -1,25 +1,18 @@
-package com.gedoumi.quwabao.guess.schedule;
+package com.gedoumi.quwabao.guess.service;
 
-import com.gedoumi.common.enums.GuessDetailStatusEnum;
-import com.gedoumi.common.enums.GuessNotityTypeEnum;
-import com.gedoumi.common.enums.GuessStatusEnum;
-import com.gedoumi.guess.entity.Guess;
-import com.gedoumi.guess.entity.GuessDetail;
-import com.gedoumi.guess.service.GuessBetService;
-import com.gedoumi.guess.service.GuessDetailService;
-import com.gedoumi.guess.service.GuessService;
-import com.gedoumi.guess.vo.RankingVO;
+import com.gedoumi.quwabao.common.component.RedisCache;
 import com.gedoumi.quwabao.common.enums.GuessDetailStatusEnum;
 import com.gedoumi.quwabao.common.enums.GuessNotityTypeEnum;
 import com.gedoumi.quwabao.common.enums.GuessStatusEnum;
-import com.gedoumi.quwabao.component.RedisCache;
 import com.gedoumi.quwabao.guess.dataobj.model.Guess;
 import com.gedoumi.quwabao.guess.dataobj.model.GuessDetail;
-import com.gedoumi.quwabao.guess.service.GuessBetService;
-import com.gedoumi.quwabao.guess.service.GuessDetailService;
-import com.gedoumi.quwabao.guess.service.GuessService;
+import com.gedoumi.quwabao.guess.dataobj.vo.RankingVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -34,7 +27,8 @@ import java.util.concurrent.TimeUnit;
  * @author Minced
  */
 @Slf4j
-public class GuessDetailRedisKeyExpiredMessageDelegate {
+@Service
+public class GuessExpiredMessageDelegate implements MessageListener {
 
     @Resource
     private GuessService guessService;
@@ -53,20 +47,23 @@ public class GuessDetailRedisKeyExpiredMessageDelegate {
      *
      * @param message 返回信息（此参数为过期的key值）
      */
+    @Override
     @Transactional(rollbackFor = Exception.class)
-    public void guessDetailExpired(String message) {
+    public void onMessage(@NonNull Message message, byte[] pattern) {
         // 如果不是竞猜详情，直接返回
-        if (!StringUtils.equals(message.split("-")[0], "guessDetail")) {
+        String messageStr = new String(message.getBody());
+        String[] messageSplit = messageStr.split("-");
+        if (!StringUtils.equals(messageSplit[0], "guessDetail")) {
             return;
         }
         // 获取ID查询竞猜详情
-        Long guessDetailId = Long.parseLong(message.split("-")[1]);
-        GuessDetail guessDetail = guessDetailService.findById(guessDetailId);
+        Long guessDetailId = Long.parseLong(messageSplit[1]);
+        GuessDetail guessDetail = guessDetailService.getById(guessDetailId);
         // 查询竞猜期
-        Guess guess = guessService.findById(guessDetail.getGuessId());
+        Guess guess = guessService.getById(guessDetail.getGuessId());
         // 判断竞猜详情状态
         Integer guessDetailStatus = guessDetail.getGuessDetailStatus();
-        if (guessDetailStatus.equals(GuessDetailStatusEnum.BETTING.getCode())) {
+        if (guessDetailStatus.equals(GuessDetailStatusEnum.BETTING.getValue())) {
             // 从下注期到开奖期
             log.debug("下注期 -- 游戏期");
             // 获取排名
@@ -82,29 +79,29 @@ public class GuessDetailRedisKeyExpiredMessageDelegate {
             // 给前端发送游戏开始的通知
             guessService.sendMessage(GuessNotityTypeEnum.GAME_START, rankingVO);
             // 重新设置Redis，不需要设置value
-            redisCache.setExpireKeyValueData(message, null, guess.getGameTime(), TimeUnit.SECONDS);
+            redisCache.setExpireKeyValueData(messageStr, null, (long) guess.getGameTime(), TimeUnit.SECONDS);
 
-        } else if (guessDetailStatus.equals(GuessDetailStatusEnum.GAMING.getCode())) {
+        } else if (guessDetailStatus.equals(GuessDetailStatusEnum.GAMING.getValue())) {
             // 从游戏到结果展示期
             log.debug("游戏期 -- 结果展示期");
-            guessDetail.setGuessDetailStatus(GuessDetailStatusEnum.SHOW_RESULT.getCode());
+            guessDetail.setGuessDetailStatus(GuessDetailStatusEnum.SHOW_RESULT.getValue());
             guessDetailService.save(guessDetail);
             // 重新设置Redis，不需要设置value
-            redisCache.setExpireKeyValueData(message, null, guess.getBounsTime(), TimeUnit.SECONDS);
+            redisCache.setExpireKeyValueData(messageStr, null, (long) guess.getBounsTime(), TimeUnit.SECONDS);
             // 修改所有中奖的下注状态和发奖金
             guessBetService.guessRight(guessDetail);
 
-        } else if (guessDetailStatus.equals(GuessDetailStatusEnum.SHOW_RESULT.getCode())) {
+        } else if (guessDetailStatus.equals(GuessDetailStatusEnum.SHOW_RESULT.getValue())) {
             // 从结果展示期到下一个周期
             log.debug("结果展示期 -- 下一个周期");
-            guessDetail.setGuessDetailStatus(GuessDetailStatusEnum.FINISHED.getCode());
+            guessDetail.setGuessDetailStatus(GuessDetailStatusEnum.FINISHED.getValue());
             guessDetailService.save(guessDetail);
             // 判断当前时间是否大于竞猜期结束的时间，如果大于则直接停止创建后续的竞猜详情
             Date now = new Date();
             if (now.getTime() >= guess.getEndTime().getTime()) {
                 // 把竞猜期状态置为结束
                 log.debug("已超出竞猜期结束时间，不在创建下一周期");
-                guess.setGuessStatus(GuessStatusEnum.FINISHED.getCode());
+                guess.setGuessStatus(GuessStatusEnum.FINISHED.getValue());
                 guessService.save(guess);
                 // 给前端发送投注期结束的通知
                 guessService.sendMessage(GuessNotityTypeEnum.GUESS_END, null);
@@ -155,7 +152,7 @@ public class GuessDetailRedisKeyExpiredMessageDelegate {
             // 创建新的竞猜详情、各玩法的赔率与各玩法的投注金额，获取返回的竞猜详情ID
             Long newGuessDetailId = guessDetailService.createGuessDetailAndOddsAndMoney(guess, new Date());
             // 设置Redis，过期时间从Guess对象中获取
-            redisCache.setExpireKeyValueData("guessDetail-" + newGuessDetailId, null, guess.getBetTime(), TimeUnit.SECONDS);
+            redisCache.setExpireKeyValueData("guessDetail-" + newGuessDetailId, null, (long) guess.getBetTime(), TimeUnit.SECONDS);
             // 给前端发送下注开始的通知
             guessService.sendMessage(GuessNotityTypeEnum.BET_START, null);
 

@@ -2,15 +2,18 @@ package com.gedoumi.quwabao.guess.service;
 
 import com.gedoumi.guess.websocket.GuessWebSocketHandler;
 import com.gedoumi.quwabao.common.enums.GuessNotityTypeEnum;
+import com.gedoumi.quwabao.common.enums.GuessStatusEnum;
 import com.gedoumi.quwabao.common.utils.JsonUtil;
 import com.gedoumi.quwabao.guess.dataobj.model.Guess;
 import com.gedoumi.quwabao.guess.dataobj.vo.GuessNotityVO;
 import com.gedoumi.quwabao.guess.mapper.GuessMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.TextMessage;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 竞猜时间段Service
@@ -53,6 +56,23 @@ public class GuessService {
      */
     public Guess findByStartTime(Date startDateTime) {
         return guessMapper.findByStartTime(startDateTime);
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public void schedule() {
+        // 查询竞猜期，未查询到则直接返回
+        Guess guess = guessService.findByStartTime(sdf.parse(sdf.format(startDateTime)));
+        if (guess == null) return;
+        // 修改竞猜状态
+        guess.setGuessStatus(GuessStatusEnum.BEGINNING.getValue());
+        guessService.save(guess);
+        // 创建新的竞猜详情、各玩法的赔率与各玩法的投注金额，获取返回的竞猜详情ID
+        Long guessDetailId = guessDetailService.createGuessDetailAndOddsAndMoney(guess, startDateTime);
+        // 设置Redis，过期时间从Guess对象中获取
+        redisCache.setExpireKeyValueData("guessDetail-" + guessDetailId, null, (long) guess.getBetTime(), TimeUnit.SECONDS);
+        // 给前端发送投注开始的通知
+        guessService.sendMessage(GuessNotityTypeEnum.BET_START, null);
     }
 
     /**

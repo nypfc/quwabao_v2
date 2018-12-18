@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.component;
+package com.gedoumi.quwabao.common.component;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;

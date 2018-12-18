@@ -36,6 +36,25 @@ public class GuessDetailService {
     @Resource
     private GuessDetailMapper guessDetailMapper;
 
+    @Resource
+    private GuessDetailOdds1Service guessDetailOdds1Service;
+
+    @Resource
+    private GuessDetailOdds2Service guessDetailOdds2Service;
+
+    @Resource
+    private GuessDetailOdds3Service guessDetailOdds3Service;
+
+    /**
+     * 根据ID获取竞猜详情
+     *
+     * @param guessDetailId 竞猜详情ID
+     * @return 竞猜详情
+     */
+    public GuessDetail getById(Long guessDetailId) {
+        return guessDetailMapper.selectById(guessDetailId);
+    }
+
     /**
      * 获取最新的竞猜详情
      *
@@ -177,9 +196,9 @@ public class GuessDetailService {
         ArrayList<Integer> list = Lists.newArrayList(1, 2, 3, 4, 5, 6);
 
         // 获取各玩法赔率
-        GuessDetailOdds1 guessDetailOdds1 = guessDetailOdds1Dao.findByGuessDetailId(guessDetailId);
-        GuessDetailOdds2 guessDetailOdds2 = guessDetailOdds2Dao.findByGuessDetailId(guessDetailId);
-        GuessDetailOdds3 guessDetailOdds3 = guessDetailOdds3Dao.findByGuessDetailId(guessDetailId);
+        GuessDetailOdds1 guessDetailOdds1 = guessDetailOdds1Service.getGuessDetailOdds1(guessDetailId);
+        GuessDetailOdds2 guessDetailOdds2 = guessDetailOdds2Service.getGuessDetailOdds2(guessDetailId);
+        GuessDetailOdds3 guessDetailOdds3 = guessDetailOdds3Service.getGuessDetailOdds3(guessDetailId);
 
         // 玩法一6个赔率
         BigDecimal oa1 = guessDetailOdds1.getO1();
@@ -471,7 +490,7 @@ public class GuessDetailService {
         guessDetail.setGuessResult(ranking);
         guessDetail.setGuessRealReturn(real_return_rate);
         guessDetail.setTotalBouns(mTotal);
-        guessDetail.setGuessDetailStatus(GuessDetailStatusEnum.GAMING.getCode());  // 将状态从下注期改为游戏期
+        guessDetail.setGuessDetailStatus(GuessDetailStatusEnum.GAMING.getValue());  // 将状态从下注期改为游戏期
         guessDetailDao.save(guessDetail);
 
         // 将排名改为1号车道第几名，2号车第几名，以此类推

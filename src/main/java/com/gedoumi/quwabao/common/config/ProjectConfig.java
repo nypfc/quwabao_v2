@@ -1,7 +1,7 @@
 package com.gedoumi.quwabao.common.config;
 
 import com.gedoumi.quwabao.common.config.properties.TaskThreadPoolProperties;
-import com.gedoumi.quwabao.component.ApiInterceptor;
+import com.gedoumi.quwabao.common.component.ApiInterceptor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

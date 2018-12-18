@@ -1,6 +1,7 @@
 package com.gedoumi.quwabao.common.config;
 
 import com.gedoumi.quwabao.common.config.properties.TaskThreadPoolProperties;
+import com.gedoumi.quwabao.guess.service.GuessExpiredMessageDelegate;
 import com.gedoumi.quwabao.sys.service.SmsListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,10 +48,11 @@ public class RedisConfig {
      * @param redisConnectionFactory   Redis连接工厂
      * @param taskThreadPoolProperties 线程池配置类
      * @param smsListener              短信监听类
+     * @param guessExpired             竞猜监听类
      * @return Redis消息监听容器
      */
     @Bean
-    public RedisMessageListenerContainer configRedisMessageListenerContainer(RedisConnectionFactory redisConnectionFactory, TaskThreadPoolProperties taskThreadPoolProperties, SmsListener smsListener) {
+    public RedisMessageListenerContainer configRedisMessageListenerContainer(RedisConnectionFactory redisConnectionFactory, TaskThreadPoolProperties taskThreadPoolProperties, SmsListener smsListener, GuessExpiredMessageDelegate guessExpired) {
         // 创建线程池
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(taskThreadPoolProperties.getCorePoolSize());
@@ -67,6 +69,7 @@ public class RedisConfig {
         container.setConnectionFactory(redisConnectionFactory);  // 设置Redis的连接工厂
         container.setTaskExecutor(executor);  // 设置监听使用的线程池
         container.addMessageListener(smsListener, new ChannelTopic("__keyevent@0__:expired"));  // 设置监听器和监听的Topic，__keyevent@<db>__:expired为固定格式，<db>为监听的仓库号，expired表示要监听过期事件
+        container.addMessageListener(guessExpired, new ChannelTopic("__keyevent@0__:expired"));
         return container;
     }
 

@@ -1,4 +1,4 @@
-package com.gedoumi.quwabao.component;
+package com.gedoumi.quwabao.common.component;
 
 import com.gedoumi.quwabao.common.enums.CodeEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;

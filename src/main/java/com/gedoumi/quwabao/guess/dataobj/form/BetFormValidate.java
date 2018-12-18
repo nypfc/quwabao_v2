@@ -23,14 +23,6 @@ public final class BetFormValidate {
      * @return 通过返回空，不通过返回信息
      */
     public static String validate(Double bet, Integer guessMode, String guessNumber) {
-        // 非空验证
-        if (bet == null) return "下注参数不能为空";
-        if (StringUtils.isEmpty(guessMode)) return "竞猜玩法不能为空";
-        if (StringUtils.isEmpty(guessNumber)) return "下注号码不能为空";
-
-        // 验证下注金额的合法性
-        if (bet <= 0) return "下注金额必须大于0";
-
         // 验证下注号码的合法性
         if (guessMode.equals(GuessModeEnum.MODE_1.getMode())) {
             if (guessNumber.length() != 1) return "玩法一的下注号码长度不正确";

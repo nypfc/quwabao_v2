@@ -5,7 +5,7 @@ import com.gedoumi.quwabao.common.enums.SmsStatusEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.CodeUtils;
 import com.gedoumi.quwabao.common.utils.CurrentDateUtil;
-import com.gedoumi.quwabao.component.RedisCache;
+import com.gedoumi.quwabao.common.component.RedisCache;
 import com.gedoumi.quwabao.sys.dataobj.form.SendSMSForm;
 import com.gedoumi.quwabao.sys.dataobj.model.SysConfig;
 import com.gedoumi.quwabao.sys.dataobj.model.SysSms;

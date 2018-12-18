@@ -5,7 +5,7 @@ import com.gedoumi.quwabao.common.enums.PasswordTypeEnum;
 import com.gedoumi.quwabao.common.enums.UserStatusEnum;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
-import com.gedoumi.quwabao.component.RedisCache;
+import com.gedoumi.quwabao.common.component.RedisCache;
 import com.gedoumi.quwabao.user.dataobj.form.LoginForm;
 import com.gedoumi.quwabao.user.dataobj.model.User;
 import lombok.extern.slf4j.Slf4j;

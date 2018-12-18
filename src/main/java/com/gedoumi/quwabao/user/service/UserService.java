@@ -6,7 +6,7 @@ import com.gedoumi.quwabao.common.utils.CodeUtils;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
 import com.gedoumi.quwabao.common.utils.MD5EncryptUtil;
 import com.gedoumi.quwabao.common.utils.PasswordUtil;
-import com.gedoumi.quwabao.component.RedisCache;
+import com.gedoumi.quwabao.common.component.RedisCache;
 import com.gedoumi.quwabao.sys.service.SysSmsService;
 import com.gedoumi.quwabao.user.dataobj.form.*;
 import com.gedoumi.quwabao.user.dataobj.model.User;
