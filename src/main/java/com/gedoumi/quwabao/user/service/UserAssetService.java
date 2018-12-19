@@ -68,7 +68,7 @@ public class UserAssetService {
      * @param money  交易量
      * @return 余额足够返回true，否则返回false
      */
-    public boolean remainAsset(Long userId, BigDecimal money) {
+    public Boolean remainAsset(Long userId, BigDecimal money) {
         // 查询用户资产
         UserAsset userAsset = Optional.ofNullable(userAssetMapper.selectByUserId(userId)).orElseThrow(() -> {
             log.error("用户:{}资产不存在", userId);

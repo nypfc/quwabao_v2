@@ -25,7 +25,7 @@ public class GuessSchedule {
     @Scheduled(cron = "0 */1 * * * ?", zone = "Asia/Shanghai")
     public void guessSchedule() {
         log.info(" ==============竞猜轮询执行一次==============");
-        guessService.schedule();
+//        guessService.schedule();
         log.info(" ==============竞猜轮询执行完成==============");
     }
 
