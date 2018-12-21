@@ -9,6 +9,8 @@ import com.gedoumi.quwabao.trans.request.response.GatewayResponse;
  */
 public interface GatewayRequest {
 
+    String GATEWAY_URL = "";
+
     /**
      * 执行请求
      *

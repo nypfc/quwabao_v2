@@ -1,6 +1,6 @@
 package com.gedoumi.quwabao;
 
-import com.gedoumi.quwabao.common.utils.IdGen;
+import com.gedoumi.quwabao.common.utils.IDGeneratorUtil;
 import com.gedoumi.quwabao.common.utils.PasswordUtil;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -37,9 +37,9 @@ public class QuwabaoTest {
 
     @Test
     public void test2() {
-        IdGen idGen = new IdGen();
+        IDGeneratorUtil IDGeneratorUtil = new IDGeneratorUtil();
         for (int i = 0; i < 100; i++) {
-            long id = idGen.nextId();
+            long id = IDGeneratorUtil.nextId();
             System.out.println(id);
         }
     }

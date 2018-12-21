@@ -89,7 +89,7 @@ public class WithdrawRequest implements GatewayRequest {
         try {
             Properties properties = PropertiesLoaderUtils.loadProperties(new ClassPathResource("properties/gateway.properties"));
             this.url = properties.getProperty("gateway.url");
-            this.uri = properties.getProperty("gateway.getEthAddress");
+            this.uri = properties.getProperty("gateway.withdraw");
             this.privateKey = properties.getProperty("gateway.privateKey");
         } catch (IOException e) {
             e.printStackTrace();

@@ -4,7 +4,7 @@ import com.gedoumi.quwabao.common.enums.*;
 import com.gedoumi.quwabao.common.exception.BusinessException;
 import com.gedoumi.quwabao.common.exception.RechargeException;
 import com.gedoumi.quwabao.common.utils.ContextUtil;
-import com.gedoumi.quwabao.common.utils.IdGen;
+import com.gedoumi.quwabao.common.utils.IDGeneratorUtil;
 import com.gedoumi.quwabao.common.component.RedisCache;
 import com.gedoumi.quwabao.sys.dataobj.model.SysConfig;
 import com.gedoumi.quwabao.sys.service.SysConfigService;
@@ -99,7 +99,7 @@ public class GatewayService {
             ethAddress = getEthAddress();
         }
         // 发送提现请求
-        long seq = new IdGen().nextId();
+        long seq = new IDGeneratorUtil().nextId();
         WithdrawRequest request = new WithdrawRequest(mobile, amount, ethAddress, seq);
         WithdrawResponse response;
         try {

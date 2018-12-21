@@ -1,6 +1,9 @@
 package com.gedoumi.quwabao.common.utils;
 
-public class IdGen {
+/**
+ * ID生成工具类
+ */
+public final class IDGeneratorUtil {
 
     private long workerId;
     private long datacenterId;
@@ -17,11 +20,11 @@ public class IdGen {
     private long sequenceMask = ~(-1L << sequenceBits);                 //  4095
     private long lastTimestamp = -1L;
 
-    public IdGen() {
+    public IDGeneratorUtil() {
         this(0L, 0L);
     }
 
-    public IdGen(long workerId, long datacenterId) {
+    public IDGeneratorUtil(long workerId, long datacenterId) {
         if (workerId > maxWorkerId || workerId < 0) {
             throw new IllegalArgumentException(String.format("worker Id can't be greater than %d or less than 0", maxWorkerId));
         }
@@ -37,8 +40,7 @@ public class IdGen {
         long timestamp = timeGen();
         //如果服务器时间有问题(时钟后退) 报错。
         if (timestamp < lastTimestamp) {
-            throw new RuntimeException(String.format(
-                    "Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
+            throw new RuntimeException(String.format("Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
         }
         //如果上次生成时间和当前时间相同,在同一毫秒内
         if (lastTimestamp == timestamp) {
